@@ -87,8 +87,6 @@ shinyServer(function(input, output){
                  choices=c("Counts", "Proportions"),
                  selected="Counts")
   } 
-  uicttype_heat = uicttype("uicttype_heat")
-  uicttype_scat = uicttype("uicttype_scat")
   ################################################################################
   # Define data-reactive variable lists
   ################################################################################
@@ -146,8 +144,6 @@ shinyServer(function(input, output){
   uiform = textInput("formula", "Ordination Constraint Formula", value="NULL")
   # ui for ordination method
   uiord = selectInput("ord_method", "Ordination Method:", ordlist, selected="DCA")
-  uiord_heat = selectInput("ord_method_heat", "Ordination Method (axis ordering):", 
-                           ordlist, selected="NMDS")
   output$sbp_ord = renderUI({
     sidebarPanel(uibutton, br(), uitype("type_ord", "samples"),
                  uidist("dist_ord"),
@@ -238,6 +234,9 @@ shinyServer(function(input, output){
   ################################################################################
   # plot_heatmap() ui
   ################################################################################
+  uiord_heat = selectInput("ord_method_heat", "Ordination Method (axis ordering):", 
+                           ordlist, selected="NMDS")
+  uicttype_heat = uicttype("uicttype_heat")  
   output$sbp_heat  = renderUI({
     sidebarPanel(uibutton, br(), uiord_heat, uidist("dist_heat"),
                            uivar("sample.label", "Sample Labels:", sampvarlist()),
@@ -253,6 +252,7 @@ shinyServer(function(input, output){
   # scatterplot ui
   ################################################################################
   output$sbp_scat   = renderUI({
+    uicttype_scat = uicttype("uicttype_scat")
     scatvars = c(OTU="OTU", Sample="Sample", Abundance="Abundance",
                  rankNames(), variNames())
     uix_scat = selectInput(inputId="x_scat", label="Horizontal ('x') Variable:", 
@@ -270,6 +270,7 @@ shinyServer(function(input, output){
   ################################################################################
   # Plot Rendering Stuff.
   ################################################################################
+  observe({print(paste0("wayyy before: input$uicttype_bar: ", input$uicttype_bar, collapse=""))})
   # Define a proportions-only version of input phyloseq object
   physeqProp = reactive({transform_sample_counts(physeq(), function(x){x / sum(x)})})
   # Define a dummy "failed plot" to return if render section cannot build valid plot.
@@ -357,8 +358,10 @@ shinyServer(function(input, output){
   ################################################################################
   # bar plot definition
   ################################################################################
+  observe({print(paste0("before physeq_bar def input$uicttype_bar: ", input$uicttype_bar, collapse=""))})
   physeq_bar = reactive({
-    return(switch(input$uicttype_bar, Counts=physeq(), Proportions=physeqProp()))
+    observe({print(paste0("input$uicttype_bar: ", input$uicttype_bar, collapse=""))})
+    return(switch({input$uicttype_bar}, Counts=physeq(), Proportions=physeqProp()))
   })
   get_facet <- reactive({
     if(is.null(input$facform_bar) | input$facform_bar=="NULL"){

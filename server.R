@@ -1,13 +1,24 @@
 # By default, the file size limit is 5MB. It can be changed by
 # setting this option. Here we'll raise limit to 9MB.
 options(shiny.maxRequestSize = 100*1024^2)
+# load packages
+require("shiny"); packageVersion("shiny")
+require("phyloseq"); packageVersion("phyloseq")
+library("ggplot2"); packageVersion("ggplot2")
+theme_set(theme_bw())
+pal = "Set1"
+scale_colour_discrete <- function(palname = pal, ...) {
+  scale_colour_brewer(palette = palname, ...)
+}
+scale_fill_discrete <- function(palname = pal, ...) {
+  scale_fill_brewer(palette = palname, ...)
+}
 
 shinyServer(function(input, output){
   # require packages
   require("shiny")
   require("phyloseq")
   require("ggplot2")
-  require("plyr")
   ################################################################################
   # Define the available phyloseq datasets for plotting.
   ################################################################################
@@ -60,6 +71,32 @@ shinyServer(function(input, output){
     observe({print(physeq())})
     return(paste0(capture.output(print(physeq())), collapse="; "))
   })
+  output$library_sizes <- renderPlot({
+    libtitle = "Histogram of Library Sizes in Selected Data"
+    if(inherits(physeq(), "phyloseq")){
+      libdf = data.frame(Library_Size=sample_sums(physeq()))
+      p = ggplot(libdf, aes(x=Library_Size)) + geom_histogram()
+      p = p + xlab("Number of Reads") + ylab("Number of Libraries") 
+      p = p + scale_x_log10(labels = scales::comma)
+      #p = p + coord_trans(x=exp_trans(10)) #, y = exp_trans(10))
+      #p = p + scale_x_continuous(labels = scales::comma)
+      p = p + ggtitle(libtitle)
+      shiny_phyloseq_print(p)
+    } else {
+      libfailtext = "Press the `Load Selection` button \n to load/refresh data."
+      print(qplot(x=0, y=0, main=libtitle) + 
+            annotate("text", 0, 0, label=libfailtext, size=12, hjust=0.5, vjust=-1) +
+              theme(panel.border=element_blank(), axis.line=element_blank(),
+                    axis.text=element_blank(), axis.ticks=element_blank())
+      )
+    }
+  })
+  output$sample_variables <- renderText({return(
+    paste0(sample_variables(physeq(), errorIfNULL=FALSE), collapse=", ")
+  )})
+  output$rank_names <- renderText({return(
+    paste0(rank_names(physeq(), errorIfNULL=FALSE), collapse=", ")
+  )})
   ################################################################################
   # Data-Reactive UI Definitions.
   ################################################################################
@@ -208,21 +245,23 @@ shinyServer(function(input, output){
   ################################################################################
   # scatterplot ui
   ################################################################################
-  output$sbp_scat   = renderUI({
-    uicttype_scat = uicttype("uicttype_scat")
-    scatvars = c(OTU="OTU", Sample="Sample", Abundance="Abundance",
-                 rankNames(), variNames())
-    uix_scat = selectInput(inputId="x_scat", label="Horizontal ('x') Variable:", 
-                           choices=scatvars, selected="Sample")
-    uiy_scat = selectInput(inputId="y_scat", label="Vertical ('y') Variable:", 
-                           choices=scatvars, selected="Abundance")
-    sidebarPanel(uibutton, br(), 
-                 uix_scat, uiy_scat,
-                 uivar("color_scat", "Color Variable:", vars()),
-                 uivar("shape_scat", "Shape Variable:", vars()),
-                 textInput("facform_scat", "Facet Grid Formula:", value="NULL"),
-                 uiptsz("size_scat"), uialpha("alpha_scat"),
-                 uicttype_scat)
+  scatvars = reactive({
+    return(c(OTU="OTU", Sample="Sample", Abundance="Abundance",
+             rankNames(), variNames()))
+  })
+  output$scat_uix_x <- renderUI({
+    selectInput(inputId="x_scat", label="Horizontal ('x') Variable:", 
+                choices=scatvars(), selected="Sample")
+  })
+  output$scat_uix_y <- renderUI({
+    selectInput(inputId="y_scat", label="Vertical ('y') Variable:", 
+                         choices=scatvars(), selected="Abundance")
+  })
+  output$scat_uix_color <- renderUI({
+    uivar("color_scat", "Color Variable:", vars())
+  })
+  output$scat_uix_shape <- renderUI({
+    uivar("shape_scat", "Shape Variable:", vars())
   })
   ################################################################################
   # Plot Rendering Stuff.
@@ -471,7 +510,7 @@ shinyServer(function(input, output){
     # Define the edge data frame
     edgeDF0 = p$layers[[whichEdge]]$data
     # Add the distance associated with each edge entry
-    edgeDF0 = ddply(edgeDF0, "id", function(df, dmat){
+    edgeDF0 = plyr::ddply(edgeDF0, "id", function(df, dmat){
       df$dist <- dmat[df$value[1], df$value[2]]
       return(df)
     }, dmat = as.matrix(distonly()))

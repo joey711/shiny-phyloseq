@@ -1,7 +1,7 @@
 Title: Shiny + phyloseq
 Author: Paul J. McMurdie
 AuthorUrl: https://people.stanford.edu/mcmurdie
-License: MIT
+License: GPL-3
 DisplayMode: Showcase
 Tags: microbiome
 Type: Shiny

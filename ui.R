@@ -130,6 +130,18 @@ sbp_heat = sidebarPanel(
   uicttype("uicttype_heat")
 )
 ################################################################################
+# sbp for scatter plot
+################################################################################
+sbp_scat = sidebarPanel(uibutton, br(), 
+  uiOutput("scat_uix_x"),
+  uiOutput("scat_uix_y"),
+  uiOutput("scat_uix_color"),
+  uiOutput("scat_uix_shape"),
+  textInput("facform_scat", "Facet Grid Formula:", value="NULL"),
+  uiptsz("size_scat"), uialpha("alpha_scat"),
+  uicttype("uicttype_scat")
+)
+################################################################################
 # Define each fluid page
 ################################################################################
 # Define in a single function, a standard definition
@@ -148,7 +160,7 @@ barpage = make_fluidpage("", sbp_bar, "bar")
 ordpage = make_fluidpage("", sbp_ord, "ordination")
 treepage = make_fluidpage("", sbp_tree, "tree")
 heatpage = make_fluidpage("", sbp_heat, "heatmap")
-scatpage = make_fluidpage("", uiOutput("sbp_scat"), "scatter")
+scatpage = make_fluidpage("", sbp_scat, "scatter")
 # Data I/O page
 datapage = fluidPage(
   titlePanel(""),
@@ -158,15 +170,20 @@ datapage = fluidPage(
       fileInput('file1', 'Choose file to upload'),
       tags$hr(),
       uiOutput("phyloseqDataset"),
-      p('Testing data file input,',
-        'will have to try some things. Legacy example links follow...',
-        a(href = 'mtcars.csv', 'mtcars.csv'), 'or',
-        a(href = 'pressure.tsv', 'pressure.tsv'),
-        'files, and then try uploading them.'
-      )
+      #a(href = 'mtcars.csv', 'mtcars.csv'), 'or',
+      p('Select a built-in dataset, or upload your own.')
     ),
     mainPanel(
-      textOutput('contents')
+      plotOutput("library_sizes"),
+      tags$hr(),
+      p("Summary:"),
+      textOutput('contents'),
+      tags$hr(),
+      p("Sample Variables:"),
+      textOutput('sample_variables'),
+      tags$hr(),
+      p("Taxonomic Ranks:"),
+      textOutput('rank_names')
     )
   )
 )

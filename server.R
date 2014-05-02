@@ -153,30 +153,12 @@ shinyServer(function(input, output){
   ################################################################################
   # plot_network() ui
   ################################################################################
-  # New
   output$network_uix_color <- renderUI({
     uivar("color_net", "Color Variable:", vars())
   })
   output$network_uix_shape <- renderUI({
     uivar("shape_net", "Shape Variable:", vars())
   })
-#   # Old
-#   # ui for max distance to consider in initializing plot calculations
-#   uinetdistmax = numericInput(inputId="uinetdistmax", label="Network - Build Distance Threshold:",
-#                               step=0.1, value=0.9)
-#   # ui for distance to display
-#   uinetdispdist = numericInput(inputId="uinetdispdist",
-#                                label="Network - Edge Distance Display Threshold:",
-#                                step=0.1, value=0.3)
-#   output$sbp_net   = renderUI({
-#     sidebarPanel(uibutton, br(), uitype("type_net", "samples"),
-#                  uidist("dist_net"),
-#                  uivar("color_net", "Color Variable:", vars()),
-#                  uivar("shape_net", "Shape Variable:", vars()),
-#                  uinetdistmax, uinetdispdist,
-#                  uiptsz("size_net"), uialpha("alpha_net")
-#     )
-#   })
   ################################################################################
   # plot_bar() uix
   ################################################################################
@@ -191,48 +173,37 @@ shinyServer(function(input, output){
   ################################################################################
   # plot_tree() ui
   ################################################################################
-  output$sbp_tree  = renderUI({
-    sidebarPanel(uibutton,
-                 selectInput(inputId="method_tree", label="Tree Method", 
-                             choices=list(`No Points`="treeonly", `Dodged Points`="sampledodge"),
-                             selected="treeonly"),
-                 selectInput(inputId="justify_tree", label="Justify",
-                             choices=list(Jagged="jagged", Left="left"),
-                             selected="left"),
-                 selectInput(inputId="ladderize_tree", label="Ladderize",
-                             choices=list(Right="right", Left="left", `NULL`="NULL"),
-                             selected="left"),
-                 uivar("color_tree", "Color Variable:", vars()),
-                 uivar("shape_tree", "Shape Variable:", vars()),
-                 uiptsz("size_tree"), 
-                 uivar("label_tip_tree", "Tip Labels", 
-                       choices=c(OTU="OTU", specvarlist()),
-                       selected="OTU"),
-                 sliderInput("abundance_threshold_tree",
-                             "Count Minimum Threshold for Points",
-                             value=0.1*median(as(otu_table(physeq()), "matrix"), na.rm=TRUE),
-                             max=max(as(otu_table(physeq()), "matrix"), na.rm=TRUE),
-                             min=min(as(otu_table(physeq()), "matrix"), na.rm=TRUE)
-                 ),
-                 numericInput("margin_tree", "Margin", value=0.2, min=0, step=0.1)
+  output$tree_uix_color <- renderUI({
+    uivar("color_tree", "Color Variable:", vars())
+  })
+  output$tree_uix_shape <- renderUI({
+    uivar("shape_tree", "Shape Variable:", vars())
+  })
+  output$tree_uix_tiplabs <- renderUI({
+    uivar("label_tip_tree", "Tip Labels", choices=c(OTU="OTU", specvarlist()))
+  })
+  output$tree_uix_point_thresh <- renderUI({
+    sliderInput("abundance_threshold_tree",
+                "Count Minimum Threshold for Points",
+                value=0.1*median(as(otu_table(physeq()), "matrix"), na.rm=TRUE),
+                max=max(as(otu_table(physeq()), "matrix"), na.rm=TRUE),
+                min=min(as(otu_table(physeq()), "matrix"), na.rm=TRUE)
     )
   })
   ################################################################################
   # plot_heatmap() ui
   ################################################################################
-  uiord_heat = selectInput("ord_method_heat", "Ordination Method (axis ordering):", 
-                           ordlist, selected="NMDS")
-  uicttype_heat = uicttype("uicttype_heat")  
-  output$sbp_heat  = renderUI({
-    sidebarPanel(uibutton, br(), uiord_heat, uidist("dist_heat"),
-                           uivar("sample.label", "Sample Labels:", sampvarlist()),
-                           uivar("taxa.label", "Taxa Labels:", specvarlist()),
-                           uivar("sample.order", "Sample Ordering:", sampvarlist()),
-                           uivar("taxa.order", "Taxa Ordering:", specvarlist()),
-                           textInput("locolor_heat", "Low Color", "#000033"),
-                           textInput("hicolor_heat", "High Color", "#66CCFF"),
-                           textInput("NAcolor_heat", "Missing Value Color", "black"),
-                           uicttype_heat)
+  output$heat_sample_label <- renderUI({
+    uivar("sample.label", "Sample Labels:", sampvarlist())
+  })
+  output$heat_taxa_label <- renderUI({
+    uivar("taxa.label", "Taxa Labels:", specvarlist())
+  })
+  output$heat_sample_order <- renderUI({
+    uivar("sample.order", "Sample Ordering:", sampvarlist())
+  })
+  output$heat_taxa_order <- renderUI({
+    uivar("taxa.order", "Taxa Ordering:", specvarlist())
   })
   ################################################################################
   # scatterplot ui

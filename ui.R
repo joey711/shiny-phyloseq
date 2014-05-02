@@ -24,8 +24,14 @@ uidist = function(id, selected="bray"){
   names(distlist) <- distlist
   return(selectInput(id, "Distance Method:", distlist, selected=selected))
 }
+# Whether to use proportions or counts
+uicttype = function(id="uicttype"){
+  radioButtons(inputId=id, label="Count Type",
+               choices=c("Counts", "Proportions"),
+               selected="Counts")
+} 
 # Define the ordination options list.
-ordlist = as.list(ordinate("list"))
+ordlist = as.list(phyloseq::ordinate("list"))
 names(ordlist) <- ordlist
 ordlist = ordlist[-which(ordlist %in% c("MDS", "PCoA"))]
 ordlist = c(list("MDS/PCoA"="MDS"), ordlist)
@@ -62,7 +68,7 @@ uialphameas = selectInput(inputId="measures_alpha",
                           choices=richmeasvars, 
                           selected=c("Chao1", "Shannon", "InvSimpson"),
                           multiple=TRUE)
-sbp_alpha = sidebarPanel(uibutton, br(), uialphameas,
+sbp_rich = sidebarPanel(uibutton, br(), uialphameas,
                          uiOutput("richness_uix_x"), 
                          uiOutput("richness_uix_color"),
                          uiOutput("richness_uix_shape"),
@@ -88,6 +94,42 @@ sbp_net = sidebarPanel(uibutton, br(), uitype("type_net", "samples"),
                        uiptsz("size_net"), uialpha("alpha_net")
 )
 ################################################################################
+# sbp for plot_tree()
+################################################################################
+sbp_tree = sidebarPanel(uibutton,
+  selectInput(inputId="method_tree", label="Tree Method", 
+              choices=list(`No Points`="treeonly", `Dodged Points`="sampledodge")),
+  selectInput(inputId="justify_tree", label="Justify",
+              choices=list(Jagged="jagged", Left="left"),
+              selected="left"),
+  selectInput(inputId="ladderize_tree", label="Ladderize",
+              choices=list(Right="right", Left="left", `NULL`="NULL"),
+              selected="left"),
+  uiOutput("tree_uix_color"),
+  uiOutput("tree_uix_shape"),
+  uiptsz("size_tree"), 
+  uiOutput("tree_uix_tiplabs"),
+  uiOutput("tree_uix_point_thresh"),
+  numericInput("margin_tree", "Margin", value=0.2, min=0, step=0.1)
+)
+################################################################################
+# sbp for plot_heatmap()
+################################################################################
+sbp_heat = sidebarPanel(
+  uibutton, br(),
+  selectInput("ord_method_heat", "Ordination Method (axis ordering):", 
+              ordlist, selected="NMDS"),
+  uidist("dist_heat"),
+  uiOutput("heat_sample_label"),
+  uiOutput("heat_taxa_label"),
+  uiOutput("heat_sample_order"),
+  uiOutput("heat_taxa_order"),
+  textInput("locolor_heat", "Low Color", "#000033"),
+  textInput("hicolor_heat", "High Color", "#66CCFF"),
+  textInput("NAcolor_heat", "Missing Value Color", "black"),
+  uicttype("uicttype_heat")
+)
+################################################################################
 # Define each fluid page
 ################################################################################
 # Define in a single function, a standard definition
@@ -100,12 +142,12 @@ make_fluidpage = function(fptitle="", sbp, outplotid){
     )
   )
 }
-alphapage = make_fluidpage("", uiOutput("sbp_alpha"), "richness")
+alphapage = make_fluidpage("", sbp_rich, "richness")
 netpage = make_fluidpage("", sbp_net, "network")
 barpage = make_fluidpage("", sbp_bar, "bar")
 ordpage = make_fluidpage("", sbp_ord, "ordination")
-treepage = make_fluidpage("", uiOutput("sbp_tree"), "tree")
-heatpage = make_fluidpage("", uiOutput("sbp_heat"), "heatmap")
+treepage = make_fluidpage("", sbp_tree, "tree")
+heatpage = make_fluidpage("", sbp_heat, "heatmap")
 scatpage = make_fluidpage("", uiOutput("sbp_scat"), "scatter")
 # Data I/O page
 datapage = fluidPage(

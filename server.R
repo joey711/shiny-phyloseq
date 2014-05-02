@@ -130,77 +130,63 @@ shinyServer(function(input, output){
     selectInput(inputId=id, label=label, choices=choices, selected=selected)
   }
   ################################################################################
-  # Define sidebar panel for each graphic type.
-  # These sidebar panels are reactively passed back to ui,
+  # Define reactive portions of sidebar panels.
+  # They are reactively passed back to ui,
   # because they change based on the data contents.
   ################################################################################
   # plot_ordination() ui
   ################################################################################
-  # ui for type of plot_ordination 
-  ordtypelist = as.list(plot_ordination("list"))
-  names(ordtypelist) <- c("Samples", "Species", "Biplot", "Split Plot", "Scree Plot")
-  uiordtype = selectInput("ord_plot_type", "Ordination Plot Type:", ordtypelist)
-  # Ordination constraint formula, if any.
-  uiform = textInput("formula", "Ordination Constraint Formula", value="NULL")
-  # ui for ordination method
-  uiord = selectInput("ord_method", "Ordination Method:", ordlist, selected="DCA")
-  output$sbp_ord = renderUI({
-    sidebarPanel(uibutton, br(), uitype("type_ord", "samples"),
-                 uidist("dist_ord"),
-                 uivar("color_ord", "Color Variable:", vars()),
-                 uivar("shape_ord", "Shape Variable:", vars()),
-                 uiord, uiordtype, uiform,
-                 uiptsz("size_ord"), uialpha("alpha_ord"))
-  })
+  output$ord_uix_color <- renderUI({uivar("color_ord", "Color Variable:", vars())})
+  output$ord_uix_shape <- renderUI({uivar("shape_ord", "Shape Variable:", vars())})
   ################################################################################
   # plot_richness() ui
   ################################################################################
-  richmeasvars = c("Observed", "Chao1", "ACE", "Shannon", "Simpson", "InvSimpson", "Fisher")
-  uialphameas = selectInput(inputId="measures_alpha",
-                            label="Alpha Diversity Measures:",
-                            choices=richmeasvars, 
-                            selected=c("Chao1", "Shannon", "InvSimpson"),
-                            multiple=TRUE)
-  output$sbp_alpha = renderUI({
-    sidebarPanel(uibutton, br(), uialphameas,
-                 uivar("x_alpha", "Horizontal (x) Variable:", sampvarlist()),
-                 uivar("color_alpha", "Color Variable:", sampvarlist()),
-                 uivar("shape_alpha", "Shape Variable:", sampvarlist()),
-                 uiptsz("size_alpha"),
-                 uialpha("alpha_alpha"))
+  output$richness_uix_x <- renderUI({
+    uivar("x_alpha", "Horizontal (x) Variable:", sampvarlist())
+  })
+  output$richness_uix_color <- renderUI({
+    uivar("color_alpha", "Color Variable:", sampvarlist())
+  })
+  output$richness_uix_shape <- renderUI({
+    uivar("shape_alpha", "Shape Variable:", sampvarlist())
   })
   ################################################################################
   # plot_network() ui
   ################################################################################
-  # ui for max distance to consider in initializing plot calculations
-  uinetdistmax = numericInput(inputId="uinetdistmax", label="Network - Build Distance Threshold:",
-                              step=0.1, value=0.9)
-  # ui for distance to display
-  uinetdispdist = numericInput(inputId="uinetdispdist",
-                               label="Network - Edge Distance Display Threshold:",
-                               step=0.1, value=0.3)
-  output$sbp_net   = renderUI({
-    sidebarPanel(uibutton, br(), uitype("type_net", "samples"),
-                           uidist("dist_net"),
-                           uivar("color_net", "Color Variable:", vars()),
-                           uivar("shape_net", "Shape Variable:", vars()),
-                           uinetdistmax, uinetdispdist,
-                           uiptsz("size_net"), uialpha("alpha_net")
-                 )
+  # New
+  output$network_uix_color <- renderUI({
+    uivar("color_net", "Color Variable:", vars())
   })
+  output$network_uix_shape <- renderUI({
+    uivar("shape_net", "Shape Variable:", vars())
+  })
+#   # Old
+#   # ui for max distance to consider in initializing plot calculations
+#   uinetdistmax = numericInput(inputId="uinetdistmax", label="Network - Build Distance Threshold:",
+#                               step=0.1, value=0.9)
+#   # ui for distance to display
+#   uinetdispdist = numericInput(inputId="uinetdispdist",
+#                                label="Network - Edge Distance Display Threshold:",
+#                                step=0.1, value=0.3)
+#   output$sbp_net   = renderUI({
+#     sidebarPanel(uibutton, br(), uitype("type_net", "samples"),
+#                  uidist("dist_net"),
+#                  uivar("color_net", "Color Variable:", vars()),
+#                  uivar("shape_net", "Shape Variable:", vars()),
+#                  uinetdistmax, uinetdispdist,
+#                  uiptsz("size_net"), uialpha("alpha_net")
+#     )
+#   })
   ################################################################################
-  # plot_bar() ui
+  # plot_bar() uix
   ################################################################################
-  # ui for x-axis mapping for bar plot
-  uicttype_bar = uicttype("uicttype_bar")
-  output$sbp_bar   = renderUI({
-    xvars_bar = c(rankNames(), variNames(), list("Sample"="Sample"))
-    uix_bar = selectInput(inputId="x_bar", label= "Horizontal ('x') Variable:", 
-                          choices=xvars_bar, selected="Sample")    
-    sidebarPanel(uibutton, br(), uix_bar, 
-                           uivar("color_bar", "Color Fill Variable:", vars()),
-                           textInput("facform_bar", "Facet Formula:", value="NULL"),
-                           uicttype_bar)
+  output$bar_uix_xvar <- renderUI({
+    selectInput(inputId="x_bar", 
+                label="Horizontal ('x') Variable:", 
+                choices=c(list("Sample"="Sample"), rankNames(), variNames()))
+  })
+  output$bar_uix_colvar <- renderUI({
+    uivar("color_bar", "Color Fill Variable:", vars())
   })
   ################################################################################
   # plot_tree() ui

@@ -1,3 +1,92 @@
+# ui submit button for input changes
+uibutton = submitButton("Build/Rebuild Plot", icon("refresh"))
+# Type for distance/network/etc. Samples or Taxa
+uitype = function(id="type", selected="taxa"){
+  selectInput(inputId=id, label="Calculation: Samples or Taxa?",
+              selected=selected,
+              choices=list("Taxa"="taxa", "Samples"="samples"))
+}
+# ui for point size slider
+uiptsz = function(id="size"){
+  sliderInput(inputId=id, label="Point Size:", min=1, max=10, value=5, step=1)
+}
+# ui for point opacity slider
+uialpha = function(id="alpha"){
+  sliderInput(inputId=id, label="Opacity:", min=0, max=1, value=1, step=0.1)
+}
+#   Function to reate ui for distance method selection
+#   NOTE: not all distance methods are supported if "taxa" selected for type. 
+#   For example, the UniFrac distance and DPCoA cannot be calculated for taxa-wise 
+#   distances, because they use a taxa-wise tree as part of their calculation 
+#   between samples, and there is no transpose-equivalent for this tree
+uidist = function(id, selected="bray"){
+  distlist = as.list(unlist(phyloseq::distance("list")))
+  names(distlist) <- distlist
+  return(selectInput(id, "Distance Method:", distlist, selected=selected))
+}
+# Define the ordination options list.
+ordlist = as.list(ordinate("list"))
+names(ordlist) <- ordlist
+ordlist = ordlist[-which(ordlist %in% c("MDS", "PCoA"))]
+ordlist = c(list("MDS/PCoA"="MDS"), ordlist)
+################################################################################
+# bar_plot sbp definition
+################################################################################
+sbp_bar = sidebarPanel(uibutton, br(),
+                       uiOutput("bar_uix_xvar"),
+                       uiOutput("bar_uix_colvar"),
+                       textInput("facform_bar", "Facet Formula:", value="NULL"),
+                       radioButtons("uicttype_bar", label="Abundance Data Type",
+                                    choices=c("Counts", "Proportions"))
+)
+################################################################################
+# sbp of plot_ordination 
+################################################################################
+ordtypelist = as.list(phyloseq::plot_ordination("list"))
+names(ordtypelist) <- c("Samples", "Species", "Biplot", "Split Plot", "Scree Plot")
+sbp_ord = sidebarPanel(uibutton, br(), uitype("type_ord", "samples"),
+                       uidist("dist_ord"),
+                       uiOutput("ord_uix_color"),
+                       uiOutput("ord_uix_shape"),
+                       selectInput("ord_method", "Ordination Method:", ordlist, selected="DCA"),
+                       selectInput("ord_plot_type", "Ordination Plot Type:", ordtypelist), 
+                       textInput("formula", "Ordination Constraint Formula", value="NULL"),
+                       uiptsz("size_ord"), uialpha("alpha_ord")
+)
+################################################################################
+# sbp of plot_richness
+################################################################################
+richmeasvars = c("Observed", "Chao1", "ACE", "Shannon", "Simpson", "InvSimpson", "Fisher")
+uialphameas = selectInput(inputId="measures_alpha",
+                          label="Alpha Diversity Measures:",
+                          choices=richmeasvars, 
+                          selected=c("Chao1", "Shannon", "InvSimpson"),
+                          multiple=TRUE)
+sbp_alpha = sidebarPanel(uibutton, br(), uialphameas,
+                         uiOutput("richness_uix_x"), 
+                         uiOutput("richness_uix_color"),
+                         uiOutput("richness_uix_shape"),
+                         uiptsz("size_alpha"),
+                         uialpha("alpha_alpha")
+)
+################################################################################
+# sbp of plot_network
+################################################################################
+# ui for max distance to consider in initializing plot calculations
+uinetdistmax = numericInput(inputId="uinetdistmax",
+                            label="Network - Build Distance Threshold:",
+                            step=0.1, value=0.9)
+# ui for distance to display
+uinetdispdist = numericInput(inputId="uinetdispdist",
+                             label="Network - Edge Distance Display Threshold:",
+                             step=0.1, value=0.3)
+sbp_net = sidebarPanel(uibutton, br(), uitype("type_net", "samples"),
+                       uidist("dist_net"),
+                       uiOutput("network_uix_color"),
+                       uiOutput("network_uix_shape"),
+                       uinetdistmax, uinetdispdist,
+                       uiptsz("size_net"), uialpha("alpha_net")
+)
 ################################################################################
 # Define each fluid page
 ################################################################################
@@ -12,9 +101,9 @@ make_fluidpage = function(fptitle="", sbp, outplotid){
   )
 }
 alphapage = make_fluidpage("", uiOutput("sbp_alpha"), "richness")
-netpage = make_fluidpage("", uiOutput("sbp_net"), "network")
-barpage = make_fluidpage("", uiOutput("sbp_bar"), "bar")
-ordpage = make_fluidpage("", uiOutput("sbp_ord"), "ordination")
+netpage = make_fluidpage("", sbp_net, "network")
+barpage = make_fluidpage("", sbp_bar, "bar")
+ordpage = make_fluidpage("", sbp_ord, "ordination")
 treepage = make_fluidpage("", uiOutput("sbp_tree"), "tree")
 heatpage = make_fluidpage("", uiOutput("sbp_heat"), "heatmap")
 scatpage = make_fluidpage("", uiOutput("sbp_scat"), "scatter")

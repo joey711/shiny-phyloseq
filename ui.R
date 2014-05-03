@@ -166,24 +166,57 @@ datapage = fluidPage(
   titlePanel(""),
   sidebarLayout(
     sidebarPanel(
+      p('Select a built-in dataset, or upload your own.'),
+      tags$hr(),
       submitButton("Load Selection", icon("refresh")),
-      fileInput('file1', 'Choose file to upload'),
       tags$hr(),
       uiOutput("phyloseqDataset"),
-      #a(href = 'mtcars.csv', 'mtcars.csv'), 'or',
-      p('Select a built-in dataset, or upload your own.')
+      fileInput('file1', 'Choose file to upload'),
+      tags$hr(),
+      numericInput("dataset_count_threshold", "Count Threshold", value=3, min=0, step=1)
     ),
     mainPanel(
       plotOutput("library_sizes"),
+      plotOutput("OTU_count_thresh_hist"),
       tags$hr(),
-      p("Summary:"),
-      textOutput('contents'),
+      p("Data Summary:"),
+      htmlOutput('contents')
+    )
+  )
+)
+# Data Filter page
+filterpage = fluidPage(
+  titlePanel(""),
+  sidebarLayout(
+    sidebarPanel(
+      submitButton("Execute Filter", icon("refresh")),
+      p("  "),
+      p('Filtering Parameters:'),
+      tags$hr(),
+      textInput("filter_subset_taxa_expr", "`subset_taxa()` Expression:", value="NULL"),
+      tags$hr(),
+      p('Total Sums Filtering:'),
+      numericInput("filter_sample_sums_threshold", "Sample Sums Count Threshold", value=0, min=0, step=1),
+      numericInput("filter_taxa_sums_threshold", "OTU Sums Count Threshold", value=0, min=0, step=1),
+      tags$hr(),
+      p('kOverA OTU Filtering:'),
+      numericInput("filter_kOverA_count_threshold", "`A` - The Count Value Threshold", value=0, min=0, step=1),
+      uiOutput("filter_ui_kOverA_k")
+    ),
+    mainPanel(
+      plotOutput("filter_summary_plot"),
+      tags$hr(),
+      p("Original Data:"),
+      htmlOutput('filtered_contents0'),
+      tags$hr(),
+      p("Filtered Data:"),
+      htmlOutput('filtered_contents'),
       tags$hr(),
       p("Sample Variables:"),
       textOutput('sample_variables'),
       tags$hr(),
       p("Taxonomic Ranks:"),
-      textOutput('rank_names')
+      textOutput('rank_names')      
     )
   )
 )
@@ -192,9 +225,10 @@ datapage = fluidPage(
 ################################################################################
 ui = navbarPage("Shiny + phyloseq",
                 tabPanel("Select Dataset", datapage),
+                tabPanel("Filter", filterpage),
                 tabPanel("Alpha Diversity", alphapage),
                 tabPanel("Network", netpage),
-                tabPanel("Abundance Bar Plot", barpage),
+                tabPanel("Bar", barpage),
                 tabPanel("Ordination", ordpage),
                 tabPanel("Tree", treepage),
                 tabPanel("Heatmap", heatpage),

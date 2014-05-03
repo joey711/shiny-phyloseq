@@ -38,95 +38,174 @@ shinyServer(function(input, output){
     observe({print(paste0("output$physeqDataset(): Available Variables:", ls(), collapse=" "))})
     return(radioButtons("physeqSelect", "Choose Dataset:", datasets))
   })
-  physeq = reactive({
-    physeq = NULL
-    observe({print(paste0("physeq() input$physeqSelect:", input$physeqSelect))})
+  get_phyloseq_data = reactive({
+    ps0 = NULL
     if(!is.null(input$physeqSelect)){
       if(!input$physeqSelect %in% includedDatasets){
-        observe({print("physeq(): Loading data...")})
+        observe({print("get_phyloseq_data(): Loading data...")})
         load(file=input$file1$datapath)
       } else {
         data(list=includedDatasets)
       }
-      observe({print(paste0("physeq(): Available Variables:", ls(), collapse=" "))})
-      trash = try(physeq <- get(input$physeqSelect), silent=TRUE)
-      observe({print(paste0("physeq(): class(trash):", class(trash), collapse=" "))})
-      observe({print("physeq(): physeq print...")})
-      observe({print(physeq)})
+      trash = try(ps0 <- get(input$physeqSelect), silent=TRUE)
       if(inherits(trash, "try-error")){
-        warning("physeq(): Could not `get` selected object from server environment... \n")
+        warning("get_phyloseq_data(): Could not `get` selected object from server environment... \n")
       }
     }
-    observe({print("physeq(): physeq-print")})
-    observe({print(physeq)})
-    if(inherits(physeq, "phyloseq")){
-      return(physeq)
+    observe({print(ps0)})
+    if(inherits(ps0, "phyloseq")){
+      return(ps0)
+    } else {
+      observe({print("ps0 is NULL in get_phyloseq_data()")})
+      return(NULL)
+    }
+  })
+  ################################################################################
+  # Filtering
+  ################################################################################
+  keepOTUs = reactive({taxa_sums(get_phyloseq_data()) > input$filter_taxa_sums_threshold})
+  keepSamples = reactive({
+    # Create logical indicated the samples to keep, or dummy logical if nonsense input
+    if(inherits(get_phyloseq_data(), "phyloseq")){
+      sample_sums(get_phyloseq_data()) > input$filter_sample_sums_threshold
+    } else {
+      # Dummy response.
+      return(TRUE)
+    }
+  })
+  physeq = reactive({
+    ps0 = get_phyloseq_data()
+    if(inherits(ps0, "phyloseq")){
+      observe({print(paste("filter_kOverA_count_threshold:", input$filter_kOverA_count_threshold))})
+      observe({print(paste("filter_kOverA_sample_threshold:", input$filter_kOverA_sample_threshold))})
+      observe({print(paste("filter_sample_sums_threshold:", input$filter_sample_sums_threshold))})
+      observe({print(paste("filter_taxa_sums_threshold:", input$filter_taxa_sums_threshold))})
+      if( input$filter_taxa_sums_threshold > 0 ){
+        # OTU filter
+        ps0 <- prune_taxa(keepOTUs(), ps0)
+        observe({print(ps0)})
+      }
+      if( input$filter_sample_sums_threshold > 0 ){
+        # Sample Filtering
+        ps0 <- prune_samples(keepSamples(), ps0)
+        observe({print(ps0)})
+      }
+      if(inherits(input$filter_kOverA_sample_threshold, "numeric")){
+        if(input$filter_kOverA_sample_threshold > 1){
+          # kOverA OTU Filtering
+          flist = genefilter::filterfun(
+            genefilter::kOverA(input$filter_kOverA_sample_threshold,
+                               input$filter_kOverA_count_threshold, na.rm=TRUE)
+          )
+          ps0 <- filter_taxa(ps0, flist, prune=TRUE)
+        }
+      }
+      return(ps0)
     } else {
       return(NULL)
     }
   })
-  observe({print(paste0("prior to output$contents: Available Variables:", ls(), collapse=" "))})
-  output$contents <- renderText({
-    cat("Made it to output$contents... \n")
-    observe({print(physeq())})
-    return(paste0(capture.output(print(physeq())), collapse="; "))
+  # kOverA `k` Filter UI
+  output$filter_ui_kOverA_k <- renderUI({
+    sliderInput("filter_kOverA_sample_threshold",
+                "`k` - Number of Samples that Must Exceed `A`",
+                min=0, max=sum(keepSamples()), value=0, step=1, round=TRUE)    
+  })  
+  output_phyloseq_print_html <- reactive({
+    HTML(paste0(capture.output(print(get_phyloseq_data())), collapse=" <br/> "))
+  })
+  output$contents <- renderUI({
+    output_phyloseq_print_html()
+  })
+  output$filtered_contents0 <- renderUI({
+    output_phyloseq_print_html()
+  })
+  output$filtered_contents <- renderUI({
+    HTML(paste0(capture.output(print(physeq())), collapse=" <br/> "))
+  })
+  # Generic Function for plotting marginal histograms
+  sums_hist = function(thesums=NULL, xlab="", ylab=""){
+    if(is.null(thesums)){
+      p = qplot(0)
+    } else {
+      p = ggplot(data.frame(sums=thesums), aes(x=sums))
+      p = p + geom_histogram()
+      p = p + xlab(xlab) + ylab(ylab) 
+      p = p + scale_x_log10(labels = scales::comma)
+    }
+    return(p)
+  }
+  lib_size_hist = reactive({
+    xlab = "Number of Reads (Counts)"
+    ylab = "Number of Libraries"
+    return(sums_hist(sample_sums(get_phyloseq_data()), xlab, ylab))
+  })
+  otu_sum_hist = reactive({
+    xlab = "Number of Reads (Counts)"
+    ylab = "Number of OTUs"
+    return(sums_hist(taxa_sums(get_phyloseq_data()), xlab, ylab))    
   })
   output$library_sizes <- renderPlot({
-    libtitle = "Histogram of Library Sizes in Selected Data"
-    if(inherits(physeq(), "phyloseq")){
-      libdf = data.frame(Library_Size=sample_sums(physeq()))
-      p = ggplot(libdf, aes(x=Library_Size)) + geom_histogram()
-      p = p + xlab("Number of Reads") + ylab("Number of Libraries") 
-      p = p + scale_x_log10(labels = scales::comma)
-      #p = p + coord_trans(x=exp_trans(10)) #, y = exp_trans(10))
-      #p = p + scale_x_continuous(labels = scales::comma)
-      p = p + ggtitle(libtitle)
-      shiny_phyloseq_print(p)
+    if(inherits(get_phyloseq_data(), "phyloseq")){
+      libtitle = "Histogram of Library Sizes in Selected Data"
+      p1 = lib_size_hist() + ggtitle(libtitle)
+      otusumtitle = "Histogram of OTU total counts in Selected Data"
+      p2 = otu_sum_hist() + ggtitle(otusumtitle)
+      gridExtra::grid.arrange(p1, p2, ncol=2)
     } else {
       libfailtext = "Press the `Load Selection` button \n to load/refresh data."
-      print(qplot(x=0, y=0, main=libtitle) + 
-            annotate("text", 0, 0, label=libfailtext, size=12, hjust=0.5, vjust=-1) +
+      print(qplot(x=0, y=0, main="") + xlim(-1, 1) + ylim(-1, 1) + 
+              geom_segment(aes(x=0, y=0, xend=-0.5, yend=0.15), size=3,
+                           arrow=grid::arrow(length=grid::unit(0.5, "cm"))) +
+              annotate("text", 0, 0, label=libfailtext, size=12, hjust=0.5, vjust=-1) +
               theme(panel.border=element_blank(), axis.line=element_blank(),
                     axis.text=element_blank(), axis.ticks=element_blank())
       )
     }
   })
+  output$OTU_count_thresh_hist <- renderPlot({
+    ps0 = get_phyloseq_data()
+    if(inherits(get_phyloseq_data(), "phyloseq")){
+      mx = as(otu_table(ps0), "matrix")
+      if(!taxa_are_rows(ps0)){mx <- t(mx)}
+      thresh = input$dataset_count_threshold
+      df = data.frame(x=apply(mx, 1, function(x, thresh){sum(x>thresh)}, thresh))
+      p = ggplot(df, aes(x=x)) + geom_histogram()
+      p = p + xlab("Number of Samples with Count Above Threshold") + ylab("Number of OTUs")
+      p = p + ggtitle(paste("Histogram of OTUs Observed More Than", thresh, "Times"))
+      return(shiny_phyloseq_print(p))
+    } else {
+      return(qplot(0))
+    }
+  })
   output$sample_variables <- renderText({return(
-    paste0(sample_variables(physeq(), errorIfNULL=FALSE), collapse=", ")
+    paste0(sample_variables(get_phyloseq_data(), errorIfNULL=FALSE), collapse=", ")
   )})
   output$rank_names <- renderText({return(
-    paste0(rank_names(physeq(), errorIfNULL=FALSE), collapse=", ")
+    paste0(rank_names(get_phyloseq_data(), errorIfNULL=FALSE), collapse=", ")
   )})
+  output$filter_summary_plot <- renderPlot({
+    plib0 = lib_size_hist() + ggtitle("Histogram of Library Sizes in Original Data")
+    potu0 = otu_sum_hist() + ggtitle("Histogram of OTU total counts in Original Data")
+    if(inherits(physeq(), "phyloseq")){
+      potu1 = sums_hist(physeq(), xlab = "Number of Reads (Counts)",
+                       ylab = "Number of OTUs"
+                       ) + 
+        ggtitle("Histogram of OTU total counts in Filtered Data")
+      plib1 = sums_hist(physeq(), xlab = "Number of Reads (Counts)",
+                        ylab = "Number of Libraries"
+                        ) + 
+        ggtitle("Histogram of Library Sizes in Filtered Data")
+    } else {
+      potu1 = plib1 = failp
+    }
+    gridExtra::grid.arrange(plib0, potu0, plib1, potu1, ncol=2, 
+                            main="Before and After Filtering")
+  })
   ################################################################################
   # Data-Reactive UI Definitions.
   ################################################################################
-  ################################################################################
-  # Define the ordination list.
-  ################################################################################
-  ordlist = as.list(ordinate("list"))
-  names(ordlist) <- ordlist
-  ordlist = ordlist[-which(ordlist %in% c("MDS", "PCoA"))]
-  ordlist = c(list("MDS/PCoA"="MDS"), ordlist)
-  ################################################################################
-  # User Interface, sidebar panel(s) `sbp`, etc.
-  ################################################################################
-  # ui submit button for input changes
-  uibutton = submitButton("Build/Rebuild Plot", icon("refresh"))
-  # Type for distance/network/etc. Samples or Taxa
-  uitype = function(id="type", selected="taxa"){
-    selectInput(inputId=id, label="Calculation: Samples or Taxa?",
-                selected=selected,
-                choices=list("Taxa"="taxa", "Samples"="samples"))
-  }
-  # Whether to use proportions or counts
-  uicttype = function(id="uicttype"){
-    radioButtons(inputId=id, label="Count Type",
-                 choices=c("Counts", "Proportions"),
-                 selected="Counts")
-  } 
-  ################################################################################
   # Define data-reactive variable lists
-  ################################################################################
   rankNames = reactive({
     rankNames = as.list(rank_names(physeq(), errorIfNULL=FALSE))
     names(rankNames) <- rankNames
@@ -143,33 +222,10 @@ shinyServer(function(input, output){
   observe({print(paste0("Variables (`specvarlist()`): ", specvarlist(), collapse=" "))})
   vars = reactive({c(rankNames(), variNames(), list("NULL"="NULL"))})
   observe({print(paste0("Variables (`vars()`): ", vars(), collapse=" "))})
-  ################################################################################
-  #   ui for distance method
-  #   NOTE: not all distance methods are supported if "taxa" selected for type. 
-  #   For example, the UniFrac distance and DPCoA cannot be calculated for taxa-wise 
-  #   distances, because they use a taxa-wise tree as part of their calculation 
-  #   between samples, and there is no transpose-equivalent for this tree
-  uidist = function(id="dist", selected="bray"){
-    distlist = as.list(unlist(distance("list")))
-    names(distlist) <- distlist
-    selectInput(id, "Distance Method:", distlist, selected=selected)
-  }
-  # ui for point size slider
-  uiptsz = function(id="size"){
-    sliderInput(inputId=id, label="Point Size:", min=1, max=10, value=5, step=1)
-  }
-  # ui for point opacity slider
-  uialpha = function(id="alpha"){
-    sliderInput(inputId=id, label="Opacity:", min=0, max=1, value=1, step=0.1)
-  }
   # A generic selectInput UI. Plan is to pass a reactive argument to `choices`.
   uivar = function(id, label="Variable:", choices, selected="NULL"){
     selectInput(inputId=id, label=label, choices=choices, selected=selected)
   }
-  ################################################################################
-  # Define reactive portions of sidebar panels.
-  # They are reactively passed back to ui,
-  # because they change based on the data contents.
   ################################################################################
   # plot_ordination() ui
   ################################################################################
@@ -266,7 +322,6 @@ shinyServer(function(input, output){
   ################################################################################
   # Plot Rendering Stuff.
   ################################################################################
-  observe({print(paste0("wayyy before: input$uicttype_bar: ", input$uicttype_bar, collapse=""))})
   # Define a proportions-only version of input phyloseq object
   physeqProp = reactive({transform_sample_counts(physeq(), function(x){x / sum(x)})})
   # Define a dummy "failed plot" to return if render section cannot build valid plot.
@@ -354,9 +409,7 @@ shinyServer(function(input, output){
   ################################################################################
   # bar plot definition
   ################################################################################
-  observe({print(paste0("before physeq_bar def input$uicttype_bar: ", input$uicttype_bar, collapse=""))})
   physeq_bar = reactive({
-    observe({print(paste0("input$uicttype_bar: ", input$uicttype_bar, collapse=""))})
     return(switch({input$uicttype_bar}, Counts=physeq(), Proportions=physeqProp()))
   })
   get_facet <- reactive({
@@ -392,12 +445,7 @@ shinyServer(function(input, output){
     otu_table(filterPhyseq)[otu_table(filterPhyseq) < input$abundance_threshold_tree] <- 0
     return(filterPhyseq)
   })
-  make_tree = reactive({
-    # Troubleshoot:
-    #       observe({print(physeq)})
-    #       observe({print(paste0("Tree Method (input$method_tree): ", input$method_tree))})
-    #       observe({print(paste0("Tree Method Class (class(input$method_tree)): ", class(input$method_tree)))})
-    #       observe({print(paste0("Color: ", av(input$color_tree)))})      
+  make_tree = reactive({     
     p2 = NULL
     try(p2 <- plot_tree(filter_phyloseq(), input$method_tree,
                         justify=input$justify_tree,

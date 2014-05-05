@@ -70,7 +70,7 @@ shinyServer(function(input, output){
       sample_sums(get_phyloseq_data()) > input$filter_sample_sums_threshold
     } else {
       # Dummy response.
-      return(TRUE)
+      return(c(TRUE, TRUE))
     }
   })
   physeq = reactive({
@@ -80,13 +80,22 @@ shinyServer(function(input, output){
       observe({print(paste("filter_kOverA_sample_threshold:", input$filter_kOverA_sample_threshold))})
       observe({print(paste("filter_sample_sums_threshold:", input$filter_sample_sums_threshold))})
       observe({print(paste("filter_taxa_sums_threshold:", input$filter_taxa_sums_threshold))})
+      observe({print(paste("filter_subset_taxa_expr:", input$filter_subset_taxa_expr))})
+      observe({print(paste("filter_subset_samp_expr:", input$filter_subset_samp_expr))})
+      # Expression filters
+      if( !is.null(av(input$filter_subset_taxa_expr)) ){
+        ps0 = eval(parse(text=paste0("subset_taxa(ps0, ", input$filter_subset_taxa_expr, ")")))
+      }
+      if( !is.null(av(input$filter_subset_samp_expr)) ){
+        ps0 = eval(parse(text=paste0("subset_samples(ps0, ", input$filter_subset_samp_expr, ")")))
+      }
       if( input$filter_taxa_sums_threshold > 0 ){
-        # OTU filter
+        # OTU sums filter
         ps0 <- prune_taxa(keepOTUs(), ps0)
         observe({print(ps0)})
       }
       if( input$filter_sample_sums_threshold > 0 ){
-        # Sample Filtering
+        # Sample sums filtering
         ps0 <- prune_samples(keepSamples(), ps0)
         observe({print(ps0)})
       }
@@ -107,9 +116,9 @@ shinyServer(function(input, output){
   })
   # kOverA `k` Filter UI
   output$filter_ui_kOverA_k <- renderUI({
-    sliderInput("filter_kOverA_sample_threshold",
+    numericInput("filter_kOverA_sample_threshold",
                 "`k` - Number of Samples that Must Exceed `A`",
-                min=0, max=sum(keepSamples()), value=0, step=1, round=TRUE)    
+                min=0, max=sum(keepSamples()), value=0, step=1)    
   })  
   output_phyloseq_print_html <- reactive({
     HTML(paste0(capture.output(print(get_phyloseq_data())), collapse=" <br/> "))
@@ -185,22 +194,22 @@ shinyServer(function(input, output){
     paste0(rank_names(get_phyloseq_data(), errorIfNULL=FALSE), collapse=", ")
   )})
   output$filter_summary_plot <- renderPlot({
-    plib0 = lib_size_hist() + ggtitle("Histogram of Library Sizes in Original Data")
-    potu0 = otu_sum_hist() + ggtitle("Histogram of OTU total counts in Original Data")
+    plib0 = lib_size_hist() + ggtitle("Original Data")
+    potu0 = otu_sum_hist() + ggtitle("Original Data")
     if(inherits(physeq(), "phyloseq")){
-      potu1 = sums_hist(physeq(), xlab = "Number of Reads (Counts)",
+      potu1 = sums_hist(taxa_sums(physeq()), xlab = "Number of Reads (Counts)",
                        ylab = "Number of OTUs"
                        ) + 
-        ggtitle("Histogram of OTU total counts in Filtered Data")
-      plib1 = sums_hist(physeq(), xlab = "Number of Reads (Counts)",
+        ggtitle("Filtered Data")
+      plib1 = sums_hist(sample_sums(physeq()), xlab = "Number of Reads (Counts)",
                         ylab = "Number of Libraries"
                         ) + 
-        ggtitle("Histogram of Library Sizes in Filtered Data")
+        ggtitle("Filtered Data")
     } else {
       potu1 = plib1 = failp
     }
     gridExtra::grid.arrange(plib0, potu0, plib1, potu1, ncol=2, 
-                            main="Before and After Filtering")
+                            main="Histograms: Before and After Filtering")
   })
   ################################################################################
   # Data-Reactive UI Definitions.

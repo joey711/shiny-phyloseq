@@ -25,16 +25,47 @@ shinyServer(function(input, output){
   includedDatasets = c("GlobalPatterns", "enterotype", "esophagus", "soilrep")
   data(list=includedDatasets)
   observe({print(paste0("top of server, available variables: ", ls()))})
+  get_qiimeDB = reactive({
+    observe({print(paste0("qiime server ID: ", input$qiime_server_ID))})
+    observe({print(paste0("qiime server ext: ", input$qiime_server_ext))})
+    if(!is.null(av(input$qiime_server_ID))){
+      qiimeDB = NULL
+      if(!is.na(as.integer(input$qiime_server_ID))){
+        observe({print(paste0("Attempting integer ID import: ", input$qiime_server_ext))})
+        qiimeDB = microbio_me_qiime(as.integer(input$qiime_server_ID),
+                                    ext=input$qiime_server_ext)
+      } else {
+        # Else, pass as character, implying a full connection path
+        observe({print(paste0("Attempting character ID import: ", input$qiime_server_ext))})
+        qiimeDB = microbio_me_qiime(input$qiime_server_ID,
+                                    ext=input$qiime_server_ext)        
+      }
+      if(inherits(qiimeDB, "phyloseq")){
+        return(qiimeDB)
+      } else {
+        return(NULL)
+      }
+    } else {
+      return(NULL)
+    }
+  })
   output$phyloseqDataset <- renderUI({
     # Always include the included datasets.
     observe({print(paste0("uploaded temporary file path: ", input$file1$datapath))})
     observe({print(paste0("uploaded file original name: ", input$file1$name))})
     datasets = includedDatasets
     if(!is.null(input$file1$name)){
+      # Added uploaded data, if provided.
       objectNames = load(input$file1$datapath)
       datasets <- c(objectNames, datasets)
       observe({print(paste("Object Names in File:", objectNames))})
     }
+    qiimeDB = get_qiimeDB()
+    observe({print(paste0("qiimeDB: ", get_qiimeDB()))})
+    if(inherits(qiimeDB, "phyloseq")){
+      datasets <- c("qiimeDB", datasets)
+    }
+    observe({paste0("datasets: ", datasets, collapse=", ")})
     observe({print(paste0("output$physeqDataset(): Available Variables:", ls(), collapse=" "))})
     return(radioButtons("physeqSelect", "Choose Dataset:", datasets))
   })

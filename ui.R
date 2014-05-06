@@ -169,10 +169,16 @@ datapage = fluidPage(
       p('Select a built-in dataset, or upload your own.'),
       tags$hr(),
       submitButton("Load Selection", icon("refresh")),
-      tags$hr(),
       uiOutput("phyloseqDataset"),
+      tags$hr(),
       fileInput('file1', 'Choose file to upload'),
       tags$hr(),
+      p('microbio.me/qiime public data. Time depends on your internet connetion and size of data.'),
+      textInput("qiime_server_ID", "Identifier for QIIME server", value="NULL"),
+      radioButtons("qiime_server_ext", "File Extension",
+                   choices=list(".zip", ".tgz", ".tar.gz")),
+      tags$hr(),
+      p('Plot parameters:'),
       numericInput("dataset_count_threshold", "Count Threshold", value=3, min=0, step=1)
     ),
     mainPanel(

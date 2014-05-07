@@ -91,16 +91,6 @@ shinyServer(function(input, output){
   ################################################################################
   # Filtering
   ################################################################################
-  keepOTUs = reactive({taxa_sums(get_phyloseq_data()) > input$filter_taxa_sums_threshold})
-  keepSamples = reactive({
-    # Create logical indicated the samples to keep, or dummy logical if nonsense input
-    if(inherits(get_phyloseq_data(), "phyloseq")){
-      sample_sums(get_phyloseq_data()) > input$filter_sample_sums_threshold
-    } else {
-      # Dummy response.
-      return(c(TRUE, TRUE))
-    }
-  })
   physeq = reactive({
     ps0 = get_phyloseq_data()
     if(inherits(ps0, "phyloseq")){
@@ -113,18 +103,24 @@ shinyServer(function(input, output){
       # Expression filters
       if( !is.null(av(input$filter_subset_taxa_expr)) ){
         ps0 = eval(parse(text=paste0("subset_taxa(ps0, ", input$filter_subset_taxa_expr, ")")))
+        observe({print("subset_taxa...")})
+        observe({print(ps0)})
       }
       if( !is.null(av(input$filter_subset_samp_expr)) ){
         ps0 = eval(parse(text=paste0("subset_samples(ps0, ", input$filter_subset_samp_expr, ")")))
+        observe({print("subset_samples...")})
+        observe({print(ps0)})
       }
       if( input$filter_taxa_sums_threshold > 0 ){
         # OTU sums filter
-        ps0 <- prune_taxa(keepOTUs(), ps0)
+        ps0 <- prune_taxa({taxa_sums(ps0) > input$filter_taxa_sums_threshold}, ps0)
+        observe({print("prune OTUs...")})
         observe({print(ps0)})
       }
       if( input$filter_sample_sums_threshold > 0 ){
         # Sample sums filtering
-        ps0 <- prune_samples(keepSamples(), ps0)
+        ps0 <- prune_samples({sample_sums(ps0) > input$filter_sample_sums_threshold}, ps0)
+        observe({print("prune samples...")})
         observe({print(ps0)})
       }
       if(inherits(input$filter_kOverA_sample_threshold, "numeric")){
@@ -143,10 +139,19 @@ shinyServer(function(input, output){
     }
   })
   # kOverA `k` Filter UI
+  maxSamples = reactive({
+    # Create logical indicated the samples to keep, or dummy logical if nonsense input
+    if(inherits(get_phyloseq_data(), "phyloseq")){
+      return(nsamples(get_phyloseq_data()))
+    } else {
+      # Dummy response.
+      return(NULL)
+    }
+  })
   output$filter_ui_kOverA_k <- renderUI({
     numericInput("filter_kOverA_sample_threshold",
                 "`k` - Number of Samples that Must Exceed `A`",
-                min=0, max=sum(keepSamples()), value=0, step=1)    
+                min=0, max=maxSamples(), value=0, step=1)    
   })  
   output_phyloseq_print_html <- reactive({
     HTML(paste0(capture.output(print(get_phyloseq_data())), collapse=" <br/> "))

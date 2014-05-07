@@ -2,8 +2,8 @@
 # setting this option. Here we'll raise limit to 9MB.
 options(shiny.maxRequestSize = 100*1024^2)
 # load packages
-require("shiny"); packageVersion("shiny")
-require("phyloseq"); packageVersion("phyloseq")
+library("shiny"); packageVersion("shiny")
+library("phyloseq"); packageVersion("phyloseq")
 library("ggplot2"); packageVersion("ggplot2")
 theme_set(theme_bw())
 pal = "Set1"
@@ -14,73 +14,70 @@ scale_fill_discrete <- function(palname = pal, ...) {
   scale_fill_brewer(palette = palname, ...)
 }
 
+# Define the named list of datasets to choose from
+includedDatasets = c("GlobalPatterns", "enterotype", "esophagus", "soilrep")
+data(list=includedDatasets)
+datalist = list(GlobalPatterns=GlobalPatterns, 
+                enterotype=enterotype,
+                esophagus=esophagus,
+                soilrep=soilrep)
+
 shinyServer(function(input, output){
-  # require packages
-  require("shiny")
-  require("phyloseq")
-  require("ggplot2")
   ################################################################################
   # Define the available phyloseq datasets for plotting.
   ################################################################################
-  includedDatasets = c("GlobalPatterns", "enterotype", "esophagus", "soilrep")
-  data(list=includedDatasets)
-  observe({print(paste0("top of server, available variables: ", ls()))})
-  get_qiimeDB = reactive({
-    observe({print(paste0("qiime server ID: ", input$qiime_server_ID))})
-    observe({print(paste0("qiime server ext: ", input$qiime_server_ext))})
+  get_qiime_data = reactive({
+    qiime_data = NULL
     if(!is.null(av(input$qiime_server_ID))){
-      qiimeDB = NULL
-      if(!is.na(as.integer(input$qiime_server_ID))){
-        observe({print(paste0("Attempting integer ID import: ", input$qiime_server_ext))})
-        qiimeDB = microbio_me_qiime(as.integer(input$qiime_server_ID),
-                                    ext=input$qiime_server_ext)
+      if( !is.na(as.integer(input$qiime_server_ID)) ){
+        observe({print(paste0("Attempting integer ID import: ", input$qiime_server_ID))})
+        zipftp = as(isolate({input$qiime_server_ID}), "integer")
+        studyname = input$qiime_server_ID
       } else {
-        # Else, pass as character, implying a full connection path
-        observe({print(paste0("Attempting character ID import: ", input$qiime_server_ext))})
-        qiimeDB = microbio_me_qiime(input$qiime_server_ID,
-                                    ext=input$qiime_server_ext)        
+        observe({print(paste0("Attempting character ID import: ", input$qiime_server_ID))})
+        zipftp = as(isolate({input$qiime_server_ID}), "character")
+        studyname = gsub("\\_split\\_.+$", "", basename(zipftp))
       }
-      if(inherits(qiimeDB, "phyloseq")){
-        return(qiimeDB)
-      } else {
-        return(NULL)
-      }
-    } else {
-      return(NULL)
+      observe({print(paste0("Extension Chosen: ", input$qiime_server_ext))})
+      trash = try({qiime_data <- microbio_me_qiime(zipftp, ext=input$qiime_server_ext)}, silent=TRUE)
     }
+    if(inherits(qiime_data, "phyloseq")){
+      qiime_data <- list(qiime_data)
+      names(qiime_data) <- studyname
+      datalist <<- c(qiime_data, datalist)
+    } else {
+      observe({print("Attempt made to access qiime server data, but didn't work this pass...")})
+    }
+    return(NULL)
+  })
+  get_loaded_data = reactive({
+    if(!is.null(input$file1$name)){
+      # Added uploaded data, if provided, and it is phyloseq-class.
+      objectNames = load(input$file1$datapath)
+      loadedObjects = mget(objectNames)
+      arePhyloseq = sapply(loadedObjects, inherits, "phyloseq")
+      if(any(arePhyloseq)){
+        loadedObjects <- loadedObjects[which(arePhyloseq)]
+      } else {
+        loadedObjects <- NULL
+      }
+      datalist <<- c(loadedObjects, datalist)
+      observe({print(paste("Available objects in datalist:", names(datalist), collapse=", "))})
+    }
+    return(NULL)
   })
   output$phyloseqDataset <- renderUI({
-    # Always include the included datasets.
-    observe({print(paste0("uploaded temporary file path: ", input$file1$datapath))})
-    observe({print(paste0("uploaded file original name: ", input$file1$name))})
-    datasets = includedDatasets
-    if(!is.null(input$file1$name)){
-      # Added uploaded data, if provided.
-      objectNames = load(input$file1$datapath)
-      datasets <- c(objectNames, datasets)
-      observe({print(paste("Object Names in File:", objectNames))})
-    }
-    qiimeDB = get_qiimeDB()
-    observe({print(paste0("qiimeDB: ", get_qiimeDB()))})
-    if(inherits(qiimeDB, "phyloseq")){
-      datasets <- c("qiimeDB", datasets)
-    }
-    observe({paste0("datasets: ", datasets, collapse=", ")})
-    observe({print(paste0("output$physeqDataset(): Available Variables:", ls(), collapse=" "))})
-    return(radioButtons("physeqSelect", "Choose Dataset:", datasets))
+    # Expect the side-effect of these two functions to be to add
+    # elements to the datalist, if appropriate
+    get_loaded_data()
+    get_qiime_data()
+    return(radioButtons("physeqSelect", "Choose Dataset:", names(datalist)))
   })
   get_phyloseq_data = reactive({
     ps0 = NULL
     if(!is.null(input$physeqSelect)){
-      if(!input$physeqSelect %in% includedDatasets){
-        observe({print("get_phyloseq_data(): Loading data...")})
-        load(file=input$file1$datapath)
-      } else {
-        data(list=includedDatasets)
-      }
-      trash = try(ps0 <- get(input$physeqSelect), silent=TRUE)
-      if(inherits(trash, "try-error")){
-        warning("get_phyloseq_data(): Could not `get` selected object from server environment... \n")
+      if(input$physeqSelect %in% names(datalist)){
+        ps0 <- datalist[[input$physeqSelect]]
       }
     }
     observe({print(ps0)})

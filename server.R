@@ -89,7 +89,7 @@ shinyServer(function(input, output){
     # elements to the datalist, if appropriate
     get_loaded_data()
     get_qiime_data()
-    return(radioButtons("physeqSelect", "Choose Dataset:", names(datalist)))
+    return(radioButtons("physeqSelect", "Available Datasets:", names(datalist)))
   })
   get_phyloseq_data = reactive({
     ps0 = NULL

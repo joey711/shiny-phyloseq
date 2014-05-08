@@ -80,17 +80,24 @@ sbp_rich = sidebarPanel(uibutton, br(), uialphameas,
 ################################################################################
 # ui for max distance to consider in initializing plot calculations
 uinetdistmax = numericInput(inputId="uinetdistmax",
-                            label="Network - Build Distance Threshold:",
-                            step=0.1, value=0.9)
+                            label="Max Considered Distance Threshold:",
+                            min=0.0,
+                            max=1.0,
+                            value=0.9,
+                            step=0.1)
 # ui for distance to display
-uinetdispdist = numericInput(inputId="uinetdispdist",
-                             label="Network - Edge Distance Display Threshold:",
-                             step=0.1, value=0.3)
+uinetdispdist = sliderInput("uinetdispdist",
+                            "Edge Distance Threshold:",
+                            min=0.0,
+                            max=1.0,
+                            value=0.3,
+                            step=0.1)
 sbp_net = sidebarPanel(uibutton, br(), uitype("type_net", "samples"),
                        uidist("dist_net"),
                        uiOutput("network_uix_color"),
                        uiOutput("network_uix_shape"),
-                       uinetdistmax, uinetdispdist,
+                       uinetdistmax, 
+                       uinetdispdist,
                        uiptsz("size_net"), uialpha("alpha_net")
 )
 ################################################################################
@@ -109,6 +116,8 @@ sbp_tree = sidebarPanel(uibutton,
   uiOutput("tree_uix_shape"),
   uiptsz("size_tree"), 
   uiOutput("tree_uix_tiplabs"),
+  radioButtons("plot_tree_radial", label="Coordinate System",
+               choices=list(Cartesian="cartesian", Radial="radial")),
   uiOutput("tree_uix_point_thresh"),
   numericInput("margin_tree", "Margin", value=0.2, min=0, step=0.1)
 )

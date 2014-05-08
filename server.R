@@ -1,3 +1,6 @@
+################################################################################
+# Options, default settings, and load packages
+################################################################################
 # By default, the file size limit is 5MB. It can be changed by
 # setting this option. Here we'll raise limit to 9MB.
 options(shiny.maxRequestSize = 100*1024^2)
@@ -13,8 +16,10 @@ scale_colour_discrete <- function(palname = pal, ...) {
 scale_fill_discrete <- function(palname = pal, ...) {
   scale_fill_brewer(palette = palname, ...)
 }
-
+################################################################################
+# Included Data
 # Define the named list of datasets to choose from
+################################################################################
 includedDatasets = c("GlobalPatterns", "enterotype", "esophagus", "soilrep")
 data(list=includedDatasets)
 datalist = list(GlobalPatterns=GlobalPatterns, 
@@ -22,6 +27,19 @@ datalist = list(GlobalPatterns=GlobalPatterns,
                 esophagus=esophagus,
                 soilrep=soilrep)
 
+filepath = system.file("extdata", "study_1457_split_library_seqs_and_mapping.zip", package="phyloseq")
+kostic = microbio_me_qiime(filepath)
+if(inherits(kostic, "phyloseq")){
+  datalist <- c(list(study_1457_Kostic=kostic), datalist)
+}
+filepath <- system.file("extdata", "study_816_split_library_seqs_and_mapping.tar.gz", package="phyloseq")
+study_816 = microbio_me_qiime(filepath)
+if(inherits(study_816, "phyloseq")){
+  datalist <- c(list(study_816=study_816), datalist)
+}
+################################################################################
+# Begin Shiny Server definition.
+################################################################################
 shinyServer(function(input, output){
   ################################################################################
   # Define the available phyloseq datasets for plotting.
@@ -406,7 +424,7 @@ shinyServer(function(input, output){
   # Ordination section
   ################################################################################
   get_formula <- reactive({
-    if(is.null(input$formula) | input$formula=="NULL"){
+    if(is.null(av(input$formula)) | input$formula=="NULL"){
       return(NULL)
     } else {
       return(as.formula(input$formula))
@@ -416,7 +434,7 @@ shinyServer(function(input, output){
   # Define global reactive distance matrix. Will re-calc if method or plot-type change.
   gdist <- reactive({
     if(input$dist_ord %in% distance("list")$vegdist){
-      return(input$dist)
+      return(input$dist_ord)
     } else {
       idist = NULL
       try({idist <- distance(physeq(), method=input$dist_ord, type=input$type_ord)}, silent=TRUE)
@@ -430,24 +448,24 @@ shinyServer(function(input, output){
   })
   make_ord_plot = reactive({
     p1 = NULL
-    try(p1 <- plot_ordination(physeq(), get_ord(), type=input$ord_plot_type,
-                              color=av(input$color_ord), shape=av(input$shape_ord)), silent=TRUE)
+    try(p1 <- plot_ordination(physeq(), get_ord(), type=input$ord_plot_type), silent=TRUE)
     return(p1)
   })
   # ordination plot definition
   output$ordination <- renderPlot({
     p1 = make_ord_plot()
     if(inherits(p1, "ggplot")){
-      p1$layers[[1]]$geom_params$size <- input$size_ord
-      p1$layers[[1]]$geom_params$alpha <- input$alpha_ord
-      shiny_phyloseq_print(p1)
+      p1$layers[[1]]$geom_params$size <- av(input$size_ord)
+      p1$layers[[1]]$geom_params$alpha <- av(input$alpha_ord)
+      if(!is.null(av(input$color_ord))){
+        p1$mapping$colour <- as.symbol(av(input$color_ord))
+      }
+      if(!is.null(av(input$shape_ord))){
+        p1$mapping$shape  <- as.symbol(av(input$shape_ord))
+      }
     }
-    if(!inherits(p1, "ggplot")){
-      # If for any reason p1 is not a ggplot at this point,
-      # render fail-plot rather than tinker with ggplot innards
-      print(failp)
-    }
-  })    
+    shiny_phyloseq_print(p1)
+  }, width=700, height=700)    
   ################################################################################
   # bar plot definition
   ################################################################################
@@ -476,7 +494,7 @@ shinyServer(function(input, output){
   })
   output$bar <- renderPlot({
     shiny_phyloseq_print(make_bar_plot())
-  })
+  }, width=700, height=400)
   ################################################################################
   # phylogenetic tree plot definition
   ################################################################################
@@ -498,6 +516,9 @@ shinyServer(function(input, output){
                         text.size=av(input$size_tree),
                         plot.margin=input$margin_tree),
         silent=TRUE)
+    if(input$plot_tree_radial=="radial"){
+      p2 <- p2 + coord_polar(theta="y")
+    }
     return(p2)
   })
   output$tree <- renderPlot({
@@ -513,7 +534,7 @@ shinyServer(function(input, output){
                     "Cannot Make Tree Graphic without Tree")        
     }
     shiny_phyloseq_print(p2)
-  })
+  }, width=700, height=700)
   ################################################################################
   # heatmap plot definition
   ################################################################################
@@ -535,7 +556,7 @@ shinyServer(function(input, output){
   })
   output$heatmap <- renderPlot({
     shiny_phyloseq_print(make_heatmap())
-  })
+  }, width=700, height=700)
   ################################################################################
   # Alpha Diversity plot definition
   ################################################################################
@@ -560,7 +581,7 @@ shinyServer(function(input, output){
       # render fail-plot rather than tinker with innards.
       print(failp)
     }
-  })
+  }, width=700, height=500)
   ################################################################################
   # Generate a network plot 
   ################################################################################
@@ -570,6 +591,9 @@ shinyServer(function(input, output){
     idist = NULL
     try({idist <- distance(physeq(), method=input$dist_net, type=input$type_net)}, silent=TRUE)
     if(is.null(idist)){warning("distonly: Could not calculate distance matrix with these settings.")}
+    # rescale the distance matrix to be [0, 1]
+    idist <- idist / max(idist, na.rm=TRUE)
+    idist <- idist - min(idist, na.rm=TRUE)
     return(idist)
   })
   ## Changes only if input$uinetdistmax changes, or the reactive distance matrix, gdist()
@@ -592,18 +616,24 @@ shinyServer(function(input, output){
                  alpha=isolate(input$alpha_net)
     )
   })
-  update_plot_network = reactive({
+  get_edge_df = reactive({
     p = initial_plot_network()
-    # New edge layer
-    # Define the layer that contains the edges and vertices
     whichEdge = which(sapply(p$layers, function(x){x$geom$objname=="line"}))
-    # Define the edge data frame
     edgeDF0 = p$layers[[whichEdge]]$data
     # Add the distance associated with each edge entry
     edgeDF0 = plyr::ddply(edgeDF0, "id", function(df, dmat){
       df$dist <- dmat[df$value[1], df$value[2]]
       return(df)
     }, dmat = as.matrix(distonly()))
+    return(edgeDF0)
+  })
+  update_plot_network = reactive({
+    p = initial_plot_network()
+    # New edge layer
+    # Define the layer that contains the edges and vertices
+    whichEdge = which(sapply(p$layers, function(x){x$geom$objname=="line"}))
+    # Define the edge data frame
+    edgeDF0 = get_edge_df()
     # Subset newEdgeDF according to max allowed distance
     newEdgeDF = edgeDF0[edgeDF0$dist <= input$uinetdispdist, ]
     newEdgeMap = aes_string(x="x", y="y", group="id", colour=input$color_net)
@@ -624,11 +654,14 @@ shinyServer(function(input, output){
     # Updates legend labels.
     p = update_labels(p, list(colour=input$color_net))
     p = update_labels(p, list(shape=input$shape_net))
+    # Fix the coordinate ranges based on the original.
+    p = p + xlim(I(range(edgeDF0$x, na.rm=TRUE, finite=TRUE)))
+    p = p + ylim(I(range(edgeDF0$y, na.rm=TRUE, finite=TRUE)))
     return(p)
   })
   output$network <- renderPlot({
     shiny_phyloseq_print(update_plot_network())
-  }, width=800, height=400)
+  }, width=700, height=700)
   ################################################################################
   # Flexible Scatter plot
   ################################################################################
@@ -663,5 +696,5 @@ shinyServer(function(input, output){
       # render fail-plot rather than tinker with innards.
       print(failp)
     }
-  })
+  }, width=700, height=700)
 })

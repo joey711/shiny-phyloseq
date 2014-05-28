@@ -1,3 +1,8 @@
+# Default options for app startup
+source("default-parameters.R", local=FALSE)
+# List of distances
+distlist = as.list(unlist(phyloseq::distance("list")))
+names(distlist) <- distlist
 # ui submit button for input changes
 uibutton = submitButton("Build/Rebuild Plot", icon("refresh"))
 # Type for distance/network/etc. Samples or Taxa
@@ -83,14 +88,14 @@ uinetdistmax = numericInput(inputId="uinetdistmax",
                             label="Max Considered Distance Threshold:",
                             min=0.0,
                             max=1.0,
-                            value=0.9,
+                            value=0.5,
                             step=0.1)
 # ui for distance to display
 uinetdispdist = sliderInput("uinetdispdist",
                             "Edge Distance Threshold:",
                             min=0.0,
                             max=1.0,
-                            value=0.3,
+                            value=0.4,
                             step=0.1)
 sbp_net = sidebarPanel(uibutton, br(), uitype("type_net", "samples"),
                        uidist("dist_net"),
@@ -149,6 +154,44 @@ sbp_scat = sidebarPanel(uibutton, br(),
   textInput("facform_scat", "Facet Grid Formula:", value="NULL"),
   uiptsz("size_scat"), uialpha("alpha_scat"),
   uicttype("uicttype_scat")
+)
+################################################################################
+# sbp for d3 network
+################################################################################
+sbp_d3 = sidebarPanel(
+  submitButton("Reload d3", icon("refresh")),
+  radioButtons(inputId = "type_d3",
+               label="Network Node Type:",
+               choices=list("Taxa"="taxa", "Samples"="samples"),
+               selected="taxa"),  
+  selectInput("dist_d3", "Distance Method:", distlist, d3DefaultDistance),
+  numericInput(inputId = "dist_d3_threshold",
+               label = "Edge Distance Threshold",
+               value = LinkDistThreshold,
+               min = 0, max = 1, step = 0.025),
+  uiOutput("d3_uix_node_label"),
+  uiOutput("d3_uix_color"),
+  sliderInput(inputId="d3_opacity", label="Opacity:", min=0, max=1, value=1, step=0.1),
+  numericInput("d3_link_scale", "Link Size Scaling Factor", 
+               value = d3DefaultLinkScaleFactor, min = 1, step = 5),
+  textInput("d3_link_color", label = "Link Color:", value = "#666"),
+  numericInput(inputId = "width_d3",
+               label = "Graphic Width [Pixels]",
+               value = 700,
+               min = 200, max = 1600, step = 100),
+  numericInput(inputId = "height_d3",
+               label = "Graphic Height [Pixels]",
+               value = 600,
+               min = 200, max = 1600, step = 100),
+  #   radioButtons("d3_zoom", label = "Zooming",
+  #                choices = list('Zoom'=TRUE, 'Not Zoom'=FALSE),
+  #                selected = FALSE),
+  p("See animation-parameters.R to change default settings."),
+  p('Big thanks to',
+    a(href = 'http://christophergandrud.github.io/d3Network/', 'd3Network'),
+    'and',
+    a(href = 'http://shiny.rstudio.com/', 'Shiny', 'web apps.')
+  )
 )
 ################################################################################
 # Define each fluid page
@@ -214,8 +257,10 @@ filterpage = fluidPage(
       textInput("filter_subset_samp_expr", "`subset_samples()` Expression: (e.g. SampleType %in% 'Feces')", value="NULL"),
       tags$hr(),
       p('Total Sums Filtering:'),
-      numericInput("filter_sample_sums_threshold", "Sample Sums Count Threshold", value=0, min=0, step=1),
-      numericInput("filter_taxa_sums_threshold", "OTU Sums Count Threshold", value=0, min=0, step=1),
+      numericInput("filter_sample_sums_threshold", "Sample Sums Count Threshold",
+                   value=SampleSumDefault, min=0, step=100),
+      numericInput("filter_taxa_sums_threshold", "OTU Sums Count Threshold",
+                   value=OTUSumDefault, min=0, step=1),
       tags$hr(),
       p('kOverA OTU Filtering:'),
       numericInput("filter_kOverA_count_threshold", "`A` - The Count Value Threshold", value=0, min=0, step=1),
@@ -238,6 +283,19 @@ filterpage = fluidPage(
     )
   )
 )
+# d3network page
+d3netpage = fluidPage(
+  # Load d3.js
+  tags$head(
+    tags$script(src = 'http://d3js.org/d3.v3.min.js')
+  ),
+  # Application title
+  titlePanel(''),
+  # Sidebar with a slider input for node opacity
+  sbp_d3,
+  # Show network graph
+  mainPanel(htmlOutput("networkPlot"))
+)
 ################################################################################
 # Define the full user-interface, `ui`
 ################################################################################
@@ -246,10 +304,12 @@ ui = navbarPage("Shiny + phyloseq",
                 tabPanel("Filter", filterpage),
                 tabPanel("Alpha Diversity", alphapage),
                 tabPanel("Network", netpage),
+                tabPanel("d3Network", d3netpage),
                 tabPanel("Bar", barpage),
                 tabPanel("Ordination", ordpage),
                 tabPanel("Tree", treepage),
                 tabPanel("Heatmap", heatpage),
-                tabPanel("Scatter", scatpage)
+                tabPanel("Scatter", scatpage),
+                theme = "bootstrap.css"
 )
 shinyUI(ui)

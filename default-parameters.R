@@ -1,0 +1,26 @@
+################################################################################
+# Animation Parameters
+################################################################################
+# The frame delay interval in milliseconds
+interval=1000
+# Whether or not to loop the value range, or stop after one pass
+loop=TRUE
+################################################################################
+# Filter Default Parameters
+################################################################################
+# sample_sums_threshold
+# input$filter_sample_sums_threshold
+SampleSumDefault = 1000
+# taxa_sums threshold 
+# input$filter_taxa_sums_threshold
+OTUSumDefault = 250
+################################################################################
+# d3 default Default Parameters
+################################################################################
+LinkDistThreshold = 0.4
+d3DefaultLinkScaleFactor = 40
+d3DefaultDistance = "bray"
+d3NetworkColorVar = "Family"
+d3NodeLabelVar = c("Phylum", "Order", "Class", "Family", "OTU")
+
+################################################################################

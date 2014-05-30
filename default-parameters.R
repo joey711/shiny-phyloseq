@@ -13,7 +13,10 @@ loop=TRUE
 SampleSumDefault = 1000
 # taxa_sums threshold 
 # input$filter_taxa_sums_threshold
-OTUSumDefault = 250
+OTUSumDefault = 100
+# KoverA Default Filtering Settings
+kovera_A = 3
+kovera_k = 25
 ################################################################################
 # d3 default Default Parameters
 ################################################################################

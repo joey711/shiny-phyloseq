@@ -186,7 +186,6 @@ sbp_d3 = sidebarPanel(
   #   radioButtons("d3_zoom", label = "Zooming",
   #                choices = list('Zoom'=TRUE, 'Not Zoom'=FALSE),
   #                selected = FALSE),
-  p("See animation-parameters.R to change default settings."),
   p('Big thanks to',
     a(href = 'http://christophergandrud.github.io/d3Network/', 'd3Network'),
     'and',
@@ -222,7 +221,9 @@ datapage = fluidPage(
       submitButton("Load Selection", icon("refresh")),
       uiOutput("phyloseqDataset"),
       tags$hr(),
-      h4('Upload Local Data'),
+      h4('Import Biom-Format File'),
+      fileInput('filebiom', "", multiple = TRUE),
+      h4('Upload Pre-Imported .RData'),
       fileInput('file1', ""),
       tags$hr(),
       h4('microbio.me/qiime public data'),
@@ -232,7 +233,11 @@ datapage = fluidPage(
                    choices=list(".zip", ".tgz", ".tar.gz")),
       tags$hr(),
       p('Plot parameters:'),
-      numericInput("dataset_count_threshold", "Count Threshold", value=3, min=0, step=1)
+      numericInput("dataset_count_threshold", "Count Threshold", value=3, min=0, step=1),
+      p("See default-parameters.R to change default settings."),
+      p('Big thanks to',
+        a(href = 'http://shiny.rstudio.com/', 'Shiny', 'web apps.')
+      )
     ),
     mainPanel(
       plotOutput("library_sizes"),
@@ -263,7 +268,7 @@ filterpage = fluidPage(
                    value=OTUSumDefault, min=0, step=1),
       tags$hr(),
       p('kOverA OTU Filtering:'),
-      numericInput("filter_kOverA_count_threshold", "`A` - The Count Value Threshold", value=0, min=0, step=1),
+      numericInput("filter_kOverA_count_threshold", "`A` - The Count Value Threshold", value=kovera_A, min=0, step=1),
       uiOutput("filter_ui_kOverA_k")
     ),
     mainPanel(

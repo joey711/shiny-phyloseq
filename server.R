@@ -84,14 +84,43 @@ shinyServer(function(input, output){
         loadedObjects <- NULL
       }
       datalist <<- c(loadedObjects, datalist)
-      observe({print(paste("Available objects in datalist:", names(datalist), collapse=", "))})
+      observe({print(
+        paste("get_loaded_data(). Available objects in datalist:", 
+              paste0(names(datalist), collapse=", "), sep=" ")
+      )})
     }
     return(NULL)
   })
+  get_biom_data = reactive({
+    if(!is.null(input$filebiom$name)){
+      observe({print(paste("Biom File(s) Uploaded:", input$filebiom$name, collapse=", "))})
+      # Loop through each uploaded file
+      # Added uploaded data, if provided, and it is phyloseq-class.
+      importedBiom = NULL
+      importedBiom <- sapply(input$filebiom$name, function(i, x){
+        ib = NULL
+        junk = try(ib <- import_biom(x$datapath[x$name==i]), silent = TRUE)
+        return(ib)
+      }, x=input$filebiom, simplify = FALSE, USE.NAMES = TRUE)
+      arePhyloseq = sapply(importedBiom, inherits, "phyloseq")
+      if(any(arePhyloseq)){
+        importedBiom <- importedBiom[which(arePhyloseq)]
+      } else {
+        importedBiom <- NULL
+      }
+      datalist <<- c(importedBiom, datalist)
+      observe({print(
+        paste("get_biom_data(). Available objects in datalist:", 
+              paste0(names(datalist), collapse=", "), sep=" ")
+      )})
+    }
+    return(NULL)
+  })  
   output$phyloseqDataset <- renderUI({
-    # Expect the side-effect of these two functions to be to add
+    # Expect the side-effect of these functions to be to add
     # elements to the datalist, if appropriate
     get_loaded_data()
+    get_biom_data()
     get_qiime_data()
     return(radioButtons("physeqSelect", "Available Datasets:", names(datalist)))
   })
@@ -173,7 +202,7 @@ shinyServer(function(input, output){
   output$filter_ui_kOverA_k <- renderUI({
     numericInput("filter_kOverA_sample_threshold",
                 "`k` - Number of Samples that Must Exceed `A`",
-                min=0, max=maxSamples(), value=0, step=1)    
+                min=0, max=maxSamples(), value=kovera_k, step=1)    
   })  
   output_phyloseq_print_html <- reactive({
     HTML(paste0(capture.output(print(get_phyloseq_data())), collapse=" <br/> "))

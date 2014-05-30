@@ -644,19 +644,36 @@ shinyServer(function(input, output){
         silent=TRUE)
     return(p4)
   })
-  output$richness <- renderPlot({
+  finalize_richness_plot = reactive({
     p4 = make_richness_plot()
     if(inherits(p4, "ggplot")){
       # Adjust size/alpha of points, but not error bars
       p4$layers[[1]]$geom_params$size <- input$size_alpha
       p4$layers[[1]]$geom_params$alpha <- input$alpha_alpha
-      shiny_phyloseq_print(p4)
+      return(p4)
     } else {
       # If for any reason p4 is not a ggplot at this point,
       # render fail-plot rather than tinker with innards.
-      print(failp)
+      return(failp)
     }
+  })
+  output$richness <- renderPlot({
+    shiny_phyloseq_print(finalize_richness_plot())
   }, width=700, height=500)
+  output$downloadRichness <- downloadHandler(
+    filename = function(){
+      paste0('shiny_phyloseq_richness_', gsub("[[:punct:][:space:]]", "_", Sys.time()), '.png')
+    },
+    content = function(file){
+      ggsave(filename = file, plot = finalize_richness_plot(), device = png,
+             width=8, height=6)
+    }#, contentType = "image/pdf"
+  )
+#   default_device <- function(filename) {
+#     pieces <- strsplit(filename, "\\.")[[1]]
+#     ext <- tolower(pieces[length(pieces)])
+#     match.fun(ext)
+#   }
   ################################################################################
   # Generate a network plot 
   ################################################################################

@@ -74,11 +74,13 @@ uialphameas = selectInput(inputId="measures_alpha",
                           selected=c("Chao1", "Shannon", "InvSimpson"),
                           multiple=TRUE)
 sbp_rich = sidebarPanel(uibutton, br(), uialphameas,
-                         uiOutput("richness_uix_x"), 
-                         uiOutput("richness_uix_color"),
-                         uiOutput("richness_uix_shape"),
-                         uiptsz("size_alpha"),
-                         uialpha("alpha_alpha")
+                        uiOutput("richness_uix_x"), 
+                        uiOutput("richness_uix_color"),
+                        uiOutput("richness_uix_shape"),
+                        uiptsz("size_alpha"),
+                        uialpha("alpha_alpha"),
+                        p("Testing download plot:"),
+                        downloadLink('downloadRichness', 'Download Graphic')
 )
 ################################################################################
 # sbp of plot_network

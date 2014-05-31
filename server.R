@@ -657,23 +657,30 @@ shinyServer(function(input, output){
       return(failp)
     }
   })
+  source("ggsave.R")
   output$richness <- renderPlot({
     shiny_phyloseq_print(finalize_richness_plot())
   }, width=700, height=500)
-  output$downloadRichness <- downloadHandler(
-    filename = function(){
-      paste0('shiny_phyloseq_richness_', gsub("[[:punct:][:space:]]", "_", Sys.time()), '.png')
-    },
-    content = function(file){
-      ggsave(filename = file, plot = finalize_richness_plot(), device = png,
-             width=8, height=6)
-    }#, contentType = "image/pdf"
-  )
+  filename_rich = reactive({
+    observe({print(ggfilegen("shiny_phyloseq_richness_", input$downtype_rich))})
+    return(ggfilegen("shiny_phyloseq_richness_", input$downtype_rich))
+  })
+  content_rich = reactive({
+    cat("content_rich: \n")
+    cat(input$downtype_rich, fill = TRUE)
+    observe({print(paste("input$downtype_rich", Sys.time(), input$downtype_rich))})
+    return(ggcontent(ggplotobj=finalize_richness_plot(), graphictype=input$downtype_rich, width=6, height=5, dpi=300))
+  })
+  output$downloadRichness <- downloadHandler(filename_rich(), content_rich())
 #   default_device <- function(filename) {
 #     pieces <- strsplit(filename, "\\.")[[1]]
 #     ext <- tolower(pieces[length(pieces)])
 #     match.fun(ext)
 #   }
+# ggsave(filename = file, plot = finalize_richness_plot(),
+#        device = shiny_ggsave_device(width=8, height=6, dpi=300, graphictype="pdf"),
+#        width=8, height=6, units = "in")
+# paste0('shiny_phyloseq_richness_', gsub("[[:punct:][:space:]]", "_", Sys.time()), ".", "pdf")
   ################################################################################
   # Generate a network plot 
   ################################################################################

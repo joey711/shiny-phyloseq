@@ -1,5 +1,6 @@
 # Default options for app startup
 source("default-parameters.R", local=FALSE)
+source("ggsave.R", local=FALSE)
 # List of distances
 distlist = as.list(unlist(phyloseq::distance("list")))
 names(distlist) <- distlist
@@ -79,8 +80,9 @@ sbp_rich = sidebarPanel(uibutton, br(), uialphameas,
                         uiOutput("richness_uix_shape"),
                         uiptsz("size_alpha"),
                         uialpha("alpha_alpha"),
-                        p("Testing download plot:"),
-                        downloadLink('downloadRichness', 'Download Graphic')
+                        #p("Testing download plot:"),
+                        graphicTypeUI("downtype_rich"),
+                        downloadButton('downloadRichness', 'Download Graphic')
 )
 ################################################################################
 # sbp of plot_network
@@ -207,7 +209,20 @@ make_fluidpage = function(fptitle="", sbp, outplotid){
     )
   )
 }
-alphapage = make_fluidpage("", sbp_rich, "richness")
+richpage = make_fluidpage("", sbp_rich, "richness")
+# Trial of non-sidebarLayout page. Needs design-devel...
+# https://github.com/rstudio/shiny/wiki/Shiny-Application-Layout-Guide#grid-layouts-in-depth
+# richpage = fluidPage(titlePanel(""), 
+#                       fluidRow(
+#                         column(6, sbp_rich),
+#                         column(6, plotOutput("richness"))
+#                       ),
+#                       fluidRow(column(12, 
+#                                       p("Testing download plot:"),
+#                                       graphicTypeUI("downtype_rich"),
+#                                       downloadLink('downloadRichness', 'Download Graphic')
+#                       ))
+# )
 netpage = make_fluidpage("", sbp_net, "network")
 barpage = make_fluidpage("", sbp_bar, "bar")
 ordpage = make_fluidpage("", sbp_ord, "ordination")
@@ -309,7 +324,7 @@ d3netpage = fluidPage(
 ui = navbarPage("Shiny + phyloseq",
                 tabPanel("Select Dataset", datapage),
                 tabPanel("Filter", filterpage),
-                tabPanel("Alpha Diversity", alphapage),
+                tabPanel("Alpha Diversity", richpage),
                 tabPanel("Network", netpage),
                 tabPanel("d3Network", d3netpage),
                 tabPanel("Bar", barpage),

@@ -9,6 +9,9 @@ library("data.table"); packageVersion("data.table")
 library("d3Network"); packageVersion("d3Network")
 # Default options for app startup
 source("default-parameters.R", local=FALSE)
+source("ggsave.R")
+# For pasting times into things
+simpletime = function(){gsub("[[:punct:][:space:]]", "_", Sys.time())}
 # By default, the file size limit is 5MB. It can be changed by
 # setting this option. Here we'll raise limit to 9MB.
 options(shiny.maxRequestSize = 100*1024^2)
@@ -251,8 +254,7 @@ shinyServer(function(input, output){
               geom_segment(aes(x=0, y=0, xend=-0.5, yend=0.15), size=3,
                            arrow=grid::arrow(length=grid::unit(0.5, "cm"))) +
               annotate("text", 0, 0, label=libfailtext, size=12, hjust=0.5, vjust=-1) +
-              theme(panel.border=element_blank(), axis.line=element_blank(),
-                    axis.text=element_blank(), axis.ticks=element_blank())
+              theme(line=element_blank(), text=element_blank(), panel.border=element_blank())
       )
     }
   })
@@ -657,30 +659,27 @@ shinyServer(function(input, output){
       return(failp)
     }
   })
-  source("ggsave.R")
+  
   output$richness <- renderPlot({
     shiny_phyloseq_print(finalize_richness_plot())
-  }, width=700, height=500)
+  }, width=function(){72*input$width_rich}, height=function(){72*input$height_rich})
   filename_rich = reactive({
-    observe({print(ggfilegen("shiny_phyloseq_richness_", input$downtype_rich))})
-    return(ggfilegen("shiny_phyloseq_richness_", input$downtype_rich))
+    downloadFileName = function(){paste0("richness_", simpletime(), ".", input$downtype_rich)}
+    observe({print(paste("filename_rich: ", downloadFileName()))})
+    return(downloadFileName)
   })
   content_rich = reactive({
-    cat("content_rich: \n")
-    cat(input$downtype_rich, fill = TRUE)
-    observe({print(paste("input$downtype_rich", Sys.time(), input$downtype_rich))})
-    return(ggcontent(ggplotobj=finalize_richness_plot(), graphictype=input$downtype_rich, width=6, height=5, dpi=300))
+    observe({print(paste("content_rich input$downtype_rich", Sys.time(), input$downtype_rich))})
+    return(
+      function(file){
+        ggsave2(filename=file,
+                plot=finalize_richness_plot(),
+                device=input$downtype_rich,
+                width=input$width_rich, height=input$height_rich, dpi=300L, units="in")
+      }
+    )
   })
   output$downloadRichness <- downloadHandler(filename_rich(), content_rich())
-#   default_device <- function(filename) {
-#     pieces <- strsplit(filename, "\\.")[[1]]
-#     ext <- tolower(pieces[length(pieces)])
-#     match.fun(ext)
-#   }
-# ggsave(filename = file, plot = finalize_richness_plot(),
-#        device = shiny_ggsave_device(width=8, height=6, dpi=300, graphictype="pdf"),
-#        width=8, height=6, units = "in")
-# paste0('shiny_phyloseq_richness_', gsub("[[:punct:][:space:]]", "_", Sys.time()), ".", "pdf")
   ################################################################################
   # Generate a network plot 
   ################################################################################

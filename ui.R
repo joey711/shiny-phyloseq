@@ -49,7 +49,13 @@ sbp_bar = sidebarPanel(uibutton, br(),
                        uiOutput("bar_uix_colvar"),
                        textInput("facform_bar", "Facet Formula:", value="NULL"),
                        radioButtons("uicttype_bar", label="Abundance Data Type",
-                                    choices=c("Counts", "Proportions"))
+                                    choices=c("Counts", "Proportions")),
+                       tags$hr(),
+                       h4('Figure Dimensions'),
+                       numericInput("width_bar", "Figure Width (inches)", 8, 1, 100, 1),
+                       numericInput("height_bar", "Figure Height (inches)", 8, 1, 100, 1),
+                       graphicTypeUI("downtype_bar"),
+                       downloadButton('downloadBar', 'Download Graphic')
 )
 ################################################################################
 # sbp of plot_ordination 
@@ -63,7 +69,13 @@ sbp_ord = sidebarPanel(uibutton, br(), uitype("type_ord", "samples"),
                        selectInput("ord_method", "Ordination Method:", ordlist, selected="DCA"),
                        selectInput("ord_plot_type", "Ordination Plot Type:", ordtypelist), 
                        textInput("formula", "Ordination Constraint Formula", value="NULL"),
-                       uiptsz("size_ord"), uialpha("alpha_ord")
+                       uiptsz("size_ord"), uialpha("alpha_ord"),
+                       tags$hr(),
+                       h4('Figure Dimensions'),
+                       numericInput("width_ord", "Figure Width (inches)", 8, 1, 100, 1),
+                       numericInput("height_ord", "Figure Height (inches)", 8, 1, 100, 1),
+                       graphicTypeUI("downtype_ord"),
+                       downloadButton('downloadOrdination', 'Download Graphic')
 )
 ################################################################################
 # sbp of plot_richness
@@ -80,7 +92,10 @@ sbp_rich = sidebarPanel(uibutton, br(), uialphameas,
                         uiOutput("richness_uix_shape"),
                         uiptsz("size_alpha"),
                         uialpha("alpha_alpha"),
-                        #p("Testing download plot:"),
+                        tags$hr(),
+                        h4('Figure Dimensions'),
+                        numericInput("width_rich", "Figure Width (inches)", 8, 1, 100, 1),
+                        numericInput("height_rich", "Figure Height (inches)", 8, 1, 100, 1),
                         graphicTypeUI("downtype_rich"),
                         downloadButton('downloadRichness', 'Download Graphic')
 )
@@ -107,7 +122,13 @@ sbp_net = sidebarPanel(uibutton, br(), uitype("type_net", "samples"),
                        uiOutput("network_uix_shape"),
                        uinetdistmax, 
                        uinetdispdist,
-                       uiptsz("size_net"), uialpha("alpha_net")
+                       uiptsz("size_net"), uialpha("alpha_net"),
+                       tags$hr(),
+                       h4('Figure Dimensions'),
+                       numericInput("width_net", "Figure Width (inches)", 8, 1, 100, 1),
+                       numericInput("height_net", "Figure Height (inches)", 8, 1, 100, 1),
+                       graphicTypeUI("downtype_net"),
+                       downloadButton('downloadNetwork', 'Download Graphic')
 )
 ################################################################################
 # sbp for plot_tree()
@@ -128,7 +149,13 @@ sbp_tree = sidebarPanel(uibutton,
   radioButtons("plot_tree_radial", label="Coordinate System",
                choices=list(Cartesian="cartesian", Radial="radial")),
   uiOutput("tree_uix_point_thresh"),
-  numericInput("margin_tree", "Margin", value=0.2, min=0, step=0.1)
+  numericInput("margin_tree", "Margin", value=0.2, min=0, step=0.1),
+  tags$hr(),
+  h4('Figure Dimensions'),
+  numericInput("width_tree", "Figure Width (inches)", 8, 1, 100, 1),
+  numericInput("height_tree", "Figure Height (inches)", 8, 1, 100, 1),
+  graphicTypeUI("downtype_tree"),
+  downloadButton('downloadTree', 'Download Graphic')  
 )
 ################################################################################
 # sbp for plot_heatmap()
@@ -145,7 +172,13 @@ sbp_heat = sidebarPanel(
   textInput("locolor_heat", "Low Color", "#000033"),
   textInput("hicolor_heat", "High Color", "#66CCFF"),
   textInput("NAcolor_heat", "Missing Value Color", "black"),
-  uicttype("uicttype_heat")
+  uicttype("uicttype_heat"),
+  tags$hr(),
+  h4('Figure Dimensions'),
+  numericInput("width_heat", "Figure Width (inches)", 8, 1, 100, 1),
+  numericInput("height_heat", "Figure Height (inches)", 8, 1, 100, 1),
+  graphicTypeUI("downtype_heat"),
+  downloadButton('downloadHeat', 'Download Graphic')
 )
 ################################################################################
 # sbp for scatter plot
@@ -157,7 +190,13 @@ sbp_scat = sidebarPanel(uibutton, br(),
   uiOutput("scat_uix_shape"),
   textInput("facform_scat", "Facet Grid Formula:", value="NULL"),
   uiptsz("size_scat"), uialpha("alpha_scat"),
-  uicttype("uicttype_scat")
+  uicttype("uicttype_scat"),
+  tags$hr(),
+  h4('Figure Dimensions'),
+  numericInput("width_scat", "Figure Width (inches)", 8, 1, 100, 1),
+  numericInput("height_scat", "Figure Height (inches)", 8, 1, 100, 1),
+  graphicTypeUI("downtype_scat"),
+  downloadButton('downloadScat', 'Download Graphic')
 )
 ################################################################################
 # sbp for d3 network
@@ -187,15 +226,17 @@ sbp_d3 = sidebarPanel(
                label = "Graphic Height [Pixels]",
                value = 600,
                min = 200, max = 1600, step = 100),
-  #   radioButtons("d3_zoom", label = "Zooming",
-  #                choices = list('Zoom'=TRUE, 'Not Zoom'=FALSE),
-  #                selected = FALSE),
+  tags$hr(),
+  downloadButton('downloadd3', 'Download Graphic'),
   p('Big thanks to',
     a(href = 'http://christophergandrud.github.io/d3Network/', 'd3Network'),
     'and',
     a(href = 'http://shiny.rstudio.com/', 'Shiny', 'web apps.')
   )
 )
+#   radioButtons("d3_zoom", label = "Zooming",
+#                choices = list('Zoom'=TRUE, 'Not Zoom'=FALSE),
+#                selected = FALSE),
 ################################################################################
 # Define each fluid page
 ################################################################################

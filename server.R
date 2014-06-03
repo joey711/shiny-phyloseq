@@ -623,7 +623,7 @@ shinyServer(function(input, output){
     }
     return(p2)
   })
-  output$tree <- renderPlot({
+  finalize_tree_plot = reactive({
     if(ntaxa(physeq()) <= 500 & !is.null(phy_tree(physeq(), errorIfNULL=FALSE))){
       p2 = make_tree()
     } else if(!is.null(phy_tree(physeq(), errorIfNULL=FALSE))){
@@ -635,8 +635,21 @@ shinyServer(function(input, output){
       p2 = fail_gen("No Tree in Input Data",
                     "Cannot Make Tree Graphic without Tree")        
     }
-    shiny_phyloseq_print(p2)
-  }, width=700, height=700)
+    return(p2)
+  })
+  # Render plot in panel and in downloadable file with format specified by user selection
+  output$tree <- renderPlot({
+    shiny_phyloseq_print(finalize_tree_plot())
+  }, width=function(){72*input$width_tree}, height=function(){72*input$height_tree})
+  output$downloadTree <- downloadHandler(
+    filename = function(){paste0("Tree_", simpletime(), ".", input$downtype_tree)},
+    content = function(file){
+      ggsave2(filename=file,
+              plot=finalize_tree_plot(),
+              device=input$downtype_tree,
+              width=input$width_tree, height=input$height_tree, dpi=300L, units="in")
+    }
+  )
   ################################################################################
   # heatmap plot definition
   ################################################################################
@@ -656,9 +669,19 @@ shinyServer(function(input, output){
         silent=TRUE)
     return(p3)
   })
+  # Render plot in panel and in downloadable file with format specified by user selection
   output$heatmap <- renderPlot({
     shiny_phyloseq_print(make_heatmap())
-  }, width=700, height=700)
+  }, width=function(){72*input$width_heat}, height=function(){72*input$height_heat})
+  output$downloadHeat <- downloadHandler(
+    filename = function(){paste0("Heatmap_", simpletime(), ".", input$downtype_heat)},
+    content = function(file){
+      ggsave2(filename=file,
+              plot=make_heatmap(),
+              device=input$downtype_heat,
+              width=input$width_heat, height=input$height_heat, dpi=300L, units="in")
+    }
+  )
   ################################################################################
   # Alpha Diversity plot definition
   ################################################################################
@@ -688,23 +711,15 @@ shinyServer(function(input, output){
   output$richness <- renderPlot({
     shiny_phyloseq_print(finalize_richness_plot())
   }, width=function(){72*input$width_rich}, height=function(){72*input$height_rich})
-  filename_rich = reactive({
-    downloadFileName = function(){paste0("richness_", simpletime(), ".", input$downtype_rich)}
-    observe({print(paste("filename_rich: ", downloadFileName()))})
-    return(downloadFileName)
-  })
-  content_rich = reactive({
-    observe({print(paste("content_rich input$downtype_rich", Sys.time(), input$downtype_rich))})
-    return(
-      function(file){
-        ggsave2(filename=file,
-                plot=finalize_richness_plot(),
-                device=input$downtype_rich,
-                width=input$width_rich, height=input$height_rich, dpi=300L, units="in")
-      }
-    )
-  })
-  output$downloadRichness <- downloadHandler(filename_rich(), content_rich())
+  output$downloadRichness <- downloadHandler(
+    filename = function(){paste0("Richness_", simpletime(), ".", input$downtype_rich)},
+    content = function(file){
+      ggsave2(filename=file,
+              plot=finalize_richness_plot(),
+              device=input$downtype_rich,
+              width=input$width_rich, height=input$height_rich, dpi=300L, units="in")
+    }
+  )
   ################################################################################
   # Generate a network plot 
   ################################################################################
@@ -782,9 +797,19 @@ shinyServer(function(input, output){
     p = p + ylim(I(range(edgeDF0$y, na.rm=TRUE, finite=TRUE)))
     return(p)
   })
+  # Render plot in panel and in downloadable file with format specified by user selection
   output$network <- renderPlot({
     shiny_phyloseq_print(update_plot_network())
-  }, width=700, height=700)
+  }, width=function(){72*input$width_net}, height=function(){72*input$height_net})
+  output$downloadNetwork <- downloadHandler(
+    filename = function(){paste0("Network_", simpletime(), ".", input$downtype_net)},
+    content = function(file){
+      ggsave2(filename=file,
+              plot=update_plot_network(),
+              device=input$downtype_net,
+              width=input$width_net, height=input$height_net, dpi=300L, units="in")
+    }
+  )
   ################################################################################
   # Flexible Scatter plot
   ################################################################################
@@ -807,19 +832,32 @@ shinyServer(function(input, output){
     }, silent=TRUE)
     return(pscat)
   })
-  output$scatter <- renderPlot({
+  finalize_scatter_plot = reactive({
     pscat = make_scatter_plot()
     if(inherits(pscat, "ggplot")){
       # Adjust size/alpha of points, but not error bars
       pscat$layers[[1]]$geom_params$size <- input$size_scat
       pscat$layers[[1]]$geom_params$alpha <- input$alpha_scat
-      shiny_phyloseq_print(pscat)
+      return(pscat)
     } else {
       # If for any reason pscat is not a ggplot at this point,
       # render fail-plot rather than tinker with innards.
-      print(failp)
+      return(failp)
     }
-  }, width=700, height=700)
+  })
+  # Render plot in panel and in downloadable file with format specified by user selection
+  output$scatter <- renderPlot({
+    shiny_phyloseq_print(finalize_scatter_plot())
+  }, width=function(){72*input$width_scat}, height=function(){72*input$height_scat})
+  output$downloadScatter <- downloadHandler(
+    filename = function(){paste0("Scatter_", simpletime(), ".", input$downtype_scat)},
+    content = function(file){
+      ggsave2(filename=file,
+              plot=finalize_scatter_plot(),
+              device=input$downtype_scat,
+              width=input$width_scat, height=input$height_scat, dpi=300L, units="in")
+    }
+  )
   ################################################################################
   # d3 interactive network graphic 
   ################################################################################

@@ -196,7 +196,7 @@ sbp_scat = sidebarPanel(uibutton, br(),
   numericInput("width_scat", "Figure Width (inches)", 8, 1, 100, 1),
   numericInput("height_scat", "Figure Height (inches)", 8, 1, 100, 1),
   graphicTypeUI("downtype_scat"),
-  downloadButton('downloadScat', 'Download Graphic')
+  downloadButton('downloadScatter', 'Download Graphic')
 )
 ################################################################################
 # sbp for d3 network

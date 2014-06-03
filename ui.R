@@ -360,6 +360,9 @@ d3netpage = fluidPage(
   mainPanel(htmlOutput("networkPlot"))
 )
 ################################################################################
+# Source the ui for palette panel.
+source("color-palettes.R")
+################################################################################
 # Define the full user-interface, `ui`
 ################################################################################
 ui = navbarPage("Shiny + phyloseq",
@@ -373,6 +376,7 @@ ui = navbarPage("Shiny + phyloseq",
                 tabPanel("Tree", treepage),
                 tabPanel("Heatmap", heatpage),
                 tabPanel("Scatter", scatpage),
+                tabPanel("Palette", palpage),
                 theme = "bootstrap.css"
 )
 shinyUI(ui)

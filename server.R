@@ -528,21 +528,36 @@ shinyServer(function(input, output){
     try(p1 <- plot_ordination(physeq(), get_ord(), type=input$ord_plot_type), silent=TRUE)
     return(p1)
   })
-  # ordination plot definition
-  output$ordination <- renderPlot({
+  # Finalize Ordination Plot (for download and panel)
+  finalize_ordination_plot = reactive({
     p1 = make_ord_plot()
     if(inherits(p1, "ggplot")){
       p1$layers[[1]]$geom_params$size <- av(input$size_ord)
       p1$layers[[1]]$geom_params$alpha <- av(input$alpha_ord)
       if(!is.null(av(input$color_ord))){
         p1$mapping$colour <- as.symbol(av(input$color_ord))
+        p1 <- update_labels(p1, list(colour = input$color_ord))
       }
       if(!is.null(av(input$shape_ord))){
         p1$mapping$shape  <- as.symbol(av(input$shape_ord))
+        p1 <- update_labels(p1, list(shape = input$shape_ord))
       }
     }
-    shiny_phyloseq_print(p1)
-  }, width=700, height=700)    
+    return(p1)
+  })
+  # Render plot in panel and in downloadable file with format specified by user selection
+  output$ordination <- renderPlot({
+    shiny_phyloseq_print(finalize_ordination_plot())
+  }, width=function(){72*input$width_ord}, height=function(){72*input$height_ord})
+  output$downloadOrdination <- downloadHandler(
+    filename = function(){paste0("Ordination_", simpletime(), ".", input$downtype_ord)},
+    content = function(file){
+      ggsave2(filename=file,
+              plot=finalize_ordination_plot(),
+              device=input$downtype_ord,
+              width=input$width_ord, height=input$height_ord, dpi=300L, units="in")
+    }
+  )
   ################################################################################
   # bar plot definition
   ################################################################################
@@ -569,9 +584,19 @@ shinyServer(function(input, output){
     }
     return(p0)
   })
+  # Render plot in panel and in downloadable file with format specified by user selection
   output$bar <- renderPlot({
     shiny_phyloseq_print(make_bar_plot())
-  }, width=700, height=400)
+  }, width=function(){72*input$width_bar}, height=function(){72*input$height_bar})
+  output$downloadBar <- downloadHandler(
+    filename = function(){paste0("Barplot_", simpletime(), ".", input$downtype_bar)},
+    content = function(file){
+      ggsave2(filename=file,
+              plot=make_bar_plot(),
+              device=input$downtype_bar,
+              width=input$width_bar, height=input$height_bar, dpi=300L, units="in")
+    }
+  )
   ################################################################################
   # phylogenetic tree plot definition
   ################################################################################
@@ -659,7 +684,7 @@ shinyServer(function(input, output){
       return(failp)
     }
   })
-  
+  # Render plot in panel and in downloadable file with format specified by user selection
   output$richness <- renderPlot({
     shiny_phyloseq_print(finalize_richness_plot())
   }, width=function(){72*input$width_rich}, height=function(){72*input$height_rich})
@@ -862,6 +887,27 @@ shinyServer(function(input, output){
       standAlone = FALSE, 
       width = input$width_d3, height = input$height_d3,
       parentElement = "#networkPlot")
-    #zoom = as.logical(input$d3_zoom),
   })
+  # Downloadable standalone HTML file.
+  content_d3 = function(file){
+    d3Network::d3ForceNetwork(
+      Links = calculate_links_data()$link, 
+      Nodes = calculate_links_data()$node,
+      Source = "Source",
+      Target = "target",
+      Value = "value",
+      NodeID = "ShowLabels",
+      Group = default_Source(input$color_d3),
+      linkColour = input$d3_link_color,
+      opacity = input$d3_opacity,
+      zoom = FALSE, 
+      standAlone = TRUE, 
+      width = input$width_d3,
+      height = input$height_d3,
+      file = file
+    )
+  }
+  output$downloadd3 <- downloadHandler(filename = function(){paste0("d3_", simpletime(), ".html")},
+                                       content = content_d3)
+  #zoom = as.logical(input$d3_zoom),
 })

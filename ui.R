@@ -1,6 +1,7 @@
 # Default options for app startup
 source("default-parameters.R", local=FALSE)
 source("ggsave.R", local=FALSE)
+source("color-palettes.R")
 # List of distances
 distlist = as.list(unlist(phyloseq::distance("list")))
 names(distlist) <- distlist
@@ -51,6 +52,7 @@ sbp_bar = sidebarPanel(uibutton, br(),
                        radioButtons("uicttype_bar", label="Abundance Data Type",
                                     choices=c("Counts", "Proportions")),
                        tags$hr(),
+                       uipal("pal_bar"),
                        h4('Figure Dimensions'),
                        numericInput("width_bar", "Figure Width (inches)", 8, 1, 100, 1),
                        numericInput("height_bar", "Figure Height (inches)", 8, 1, 100, 1),
@@ -69,7 +71,10 @@ sbp_ord = sidebarPanel(uibutton, br(), uitype("type_ord", "samples"),
                        selectInput("ord_method", "Ordination Method:", ordlist, selected="DCA"),
                        selectInput("ord_plot_type", "Ordination Plot Type:", ordtypelist), 
                        textInput("formula", "Ordination Constraint Formula", value="NULL"),
-                       uiptsz("size_ord"), uialpha("alpha_ord"),
+                       h4('Figure Details'),
+                       uiptsz("size_ord"),
+                       uialpha("alpha_ord"),
+                       uipal("pal_ord"),
                        tags$hr(),
                        h4('Figure Dimensions'),
                        numericInput("width_ord", "Figure Width (inches)", 8, 1, 100, 1),
@@ -90,8 +95,10 @@ sbp_rich = sidebarPanel(uibutton, br(), uialphameas,
                         uiOutput("richness_uix_x"), 
                         uiOutput("richness_uix_color"),
                         uiOutput("richness_uix_shape"),
-                        uiptsz("size_alpha"),
-                        uialpha("alpha_alpha"),
+                        h4('Figure Details'),
+                        uipal("pal_rich"),
+                        uiptsz("size_rich"),
+                        uialpha("alpha_rich"),
                         tags$hr(),
                         h4('Figure Dimensions'),
                         numericInput("width_rich", "Figure Width (inches)", 8, 1, 100, 1),
@@ -122,7 +129,9 @@ sbp_net = sidebarPanel(uibutton, br(), uitype("type_net", "samples"),
                        uiOutput("network_uix_shape"),
                        uinetdistmax, 
                        uinetdispdist,
-                       uiptsz("size_net"), uialpha("alpha_net"),
+                       tags$hr(),
+                       h4('Figure Details'),
+                       uiptsz("size_net"), uialpha("alpha_net"), uipal("pal_net"),
                        tags$hr(),
                        h4('Figure Dimensions'),
                        numericInput("width_net", "Figure Width (inches)", 8, 1, 100, 1),
@@ -144,13 +153,15 @@ sbp_tree = sidebarPanel(uibutton,
               selected="left"),
   uiOutput("tree_uix_color"),
   uiOutput("tree_uix_shape"),
-  uiptsz("size_tree"), 
   uiOutput("tree_uix_tiplabs"),
   radioButtons("plot_tree_radial", label="Coordinate System",
                choices=list(Cartesian="cartesian", Radial="radial")),
   uiOutput("tree_uix_point_thresh"),
   numericInput("margin_tree", "Margin", value=0.2, min=0, step=0.1),
   tags$hr(),
+  h4('Figure Details'),
+  uiptsz("size_tree"), 
+  uipal("pal_tree"),
   h4('Figure Dimensions'),
   numericInput("width_tree", "Figure Width (inches)", 8, 1, 100, 1),
   numericInput("height_tree", "Figure Height (inches)", 8, 1, 100, 1),
@@ -183,14 +194,16 @@ sbp_heat = sidebarPanel(
 ################################################################################
 # sbp for scatter plot
 ################################################################################
-sbp_scat = sidebarPanel(uibutton, br(), 
+sbp_scat = sidebarPanel(uibutton, br(),
   uiOutput("scat_uix_x"),
   uiOutput("scat_uix_y"),
   uiOutput("scat_uix_color"),
   uiOutput("scat_uix_shape"),
   textInput("facform_scat", "Facet Grid Formula:", value="NULL"),
-  uiptsz("size_scat"), uialpha("alpha_scat"),
   uicttype("uicttype_scat"),
+  tags$hr(),
+  h4('Figure Details'),
+  uiptsz("size_scat"), uialpha("alpha_scat"), uipal("pal_scat"),
   tags$hr(),
   h4('Figure Dimensions'),
   numericInput("width_scat", "Figure Width (inches)", 8, 1, 100, 1),
@@ -359,9 +372,6 @@ d3netpage = fluidPage(
   # Show network graph
   mainPanel(htmlOutput("networkPlot"))
 )
-################################################################################
-# Source the ui for palette panel.
-source("color-palettes.R")
 ################################################################################
 # Define the full user-interface, `ui`
 ################################################################################

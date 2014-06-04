@@ -538,6 +538,7 @@ shinyServer(function(input, output){
         p1 <- update_labels(p1, list(shape = input$shape_ord))
       }
     }
+    p1 <- p1 + scale_colour_brewer(palette=input$pal_ord) 
     return(p1)
   })
   # Render plot in panel and in downloadable file with format specified by user selection
@@ -567,27 +568,32 @@ shinyServer(function(input, output){
     }
   })
   make_bar_plot = reactive({
-    psb = physeq_bar()
     p0 = NULL
-    try(p0 <- plot_bar(psb, x=input$x_bar, y="Abundance", fill=av(input$color_bar), 
+    # Try with facet argument included first. If fails, retry without it.
+    try(p0 <- plot_bar(physeq_bar(), x=input$x_bar, y="Abundance", fill=av(input$color_bar), 
                        facet_grid=get_facet()),
         silent=TRUE)
     if(!inherits(p0, "ggplot")){
       warning("Could not render bar plot, attempting without faceting...")
-      try(p0 <- plot_bar(psb, x=xvar, y="Abundance", fill=av(input$color_bar)),
+      try(p0 <- plot_bar(physeq_bar(), x=xvar, y="Abundance", fill=av(input$color_bar)),
           silent=TRUE)
     }
     return(p0)
   })
+  finalize_bar_plot = reactive({
+    p0 = make_bar_plot()
+    p0 <- p0 + scale_fill_brewer(palette=input$pal_bar) 
+    return(p0)
+  })
   # Render plot in panel and in downloadable file with format specified by user selection
   output$bar <- renderPlot({
-    shiny_phyloseq_print(make_bar_plot())
+    shiny_phyloseq_print(finalize_bar_plot())
   }, width=function(){72*input$width_bar}, height=function(){72*input$height_bar})
   output$downloadBar <- downloadHandler(
     filename = function(){paste0("Barplot_", simpletime(), ".", input$downtype_bar)},
     content = function(file){
       ggsave2(filename=file,
-              plot=make_bar_plot(),
+              plot=finalize_bar_plot(),
               device=input$downtype_bar,
               width=input$width_bar, height=input$height_bar, dpi=300L, units="in")
     }
@@ -630,6 +636,7 @@ shinyServer(function(input, output){
       p2 = fail_gen("No Tree in Input Data",
                     "Cannot Make Tree Graphic without Tree")        
     }
+    p2 <- p2 + scale_color_brewer(palette = input$pal_tree)
     return(p2)
   })
   # Render plot in panel and in downloadable file with format specified by user selection
@@ -693,8 +700,9 @@ shinyServer(function(input, output){
     p4 = make_richness_plot()
     if(inherits(p4, "ggplot")){
       # Adjust size/alpha of points, but not error bars
-      p4$layers[[1]]$geom_params$size <- input$size_alpha
-      p4$layers[[1]]$geom_params$alpha <- input$alpha_alpha
+      p4$layers[[1]]$geom_params$size <- input$size_rich
+      p4$layers[[1]]$geom_params$alpha <- input$alpha_rich
+      p4 <- p4 + scale_colour_brewer(palette = input$pal_rich)
       return(p4)
     } else {
       # If for any reason p4 is not a ggplot at this point,
@@ -792,15 +800,18 @@ shinyServer(function(input, output){
     p = p + ylim(I(range(edgeDF0$y, na.rm=TRUE, finite=TRUE)))
     return(p)
   })
+  finalize_network_plot = reactive({
+    return(update_plot_network() + scale_colour_brewer(palette = input$pal_net))
+  })
   # Render plot in panel and in downloadable file with format specified by user selection
   output$network <- renderPlot({
-    shiny_phyloseq_print(update_plot_network())
+    shiny_phyloseq_print(finalize_network_plot())
   }, width=function(){72*input$width_net}, height=function(){72*input$height_net})
   output$downloadNetwork <- downloadHandler(
     filename = function(){paste0("Network_", simpletime(), ".", input$downtype_net)},
     content = function(file){
       ggsave2(filename=file,
-              plot=update_plot_network(),
+              plot=finalize_network_plot(),
               device=input$downtype_net,
               width=input$width_net, height=input$height_net, dpi=300L, units="in")
     }
@@ -833,6 +844,7 @@ shinyServer(function(input, output){
       # Adjust size/alpha of points, but not error bars
       pscat$layers[[1]]$geom_params$size <- input$size_scat
       pscat$layers[[1]]$geom_params$alpha <- input$alpha_scat
+      pscat <- pscat + scale_colour_brewer(palette = input$pal_scat)
       return(pscat)
     } else {
       # If for any reason pscat is not a ggplot at this point,

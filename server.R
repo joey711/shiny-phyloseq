@@ -30,7 +30,7 @@ datalist = list(GlobalPatterns=GlobalPatterns,
                 soilrep=soilrep)
 
 filepath = system.file("extdata", "study_1457_split_library_seqs_and_mapping.zip", package="phyloseq")
-kostic = microbio_me_qiime(filepath)
+suppressWarnings(kostic <- microbio_me_qiime(filepath))
 if(inherits(kostic, "phyloseq")){
   datalist <- c(list(study_1457_Kostic=kostic), datalist)
 }
@@ -365,15 +365,6 @@ shinyServer(function(input, output){
     uivar("shape_alpha", "Shape Variable:", vars("samples"))
   })
   ################################################################################
-  # plot_network() ui
-  ################################################################################
-  output$network_uix_color <- renderUI({
-    uivar("color_net", "Color Variable:", vars(input$type_net))
-  })
-  output$network_uix_shape <- renderUI({
-    uivar("shape_net", "Shape Variable:", vars(input$type_net))
-  })
-  ################################################################################
   # plot_bar() uix
   ################################################################################
   output$bar_uix_xvar <- renderUI({
@@ -393,7 +384,7 @@ shinyServer(function(input, output){
     uivar("shape_tree", "Shape Variable:", vars("both", TRUE, TRUE))
   })
   output$tree_uix_tiplabs <- renderUI({
-    uivar("label_tip_tree", "Tip Labels", choices=vars("taxa", TRUE, TRUE))
+    uivar("label_tip_tree", "Tip Labels", vars("taxa", TRUE, TRUE))
   })
   output$tree_uix_point_thresh <- renderUI({
     sliderInput("abundance_threshold_tree",
@@ -437,20 +428,6 @@ shinyServer(function(input, output){
   output$scat_uix_shape <- renderUI({
     uivar("shape_scat", "Shape Variable:", vars())
   })
-  ################################################################################
-  # d3network uix
-  ################################################################################
-  output$d3_uix_color <- renderUI({
-    selectInput("color_d3", "Color Variable:",
-                choices = vars(input$type_d3, TRUE, TRUE),
-                selected = d3NetworkColorVar)
-  })
-  output$d3_uix_node_label <- renderUI({
-    selectInput("d3_node_label", "Node Label (hover):",
-                choices = vars(input$type_d3, TRUE, TRUE),
-                selected = d3NodeLabelVar,
-                multiple = TRUE)
-  }) 
   ################################################################################
   # Plot Rendering Stuff.
   ################################################################################ 
@@ -724,99 +701,6 @@ shinyServer(function(input, output){
     }
   )
   ################################################################################
-  # Generate a network plot 
-  ################################################################################
-  # The reactive value version of the network.
-  # Only returns distance matrix, regardless of distance-method argument
-  distonly <- reactive({
-    idist = NULL
-    try({idist <- distance(physeq(), method=input$dist_net, type=input$type_net)}, silent=TRUE)
-    if(is.null(idist)){warning("distonly: Could not calculate distance matrix with these settings.")}
-    # rescale the distance matrix to be [0, 1]
-    idist <- idist / max(idist, na.rm=TRUE)
-    idist <- idist - min(idist, na.rm=TRUE)
-    return(idist)
-  })
-  ## Changes only if input$uinetdistmax changes, or the reactive distance matrix, gdist()
-  #observe({print(paste0("Network Max Distance (input$uinetdistmax): ", input$uinetdistmax))})
-  #observe({print(paste0("Network Min Distance (input$uinetdispdist): ", input$uinetdispdist))})
-  ig <- reactive({
-    make_network(physeq(),
-                 type=input$type_net,
-                 distance=distonly(),
-                 max.dist=input$uinetdistmax,
-                 keep.isolates=FALSE)
-  })
-  #print(paste0("Class of ig(): ", class(isolate(ig()))))
-  initial_plot_network = reactive({
-    plot_network(ig(), physeq(),
-                 type=input$type_net,
-                 color=isolate(input$color_net),
-                 shape=isolate(input$shape_net),
-                 point_size=isolate(input$size_net),
-                 alpha=isolate(input$alpha_net)
-    )
-  })
-  get_edge_df = reactive({
-    p = initial_plot_network()
-    whichEdge = which(sapply(p$layers, function(x){x$geom$objname=="line"}))
-    edgeDF0 = p$layers[[whichEdge]]$data
-    # Add the distance associated with each edge entry
-    edgeDF0 = plyr::ddply(edgeDF0, "id", function(df, dmat){
-      df$dist <- dmat[df$value[1], df$value[2]]
-      return(df)
-    }, dmat = as.matrix(distonly()))
-    return(edgeDF0)
-  })
-  update_plot_network = reactive({
-    p = initial_plot_network()
-    # New edge layer
-    # Define the layer that contains the edges and vertices
-    whichEdge = which(sapply(p$layers, function(x){x$geom$objname=="line"}))
-    # Define the edge data frame
-    edgeDF0 = get_edge_df()
-    # Subset newEdgeDF according to max allowed distance
-    newEdgeDF = edgeDF0[edgeDF0$dist <= input$uinetdispdist, ]
-    newEdgeMap = aes_string(x="x", y="y", group="id", colour=input$color_net)
-    newEdgeLayer = geom_line(mapping=newEdgeMap, data=newEdgeDF, alpha=input$alpha_net)
-    p$layers[[whichEdge]] <- newEdgeLayer
-    # New vertex layer
-    whichVert = which(sapply(p$layers, function(x){x$geom$objname=="point"}))
-    # Subset
-    newVertDF = p$data[as.character(p$data$value) %in% as.character(newEdgeDF$value), ]
-    newVertMap = aes_string(x="x", y="y", colour=input$color_net, shape=input$shape_net)
-    newVertLayer = geom_point(mapping=newVertMap, data=newVertDF,
-                              size=input$size_net, alpha=input$alpha_net)
-    p$layers[[whichVert]] <- newVertLayer
-    # New label layer
-    # Re-define the subset 
-    whichLabel = which(sapply(p$layers, function(x){x$geom$objname=="text"}))
-    p$layers[[whichLabel]]$data <- newVertDF
-    # Updates legend labels.
-    p = update_labels(p, list(colour=input$color_net))
-    p = update_labels(p, list(shape=input$shape_net))
-    # Fix the coordinate ranges based on the original.
-    p = p + xlim(I(range(edgeDF0$x, na.rm=TRUE, finite=TRUE)))
-    p = p + ylim(I(range(edgeDF0$y, na.rm=TRUE, finite=TRUE)))
-    return(p)
-  })
-  finalize_network_plot = reactive({
-    return(update_plot_network() + scale_colour_brewer(palette = input$pal_net))
-  })
-  # Render plot in panel and in downloadable file with format specified by user selection
-  output$network <- renderPlot({
-    shiny_phyloseq_print(finalize_network_plot())
-  }, width=function(){72*input$width_net}, height=function(){72*input$height_net})
-  output$downloadNetwork <- downloadHandler(
-    filename = function(){paste0("Network_", simpletime(), ".", input$downtype_net)},
-    content = function(file){
-      ggsave2(filename=file,
-              plot=finalize_network_plot(),
-              device=input$downtype_net,
-              width=input$width_net, height=input$height_net, dpi=300L, units="in")
-    }
-  )
-  ################################################################################
   # Flexible Scatter plot
   ################################################################################
   physeq_scat = reactive({
@@ -866,96 +750,6 @@ shinyServer(function(input, output){
     }
   )
   ################################################################################
-  # d3 interactive network graphic 
-  ################################################################################
-  # Define global reactive distance matrix. 
-  # Re-calc only if method or plot-type change.
-  d3distReact <- reactive({
-    try({idist <- distance(physeq(), method=input$dist_d3, type=input$type_d3)}, silent=TRUE)
-    if(is.null(idist)){warning("d3dist: Could not calculate distance matrix with these settings.")}
-    return(idist)
-  })  
-  calculate_links_data = reactive({
-    d3dist <- as.matrix(d3distReact())
-    # Set duplicate entries and self-links to Inf
-    d3dist[upper.tri(d3dist, diag = TRUE)] <- Inf
-    # Create data.table.
-    d3LinkNames = c("Source", "target")
-    LinksData = data.table(reshape2::melt(d3dist, varnames=d3LinkNames, as.is = TRUE))
-    # Remove entries above the threshold
-    # (This will also remove self-links and duplicate links)
-    LinksData <- LinksData[value < input$dist_d3_threshold, ]
-    # Rescale remaining links
-    LinksData[, value:=(0.1+input$d3_link_scale*(value-min(value))/max(value))]
-    # Don't sort yet, instead create mapping variable from Source ID to link node ID
-    # d3link nodes are numbered from 0.
-    nodeUnion = union(LinksData$Source, LinksData$target)
-    d3lookup = (0:(length(nodeUnion)-1))
-    names(d3lookup) <- nodeUnion
-    # In-place replacement.
-    LinksData[, Source:=d3lookup[Source]]
-    LinksData[, target:=d3lookup[target]]
-    # Order by the `d3lookup` node ID, in this case, the Source label
-    setkey(LinksData, Source)
-    # Create covariates table (taxa in this case)
-    if(input$type_d3 == "taxa"){
-      NodeData = data.frame(OTU=nodeUnion, tax_table(physeq())[nodeUnion, ], stringsAsFactors = FALSE)
-    } else {
-      NodeData = data.frame(Sample=nodeUnion, sample_data(physeq())[nodeUnion, ], stringsAsFactors = FALSE)      
-    }
-    NodeData$ShowLabels <- apply(NodeData[, input$d3_node_label, drop=FALSE], 1, paste0, collapse="; ")
-    return(list(link=data.frame(LinksData), node=NodeData))
-  })  
-  default_Source = function(x){
-    if(is.null(av(x))){
-      if(input$type_d3=="taxa"){
-        return("OTU")
-      } else {
-        return("Sample")
-      }
-    } else {
-      return(x)
-    }
-  }
-  # The d3Network output definition.
-  output$networkPlot <- renderPrint({
-    d3Network::d3ForceNetwork(
-      Links = calculate_links_data()$link, 
-      Nodes = calculate_links_data()$node,
-      Source = "Source", Target = "target",
-      Value = "value",
-      NodeID = "ShowLabels",
-      Group = default_Source(input$color_d3),
-      linkColour = input$d3_link_color,
-      opacity = input$d3_opacity,
-      zoom = FALSE, 
-      standAlone = FALSE, 
-      width = input$width_d3, height = input$height_d3,
-      parentElement = "#networkPlot")
-  })
-  # Downloadable standalone HTML file.
-  content_d3 = function(file){
-    d3Network::d3ForceNetwork(
-      Links = calculate_links_data()$link, 
-      Nodes = calculate_links_data()$node,
-      Source = "Source",
-      Target = "target",
-      Value = "value",
-      NodeID = "ShowLabels",
-      Group = default_Source(input$color_d3),
-      linkColour = input$d3_link_color,
-      opacity = input$d3_opacity,
-      zoom = FALSE, 
-      standAlone = TRUE, 
-      width = input$width_d3,
-      height = input$height_d3,
-      file = file
-    )
-  }
-  output$downloadd3 <- downloadHandler(filename = function(){paste0("d3_", simpletime(), ".html")},
-                                       content = content_d3)
-  #zoom = as.logical(input$d3_zoom),
-  ################################################################################
   # Color Palette Main Panel
   # Help users find and choose palette options.
   ################################################################################
@@ -974,7 +768,7 @@ shinyServer(function(input, output){
   output$paletteExample <- renderPlot({
     observe({print(paste("Palette Options: ", input$pal_main))})
     dpal <- qplot(carat, price, data=palExData, colour=clarity, size=I(10),
-                main = paste("Example Output,", input$pal_main, "Palette"))
+                  main = paste("Example Output,", input$pal_main, "Palette"))
     print(dpal + scale_colour_brewer(palette=input$pal_main))
   })
   output$paletteTable <- renderDataTable({
@@ -983,4 +777,8 @@ shinyServer(function(input, output){
     colnames(SupportedPalTab)[2:3] <- c("Max_Colors", "Category")
     return(SupportedPalTab)
   })
+  # Source the net panel server code
+  source("panel-server-net.R", local = TRUE)
+  # Source the d3 panel server code
+  source("panel-server-d3.R", local = TRUE)
 })

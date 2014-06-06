@@ -18,7 +18,18 @@ OTUSumDefault = 100
 kovera_A = 3
 kovera_k = 25
 ################################################################################
-# d3 default Default Parameters
+# Network Default Parameters
+################################################################################
+# The maximum distance with which the network structure is based. 
+netdist = 0.7
+# The distance step size to use in the animation.
+step = netdist/30
+default_netLabel = "NULL"
+netThreshColorVariableDefault = "DIAGNOSIS"
+netThreshShapeVariableDefault = "SEX"
+netThreshDistanceMethod = "bray"
+################################################################################
+# d3 Network Default Parameters
 ################################################################################
 LinkDistThreshold = 0.4
 d3DefaultLinkScaleFactor = 40

@@ -9,12 +9,6 @@
 ################################################################################
 # Color Palette sbp definition
 ################################################################################
-uipal = function(id, default="Set1"){
-  selectInput(id, "Color Palette",  
-            choices = rownames(RColorBrewer::brewer.pal.info), 
-            selected = default
-            )
-}
 sbp_pal = sidebarPanel(submitButton("Build/Rebuild Example Plot", icon("refresh")),
                        br(), uipal("pal_main"))
 palpage = fluidPage(

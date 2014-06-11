@@ -17,7 +17,6 @@ simpletime = function(){gsub("[[:punct:][:space:]]", "_", Sys.time())}
 options(shiny.maxRequestSize = 100*1024^2)
 # ggplot2 themeing and palettes.
 theme_set(theme_bw())
-
 ################################################################################
 # Included Data
 # Define the named list of datasets to choose from
@@ -156,3 +155,4 @@ shinyServer(function(input, output){
   # Palette
   source("panel-server-palette.R", local = TRUE)
 })
+################################################################################

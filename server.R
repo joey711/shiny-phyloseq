@@ -15,7 +15,9 @@ simpletime = function(){gsub("[[:punct:][:space:]]", "_", Sys.time())}
 # By default, the file size limit is 5MB. It can be changed by
 # setting this option. Here we'll raise limit to 9MB.
 options(shiny.maxRequestSize = 100*1024^2)
-# ggplot2 themeing and palettes.
+# Set Shiny Reaction Log to TRUE
+options(shiny.reactlog=TRUE)
+# Default ggplot2 theme.
 theme_set(theme_bw())
 ################################################################################
 # Included Data
@@ -154,5 +156,7 @@ shinyServer(function(input, output){
   source("panel-server-scatter.R", local = TRUE)
   # Palette
   source("panel-server-palette.R", local = TRUE)
+  # Provenance
+  source("panel-server-provenance.R", local = TRUE)
 })
 ################################################################################

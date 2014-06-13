@@ -94,6 +94,7 @@ source("panel-ui-d3.R", local = TRUE)
 source("panel-ui-data.R", local = TRUE)
 source("panel-ui-filter.R", local = TRUE)
 source("panel-ui-palette.R", local = TRUE)
+source("panel-ui-provenance.R", local = TRUE)
 # Define the full user-interface, `ui`
 ################################################################################
 ui = navbarPage("Shiny + phyloseq",
@@ -108,6 +109,7 @@ ui = navbarPage("Shiny + phyloseq",
                 tabPanel("Heatmap", heatpage),
                 tabPanel("Scatter", scatpage),
                 tabPanel("Palette", palpage),
+                tabPanel("Provenance", provpage),
                 theme = "bootstrap.css"
 )
 shinyUI(ui)

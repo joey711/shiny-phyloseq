@@ -15,7 +15,6 @@ output$paletteOptions <- renderPlot({
 # Define example dataset once.
 palExData <- ggplot2::diamonds[sample(nrow(ggplot2::diamonds), 1000), ]
 output$paletteExample <- renderPlot({
-  observe({print(paste("Palette Options: ", input$pal_main))})
   dpal <- qplot(carat, price, data=palExData, colour=clarity, size=I(10),
                 main = paste("Example Output,", input$pal_main, "Palette"))
   print(dpal + scale_colour_brewer(palette=input$pal_main))

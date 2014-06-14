@@ -35,14 +35,13 @@ suppressWarnings(kostic <- microbio_me_qiime(filepath))
 if(inherits(kostic, "phyloseq")){
   datalist <- c(list(study_1457_Kostic=kostic), datalist)
 }
-# filepath <- system.file("extdata", "study_816_split_library_seqs_and_mapping.tar.gz", package="phyloseq")
-# study_816 = microbio_me_qiime(filepath)
-# if(inherits(study_816, "phyloseq")){
-#   datalist <- c(list(study_816=study_816), datalist)
-# }
+
 ################################################################################
 # Begin Shiny Server definition.
 ################################################################################
+# First store the inventory of objects (for provenance record)
+shinyPhyloseqServerObjectsList = ls()
+
 shinyServer(function(input, output){
   # Data panel
   source("panel-server-data.R", local = TRUE)

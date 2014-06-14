@@ -45,8 +45,6 @@ calculate_links_data = reactive({
     NodeData = data.frame(Sample=nodeUnion, sample_data(physeq())[nodeUnion, ], stringsAsFactors = FALSE)      
   }
   NodeData$ShowLabels <- apply(NodeData[, input$d3_node_label, drop=FALSE], 1, paste0, collapse="; ")
-  observe({print("d3 calculate_links_data:")})
-  observe({print(LinksData)})
   return(list(link=data.frame(LinksData), node=NodeData))
 })  
 default_Source = function(x){

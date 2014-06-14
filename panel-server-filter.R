@@ -2,34 +2,20 @@
 physeq = reactive({
   ps0 = get_phyloseq_data()
   if(inherits(ps0, "phyloseq")){
-    observe({print(paste("filter_kOverA_count_threshold:", input$filter_kOverA_count_threshold))})
-    observe({print(paste("filter_kOverA_sample_threshold:", input$filter_kOverA_sample_threshold))})
-    observe({print(paste("filter_sample_sums_threshold:", input$filter_sample_sums_threshold))})
-    observe({print(paste("filter_taxa_sums_threshold:", input$filter_taxa_sums_threshold))})
-    observe({print(paste("filter_subset_taxa_expr:", input$filter_subset_taxa_expr))})
-    observe({print(paste("filter_subset_samp_expr:", input$filter_subset_samp_expr))})
     # Expression filters
     if( !is.null(av(input$filter_subset_taxa_expr)) ){
       ps0 = eval(parse(text=paste0("subset_taxa(ps0, ", input$filter_subset_taxa_expr, ")")))
-      observe({print("subset_taxa...")})
-      observe({print(ps0)})
     }
     if( !is.null(av(input$filter_subset_samp_expr)) ){
       ps0 = eval(parse(text=paste0("subset_samples(ps0, ", input$filter_subset_samp_expr, ")")))
-      observe({print("subset_samples...")})
-      observe({print(ps0)})
     }
     if( input$filter_taxa_sums_threshold > 0 ){
       # OTU sums filter
       ps0 <- prune_taxa({taxa_sums(ps0) > input$filter_taxa_sums_threshold}, ps0)
-      observe({print("prune OTUs...")})
-      observe({print(ps0)})
     }
     if( input$filter_sample_sums_threshold > 0 ){
       # Sample sums filtering
       ps0 <- prune_samples({sample_sums(ps0) > input$filter_sample_sums_threshold}, ps0)
-      observe({print("prune samples...")})
-      observe({print(ps0)})
     }
     if(inherits(input$filter_kOverA_sample_threshold, "numeric")){
       if(input$filter_kOverA_sample_threshold > 1){

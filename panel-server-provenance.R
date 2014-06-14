@@ -13,7 +13,8 @@
 # Store available objects in current and global environment.
 # Will use this to define an RData image of app-session for 
 # code+data reproducibility.
-shinyPhyloseqServerObjectsList = union(ls(.GlobalEnv), ls())
+shinyPhyloseqServerObjectsList = union(shinyPhyloseqServerObjectsList,
+                                       union(ls(.GlobalEnv), ls()))
 # Read header lines. Once.
 provHeaderLines = readLines("panel-server-provenance-header.R", warn = FALSE)
 # Define function for converting right-hand side
@@ -95,23 +96,45 @@ output$provenance <- renderUI({
                                      }, simplify = FALSE)
   ########################################
   # 3. Process all code executions.
-  # - ctx observables and observer
+  # - ctx observables
+  # - ctx observer?
   # - Others?
   ########################################
-  
+  ctxlogs = which(sapply(eventlog, function(x){x$action=="ctx"}))
+  #   # What `type`s are there?
+  #   unique(sapply(eventlog[ctxlogs], function(x) x$type))
+  #   table(sapply(eventlog[ctxlogs], function(x) x$type))
+  #   # observer
+  #   ctxlogs.observer = which(sapply(eventlog[ctxlogs], function(x) x$type=="observer"))
+  #   ctxlogs.observer <- ctxlogs[ctxlogs.observer]
+  #   eventlog[ctxlogs.observer]
+  # isolate
+  ctxlogs.isolate = which(sapply(eventlog[ctxlogs], function(x) x$type=="isolate"))
+  ctxlogs.isolate <- ctxlogs[ctxlogs.isolate]
+  if(length(ctxlogs.isolate)>0){
+    # Process isolate.
+    # eventlog[ctxlogs.isolate]
+  }
+  # "observable"s appear to be the reactive function calls.
+  ctxlogs.observable = which(sapply(eventlog[ctxlogs],
+                                    function(x){x$type=="observable"}))
+  ctxlogs.observable <- ctxlogs[ctxlogs.observable]
+  # Should be zero
+  #intersect(ctxlogs.observable, inputAllLines)
+  #intersect(ctxlogs.observable, inputLines)
+  eventCode[ctxlogs.observable] <- sapply(eventlog[ctxlogs.observable], function(x){
+    return(paste0("isolate({", x$label, "()})"))
+  })
   ########################################
-  # Return event code as character vector.
+  # Return event code as character vector
   ########################################
-  # Remove empty lines
+  # Remove empty lines, unlist, add header, write to file.
   eventCode <- eventCode[sapply(eventCode, length) > 0L]
-  # Add header and return
-  codeLines <- c(provHeaderLines, unlist(eventCode, recursive = TRUE, use.names = FALSE))
+  eventCode <- unlist(eventCode, recursive = TRUE, use.names = FALSE)
+  eventCode <- c(provHeaderLines, eventCode)
+  writeLines(eventCode, "~/Downloads/provenance.R")
   # Convert all newlines to <br/>
-  codeLines <- gsub("\n", "<br/>", codeLines, fixed = TRUE)
-  # Last few lines  ...
-  codeLines <- tail(codeLines)
-  # Test listing/saving the special objects visible during a session
-  observe({print("Attempt to list available objects:")})
-  observe({print(ls(environment(), all.names = TRUE))})
-  return(HTML(paste0(codeLines, collapse = '<br/>')))
+  codeLines <- gsub("\n", "<br/>", eventCode, fixed = TRUE)
+  # Write a small subset of the most-recent code to the main panel, as HTML
+  return(HTML(paste0(tail(codeLines, 3), collapse = '<br/>')))
 })

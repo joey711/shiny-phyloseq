@@ -15,7 +15,7 @@ uinetdispdist = sliderInput("uinetdispdist", "Edge Distance Threshold Animation:
                             max=netdist,
                             value=0.5*netdist,
                             step=step)
-sbp_net = sidebarPanel(uibutton,
+sbp_net = sidebarPanel(actionButton("actionb_net", "Re-build Network", icon("refresh")),
                        br(),
                        uinetdispdist,
                        uinetdistmax, 

@@ -59,13 +59,10 @@ input_all_to_Rcode = function(x){
 # Reactive function that processes the event log and renders
 # code to reproduce it as text on screen.
 event_code = reactive({
-  # Re-execute this reactive expression after 20 seconds
-  # This should be replaced with an active button.
-  invalidateLater(20000)
-  # Save current available RData image for generic reproducible access.
-  # This should be wrapped within a download UI later...
-  save(list = union(shinyPhyloseqServerObjectsList, ls()),
-       file = "~/Downloads/provenance.RData")
+  observe(print(paste("actionb_prov:", input$actionb_prov)))
+  if (input$actionb_prov == 0){
+    return(NULL)
+  }
   ########################################
   # 1. Grab current event log from within Shiny namespace
   ########################################
@@ -133,7 +130,6 @@ event_code = reactive({
   eventCode <- eventCode[sapply(eventCode, length) > 0L]
   eventCode <- unlist(eventCode, recursive = TRUE, use.names = FALSE)
   eventCode <- c(provHeaderLines, eventCode)
-  writeLines(eventCode, "~/Downloads/provenance.R")
   return(eventCode)
 })
 output$provenance <- renderUI({
@@ -142,7 +138,34 @@ output$provenance <- renderUI({
   # Write a small subset of the most-recent code to the main panel, as HTML
   return(HTML(paste0(tail(codeLines, 3), collapse = '<br/>')))
 })
+write_temp_record_files = reactive({
+  # Create temp directory for files
+  DIR = "www" 
+  DIR <- file.path(DIR, paste0("shiny-phyloseq-", simpletime()))
+  # Create
+  dir.create(DIR)
+  Rcodefile = file.path(DIR, "Provenance-Record.R")
+  Rdatafile = file.path(DIR, "Provenance-Record.RData")
+  # Write the R code log
+  writeLines(text = event_code(), con = Rcodefile)
+  # Save companion RData image.
+  save(list = union(shinyPhyloseqServerObjectsList, ls()), file = Rdatafile)
+  observe({print(paste("downloadHandler temp file locations, Rcodefile: ", Rcodefile))})
+  observe({print(paste("downloadHandler temp file locations, Rdatafile: ", Rdatafile))})
+  # Return the names of the temp files to zip-up.
+  return(DIR)
+})
+compressflag_to_extension = function(x){
+  flags = c(".tar", ".tar.gz", ".tar.bz2", ".tar.xz")
+  names(flags) <- c("none", "gzip", "bzip2", "xz")
+  return(flags[x[1]])
+}
 output$downloadProvenance <- downloadHandler(
-  filename = function(){paste0("shiny-phyloseq-record_", simpletime(), ".zip")},
-  content = function(file){writeLines(text = event_code(), con = file)}
+  filename = function(){
+    paste0("shiny-phyloseq-record-", simpletime(), compressflag_to_extension(input$compress_prov))
+  },
+  content = function(file){
+    tar(tarfile = file, files=write_temp_record_files(), compression = input$compress_prov)
+    unlink(write_temp_record_files(), recursive = TRUE)
+  }
 )

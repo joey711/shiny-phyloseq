@@ -1,8 +1,6 @@
 # Default options for app startup
 source("default-parameters.R", local=FALSE)
 source("ggsave.R", local=FALSE)
-# ui submit button for input changes
-uibutton = submitButton("Build/Rebuild Plot", icon("refresh"))
 # Type for distance/network/etc. Samples or Taxa
 uitype = function(id="type", selected="taxa"){
   selectInput(inputId=id, label="Calculation: Samples or Taxa?",

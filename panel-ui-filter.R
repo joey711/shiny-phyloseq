@@ -3,7 +3,7 @@ filterpage = fluidPage(
   titlePanel(""),
   sidebarLayout(
     sidebarPanel(
-      submitButton("Execute Filter", icon("refresh")),
+      actionButton("actionb_filter", "Execute Filter", icon("refresh")),
       p("  "),
       p('Filtering Parameters:'),
       tags$hr(),

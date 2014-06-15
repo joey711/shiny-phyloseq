@@ -9,8 +9,7 @@
 ################################################################################
 # Color Palette sbp definition
 ################################################################################
-sbp_pal = sidebarPanel(submitButton("Build/Rebuild Example Plot", icon("refresh")),
-                       br(), uipal("pal_main"))
+sbp_pal = sidebarPanel(uipal("pal_main"))
 palpage = fluidPage(
   titlePanel(""),
   sidebarLayout(

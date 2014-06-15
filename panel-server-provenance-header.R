@@ -1,3 +1,5 @@
+# Clear workspace for accurate record
+rm(list=ls())
 # Load packages and display version
 library("shiny"); packageVersion("shiny")
 library("phyloseq"); packageVersion("phyloseq")

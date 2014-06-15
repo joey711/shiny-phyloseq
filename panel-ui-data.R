@@ -4,7 +4,7 @@ datapage = fluidPage(
   sidebarLayout(
     sidebarPanel(
       h4('Select Dataset'),
-      submitButton("Load Selection", icon("refresh")),
+      actionButton("actionb_data", "Load Selection", icon("refresh")),
       uiOutput("phyloseqDataset"),
       tags$hr(),
       h4('Import Biom-Format File'),

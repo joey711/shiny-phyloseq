@@ -58,8 +58,9 @@ input_all_to_Rcode = function(x){
 }
 # Reactive function that processes the event log and renders
 # code to reproduce it as text on screen.
-output$provenance <- renderUI({
+event_code = reactive({
   # Re-execute this reactive expression after 20 seconds
+  # This should be replaced with an active button.
   invalidateLater(20000)
   # Save current available RData image for generic reproducible access.
   # This should be wrapped within a download UI later...
@@ -133,8 +134,15 @@ output$provenance <- renderUI({
   eventCode <- unlist(eventCode, recursive = TRUE, use.names = FALSE)
   eventCode <- c(provHeaderLines, eventCode)
   writeLines(eventCode, "~/Downloads/provenance.R")
+  return(eventCode)
+})
+output$provenance <- renderUI({
   # Convert all newlines to <br/>
-  codeLines <- gsub("\n", "<br/>", eventCode, fixed = TRUE)
+  codeLines <- gsub("\n", "<br/>", event_code(), fixed = TRUE)  
   # Write a small subset of the most-recent code to the main panel, as HTML
   return(HTML(paste0(tail(codeLines, 3), collapse = '<br/>')))
 })
+output$downloadProvenance <- downloadHandler(
+  filename = function(){paste0("shiny-phyloseq-record_", simpletime(), ".zip")},
+  content = function(file){writeLines(text = event_code(), con = file)}
+)

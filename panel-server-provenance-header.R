@@ -10,23 +10,24 @@ load("provenance.RData")
 rm(input, output)
 # Initialize `input` as list
 input = vector("list", length = 0)
-## This would be an awesome hack if it worked...
-#attr(input, "readonly") <- FALSE
-## This hack is also interesting
-# temp = isolate(reactiveValuesToList(input, all.names = TRUE))
-# rm(input)
-# input <- temp
-# The following at least partially works, and gives a concise means
-# to reset all reactives in one line. Over and over.
+# Convert all reactives to functions
 ObjectClasses = sapply(sapply(ls(), get, simplify = FALSE), class, simplify = FALSE)
 reactiveObjects = names(ObjectClasses[which(sapply(ObjectClasses, function(x) x[[1]]=="reactive"))])
-invalidatedLines = paste0("attr(", reactiveObjects, ", 'observable')$.invalidated <- TRUE")
-execCountLines = paste0("attr(", reactiveObjects, ", 'observable')$.execCount <- 0L")
-mostRecentCtxIdLines = paste0("attr(", reactiveObjects, ", 'observable')$.mostRecentCtxId <- ''")
-valueLines = paste0("attr(", reactiveObjects, ", 'observable')$.value <- NULL")
-initializeLines = c(invalidatedLines, execCountLines, mostRecentCtxIdLines, valueLines)
-# Now the following line will reset all reactives to invalidated.
-eval(parse(text=initializeLines))
+# Define a function that takes the name of a reactive object
+# and returns the function()-equivalent of that object, as a single string.
+reactive_to_function = function(x){
+  reactiveLabel = funcall = NULL
+  reactiveLabel <- eval(parse(text = paste0("attr(", x, ", 'observable')$.label")))
+  # Convert to function call
+  funcall <- gsub("^reactive\\(", "function(){", reactiveLabel)
+  funcall <- gsub("\\)$", "}", funcall)
+  return(funcall)
+}
+# Now for each reactive object in the workspace, convert it to a vanilla function
+for(x in reactiveObjects){
+  eval(parse(text = paste(x, "<-", reactive_to_function(x))))
+}
+
 #
 # Some example test code...
 # isolate(p_net())

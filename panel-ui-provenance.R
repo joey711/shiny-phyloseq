@@ -14,7 +14,11 @@
 # Provenance Tracking Code Record, sbp definition
 ################################################################################
 sbp_prov = sidebarPanel(submitButton("Render Code", icon("refresh")),
-                       br(), h3("Not sure what else to put here yet. A download button perhaps."))
+                       br(),
+                       h3("Not sure what else to put here yet. A download button perhaps."),
+                       graphicTypeUI("downtype_prov"),
+                       downloadButton('downloadProvenance', 'Download Files')
+)
 provpage = fluidPage(
   titlePanel(""),
   sidebarLayout(

@@ -16,7 +16,7 @@
 shinyPhyloseqServerObjectsList = union(shinyPhyloseqServerObjectsList,
                                        union(ls(.GlobalEnv), ls()))
 # Read header lines. Once.
-provHeaderLines = readLines("panel-server-provenance-header.R", warn = FALSE)
+provHeaderLines = readLines("panels/panel-server-provenance-header.R", warn = FALSE)
 # Define function for converting right-hand side
 # of simple input lines in event log.
 convert_input_lines_value = function(x){

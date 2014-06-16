@@ -1,6 +1,3 @@
-# Default options for app startup
-source("default-parameters.R", local=FALSE)
-source("ggsave.R", local=FALSE)
 # Type for distance/network/etc. Samples or Taxa
 uitype = function(id="type", selected="taxa"){
   selectInput(inputId=id, label="Calculation: Samples or Taxa?",
@@ -81,18 +78,18 @@ make_fluidpage = function(fptitle="", sbp, outplotid){
 #                       ))
 # )
 ################################################################################
-source("panel-ui-net.R", local = TRUE)
-source("panel-ui-bar.R", local = TRUE)
-source("panel-ui-ord.R", local = TRUE)
-source("panel-ui-rich.R", local = TRUE)
-source("panel-ui-tree.R", local = TRUE)
-source("panel-ui-heat.R", local = TRUE)
-source("panel-ui-scat.R", local = TRUE)
-source("panel-ui-d3.R", local = TRUE)
-source("panel-ui-data.R", local = TRUE)
-source("panel-ui-filter.R", local = TRUE)
-source("panel-ui-palette.R", local = TRUE)
-source("panel-ui-provenance.R", local = TRUE)
+source("panels/panel-ui-net.R", local = TRUE)
+source("panels/panel-ui-bar.R", local = TRUE)
+source("panels/panel-ui-ord.R", local = TRUE)
+source("panels/panel-ui-rich.R", local = TRUE)
+source("panels/panel-ui-tree.R", local = TRUE)
+source("panels/panel-ui-heat.R", local = TRUE)
+source("panels/panel-ui-scat.R", local = TRUE)
+source("panels/panel-ui-d3.R", local = TRUE)
+source("panels/panel-ui-data.R", local = TRUE)
+source("panels/panel-ui-filter.R", local = TRUE)
+source("panels/panel-ui-palette.R", local = TRUE)
+source("panels/panel-ui-provenance.R", local = TRUE)
 # Define the full user-interface, `ui`
 ################################################################################
 ui = navbarPage("Shiny + phyloseq",

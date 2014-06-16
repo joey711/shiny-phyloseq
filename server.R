@@ -7,11 +7,8 @@ library("phyloseq"); packageVersion("phyloseq")
 library("ggplot2"); packageVersion("ggplot2")
 library("data.table"); packageVersion("data.table")
 library("d3Network"); packageVersion("d3Network")
-# Default options for app startup
-source("default-parameters.R", local=FALSE)
-source("ggsave.R")
 # For pasting times into things
-simpletime = function(){gsub("[[:punct:][:space:]]", "_", Sys.time())}
+simpletime = function(){gsub("\\D", "_", Sys.time())}
 # By default, the file size limit is 5MB. It can be changed by
 # setting this option. Here we'll raise limit to 9MB.
 options(shiny.maxRequestSize = 100*1024^2)
@@ -44,9 +41,9 @@ shinyPhyloseqServerObjectsList = ls()
 
 shinyServer(function(input, output){
   # Data panel
-  source("panel-server-data.R", local = TRUE)
+  source("panels/panel-server-data.R", local = TRUE)
   # Filtering
-  source("panel-server-filter.R", local = TRUE)
+  source("panels/panel-server-filter.R", local = TRUE)
   ########################################
   # Reactive UI Definition of Variables
   ########################################
@@ -138,24 +135,24 @@ shinyServer(function(input, output){
     return(x)
   }
   # Bar
-  source("panel-server-bar.R", local = TRUE)
+  source("panels/panel-server-bar.R", local = TRUE)
   # Tree
-  source("panel-server-tree.R", local = TRUE)
+  source("panels/panel-server-tree.R", local = TRUE)
   # Heatmap
-  source("panel-server-heatmap.R", local = TRUE)
+  source("panels/panel-server-heatmap.R", local = TRUE)
   # Richness
-  source("panel-server-richness.R", local = TRUE)
+  source("panels/panel-server-richness.R", local = TRUE)
   # Ordination
-  source("panel-server-ordination.R", local = TRUE)
+  source("panels/panel-server-ordination.R", local = TRUE)
   # Network
-  source("panel-server-net.R", local = TRUE)
+  source("panels/panel-server-net.R", local = TRUE)
   # d3
-  source("panel-server-d3.R", local = TRUE)
+  source("panels/panel-server-d3.R", local = TRUE)
   # Scatter
-  source("panel-server-scatter.R", local = TRUE)
+  source("panels/panel-server-scatter.R", local = TRUE)
   # Palette
-  source("panel-server-palette.R", local = TRUE)
+  source("panels/panel-server-palette.R", local = TRUE)
   # Provenance
-  source("panel-server-provenance.R", local = TRUE)
+  source("panels/panel-server-provenance.R", local = TRUE)
 })
 ################################################################################

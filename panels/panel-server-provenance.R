@@ -140,8 +140,8 @@ output$provenance <- renderUI({
 })
 write_temp_record_files = reactive({
   # Create temp directory for files
-  DIR = "www" 
-  DIR <- file.path(DIR, paste0("shiny-phyloseq-", simpletime()))
+  DIR = "sandbox" 
+  DIR <- file.path(DIR, paste0("shiny-phyloseq-provenance-", simpletime()))
   # Create
   dir.create(DIR)
   Rcodefile = file.path(DIR, "Provenance-Record.R")
@@ -157,6 +157,7 @@ write_temp_record_files = reactive({
 })
 compressflag_to_extension = function(x){
   flags = c(".tar", ".tar.gz", ".tar.bz2", ".tar.xz")
+  # Options exclusively from `utils::tar` function. Could open this up at some point.
   names(flags) <- c("none", "gzip", "bzip2", "xz")
   return(flags[x[1]])
 }
@@ -165,7 +166,9 @@ output$downloadProvenance <- downloadHandler(
     paste0("shiny-phyloseq-record-", simpletime(), compressflag_to_extension(input$compress_prov))
   },
   content = function(file){
-    tar(tarfile = file, files=write_temp_record_files(), compression = input$compress_prov)
-    unlink(write_temp_record_files(), recursive = TRUE)
+    DIR <- write_temp_record_files()
+    tar(tarfile = file, files = DIR, compression = input$compress_prov)
+    # Cleanup after yourself. Remove temporary records directory.
+    unlink(DIR, recursive = TRUE)
   }
 )

@@ -22,16 +22,25 @@ output$network_uix_layout <- renderUI({
               selected = "fruchterman.reingold")
 })
 output$network_uix_color <- renderUI({
-  uivar("color_net", "Color Variable:", vars(input$type_net))
+  uivar("color_net", "Color Variable", vars(input$type_net))
 })
 output$network_uix_shape <- renderUI({
-  uivar("shape_net", "Shape Variable:", vars(input$type_net))
+  uivar("shape_net", "Shape Variable", vars(input$type_net))
 })
 output$network_uix_label <- renderUI({
-  selectInput("label_net", "Node Label:",
+  selectInput("label_net", "Node Label",
               choices = vars(input$type_net, TRUE, TRUE),
               selected = default_netLabel,
               multiple = TRUE)
+})
+output$network_uix_edgeSlider <- renderUI({
+  # ui for distance to display
+  uinetdispdist = sliderInput("uinetdispdist", "Display Edge Maximum",
+                              animate=animationOptions(interval=interval, loop=loop),
+                              min=0.0,
+                              max=input$uinetdistmax,
+                              value=0.6*input$uinetdistmax,
+                              step=input$uinetdistmax/animation_steps)
 })
 ################################################################################
 # Static Network Plot using ggplot2 

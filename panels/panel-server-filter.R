@@ -1,39 +1,55 @@
 # The main reactive data object. Returns a phyloseq-class instance.
 physeq = reactive({
   ps0 = get_phyloseq_data()
-  if(inherits(ps0, "phyloseq")){
-    # Expression filters
-    if( !is.null(av(input$filter_subset_taxa_expr)) ){
-      ps0 = eval(parse(text=paste0("subset_taxa(ps0, ", input$filter_subset_taxa_expr, ")")))
+  if(input$actionb_filter == 0){
+    # Don't execute filter if filter-button has never been clicked.
+    if(inherits(ps0, "phyloseq")){
+      return(ps0)
+    } else {
+      return(NULL)
     }
-    if( !is.null(av(input$filter_subset_samp_expr)) ){
-      ps0 = eval(parse(text=paste0("subset_samples(ps0, ", input$filter_subset_samp_expr, ")")))
-    }
-    if( input$filter_taxa_sums_threshold > 0 ){
-      # OTU sums filter
-      ps0 <- prune_taxa({taxa_sums(ps0) > input$filter_taxa_sums_threshold}, ps0)
-    }
-    if( input$filter_sample_sums_threshold > 0 ){
-      # Sample sums filtering
-      ps0 <- prune_samples({sample_sums(ps0) > input$filter_sample_sums_threshold}, ps0)
-    }
-    if(inherits(input$filter_kOverA_sample_threshold, "numeric")){
-      if(input$filter_kOverA_sample_threshold > 1){
-        # kOverA OTU Filtering
-        flist = genefilter::filterfun(
-          genefilter::kOverA(input$filter_kOverA_sample_threshold,
-                             input$filter_kOverA_count_threshold, na.rm=TRUE)
-        )
-        ps0 <- filter_taxa(ps0, flist, prune=TRUE)
-      }
-    }
-    return(ps0)
-  } else {
-    return(NULL)
   }
+  # Isolate all filter code so that button click is required for update
+  isolate({
+    if(inherits(ps0, "phyloseq")){
+      # Expression filters
+      if( !is.null(av(input$filter_subset_taxa_expr)) ){
+        ps0 = eval(parse(text=paste0("subset_taxa(ps0, ", input$filter_subset_taxa_expr, ")")))
+      }
+      if( !is.null(av(input$filter_subset_samp_expr)) ){
+        ps0 = eval(parse(text=paste0("subset_samples(ps0, ", input$filter_subset_samp_expr, ")")))
+      }
+      if( input$filter_taxa_sums_threshold > 0 ){
+        # OTU sums filter
+        ps0 <- prune_taxa({taxa_sums(ps0) > input$filter_taxa_sums_threshold}, ps0)
+      }
+      if( input$filter_sample_sums_threshold > 0 ){
+        # Sample sums filtering
+        ps0 <- prune_samples({sample_sums(ps0) > input$filter_sample_sums_threshold}, ps0)
+      }
+      if(inherits(input$filter_kOverA_sample_threshold, "numeric")){
+        if(input$filter_kOverA_sample_threshold > 1){
+          # kOverA OTU Filtering
+          flist = genefilter::filterfun(
+            genefilter::kOverA(input$filter_kOverA_sample_threshold,
+                               input$filter_kOverA_count_threshold, na.rm=TRUE)
+          )
+          ps0 <- filter_taxa(ps0, flist, prune=TRUE)
+        }
+      }
+      return(ps0)
+    } else {
+      return(NULL)
+    }
+  })
 })
 # Define a proportions-only version of input phyloseq object
-physeqProp = reactive({transform_sample_counts(physeq(), function(x){x / sum(x)})})
+physeqProp = reactive({
+  if(is.null(physeq())){
+    return(NULL)
+  }
+  return(transform_sample_counts(physeq(), function(x){x / sum(x)}))
+})
 # kOverA `k` Filter UI
 maxSamples = reactive({
   # Create logical indicated the samples to keep, or dummy logical if nonsense input

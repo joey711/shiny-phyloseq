@@ -59,7 +59,6 @@ input_all_to_Rcode = function(x){
 # Reactive function that processes the event log and renders
 # code to reproduce it as text on screen.
 event_code = reactive({
-  observe(print(paste("actionb_prov:", input$actionb_prov)))
   if (input$actionb_prov == 0){
     return(NULL)
   }
@@ -150,8 +149,6 @@ write_temp_record_files = reactive({
   writeLines(text = event_code(), con = Rcodefile)
   # Save companion RData image.
   save(list = union(shinyPhyloseqServerObjectsList, ls()), file = Rdatafile)
-  observe({print(paste("downloadHandler temp file locations, Rcodefile: ", Rcodefile))})
-  observe({print(paste("downloadHandler temp file locations, Rdatafile: ", Rdatafile))})
   # Return the names of the temp files to zip-up.
   return(DIR)
 })

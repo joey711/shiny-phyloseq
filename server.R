@@ -26,13 +26,8 @@ datalist = list(GlobalPatterns=GlobalPatterns,
                 enterotype=enterotype,
                 esophagus=esophagus,
                 soilrep=soilrep)
-
-filepath = system.file("extdata", "study_1457_split_library_seqs_and_mapping.zip", package="phyloseq")
-suppressWarnings(kostic <- microbio_me_qiime(filepath))
-if(inherits(kostic, "phyloseq")){
-  datalist <- c(list(study_1457_Kostic=kostic), datalist)
-}
-
+load("data/kostic.RData")
+datalist <- c(list(study_1457_Kostic=kostic), datalist)
 ################################################################################
 # Begin Shiny Server definition.
 ################################################################################

@@ -6,11 +6,11 @@ uitype = function(id="type", selected="taxa"){
 }
 # ui for point size slider
 uiptsz = function(id="size"){
-  sliderInput(inputId=id, label="Point Size:", min=1, max=10, value=5, step=1)
+  numericInput(inputId=id, label="Point Size", min=1, max=NA, value=5, step=1)
 }
 # ui for point opacity slider
 uialpha = function(id="alpha"){
-  sliderInput(inputId=id, label="Opacity:", min=0, max=1, value=1, step=0.1)
+  sliderInput(inputId=id, label="Opacity", min=0, max=1, value=1, step=0.1)
 }
 # UI function to define 
 uipal = function(id, default="Set1"){
@@ -34,7 +34,7 @@ names(distlist) <- distlist
 uidist = function(id, selected="bray"){
   distlist = as.list(unlist(phyloseq::distance("list")))
   names(distlist) <- distlist
-  return(selectInput(id, "Distance Method:", distlist, selected=selected))
+  return(selectInput(id, "Distance Method", distlist, selected=selected))
 }
 # Whether to use proportions or counts
 uicttype = function(id="uicttype"){

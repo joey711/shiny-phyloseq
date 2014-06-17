@@ -178,7 +178,9 @@ p_net_label = reactive({
   NodeData
   return(p_net() + geom_text(aes(x, y, label=ShowLabels),
                              data = NodeData,
-                             size = 2, hjust = 1.35, na.rm = TRUE))
+                             size = input$text_size_net,
+                             hjust = input$text_hjust_net,
+                             na.rm = TRUE))
 })
 # 6.
 # Reactive update to ggplot

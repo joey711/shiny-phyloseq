@@ -1,5 +1,3 @@
-require("shiny")
-require("ggplot2")
 # Define supported format labels
 vectorGraphicFormats = c("emf", "eps", "pdf", "tex", "svg", "wmf")
 rasterGraphicFormats = c("bmp", "jpg", "png", "tiff")

@@ -21,6 +21,8 @@ sbp_net = sidebarPanel(
   uiOutput("network_uix_label"),
   tags$hr(),
   h4('Figure Details'),
+  numericInput("text_size_net", label="Label Size", min=1, max=NA, value=8, step=2),
+  numericInput("text_hjust_net", label="Label H-Justification", min=1, max=NA, value=1, step=0.1),
   uiptsz("size_net"), uialpha("alpha_net"), uipal("pal_net"),
   tags$hr(),
   h4('Figure Dimensions'),

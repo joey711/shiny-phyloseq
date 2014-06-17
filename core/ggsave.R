@@ -2,7 +2,7 @@
 vectorGraphicFormats = c("emf", "eps", "pdf", "tex", "svg", "wmf")
 rasterGraphicFormats = c("bmp", "jpg", "png", "tiff")
 graphicFormats = c(vectorGraphicFormats, rasterGraphicFormats)
-graphicTypeUI = function(inputId, label="Select Download Format:", choices=graphicFormats, selected="pdf"){
+graphicTypeUI = function(inputId, label="Select Download Format", choices=graphicFormats, selected="pdf"){
   selectInput(inputId, label, choices, selected, multiple = FALSE, selectize = TRUE)
 }
 ggfilegen = function(prefix, graphictype="pdf"){

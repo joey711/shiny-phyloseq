@@ -24,7 +24,10 @@ get_facet <- reactive({
 make_bar_plot = reactive({
   p0 = NULL
   # Try with facet argument included first. If fails, retry without it.
-  try(p0 <- plot_bar(physeq_bar(), x=input$x_bar, y="Abundance", fill=av(input$color_bar), 
+  try(p0 <- plot_bar(physeq_bar(),
+                     x=input$x_bar,
+                     y="Abundance",
+                     fill=av(input$color_bar), 
                      facet_grid=get_facet()),
       silent=TRUE)
   if(!inherits(p0, "ggplot")){
@@ -35,7 +38,12 @@ make_bar_plot = reactive({
   return(p0)
 })
 finalize_bar_plot = reactive({
-  p0 = make_bar_plot()
+  if(input$actionb_bar < 1){
+    p0 = fail_gen("Change settings and/or click '(Re)Build Graphic' Button")
+  }
+  isolate({
+    p0 <- make_bar_plot()
+  })
   p0 <- p0 + scale_fill_brewer(palette=input$pal_bar) 
   return(p0)
 })

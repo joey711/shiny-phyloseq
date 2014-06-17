@@ -59,7 +59,7 @@ input_all_to_Rcode = function(x){
 # Reactive function that processes the event log and renders
 # code to reproduce it as text on screen.
 event_code = reactive({
-  if (input$actionb_prov == 0){
+  if (input$actionb_prov < 1){
     return(NULL)
   }
   ########################################
@@ -132,10 +132,19 @@ event_code = reactive({
   return(eventCode)
 })
 output$provenance <- renderUI({
-  # Convert all newlines to <br/>
-  codeLines <- gsub("\n", "<br/>", event_code(), fixed = TRUE)  
   # Write a small subset of the most-recent code to the main panel, as HTML
-  return(HTML(paste0(tail(codeLines, 3), collapse = '<br/>')))
+  # Use the google prettify engine
+  # https://code.google.com/p/google-code-prettify/
+  x <- knitr::knit2html(fragment.only=TRUE,
+                       text = c(
+                         '<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=r&skin=sunburst"></script>',
+                         "## Last 3 Chunks",
+                         "```{r last-3-chunks, echo=TRUE, eval=FALSE}",
+                         tail(event_code(), 3),
+                         "```")
+  )
+  x <- gsub("<pre>", '<pre class="prettyprint">', x, fixed = TRUE)
+  return(HTML(x))
 })
 write_temp_record_files = reactive({
   # Create temp directory for files

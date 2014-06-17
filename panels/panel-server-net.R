@@ -36,11 +36,16 @@ output$network_uix_label <- renderUI({
 output$network_uix_edgeSlider <- renderUI({
   # ui for distance to display
   uinetdispdist = sliderInput("uinetdispdist", "Display Edge Maximum",
-                              animate=animationOptions(interval=interval, loop=loop),
-                              min=0.0,
-                              max=input$uinetdistmax,
-                              value=0.6*input$uinetdistmax,
-                              step=input$uinetdistmax/animation_steps)
+                              min = 0.0,
+                              max = input$uinetdistmax,
+                              value = input$uinetdistmax,
+                              step = input$uinetdistmax/animation_steps,
+                              animate = animationOptions(
+                                playButton = "Play",
+                                pauseButton = "Pause",
+                                interval=interval,
+                                loop=loop)
+  )
 })
 ################################################################################
 # Static Network Plot using ggplot2 

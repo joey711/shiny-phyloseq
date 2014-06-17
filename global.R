@@ -50,7 +50,7 @@ fail_gen = function(main = "Change settings and/or click buttons.",
     )
 }
 # Define a default controlled ggplot printing check for all print rendering
-shiny_phyloseq_print = function(p, f=failp){
+shiny_phyloseq_print = function(p, f=fail_gen()){
   if(inherits(p, "ggplot")){
     # Check that rendering will work
     printout = NULL

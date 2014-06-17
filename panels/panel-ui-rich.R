@@ -7,7 +7,7 @@ uialphameas = selectInput(inputId="measures_alpha",
                           choices=richmeasvars, 
                           selected=c("Chao1", "Shannon", "InvSimpson"),
                           multiple=TRUE)
-sbp_rich = sidebarPanel(actionButton("actionb_rich", "Re-Build Graphic", icon("refresh")),
+sbp_rich = sidebarPanel(actionButton("actionb_rich", "(Re)Build Graphic", icon("bar-chart-o")),
                         br(), uialphameas,
                         uiOutput("richness_uix_x"), 
                         uiOutput("richness_uix_color"),

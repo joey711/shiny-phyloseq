@@ -20,6 +20,8 @@ provHeaderLines = readLines("panels/panel-server-provenance-header.R", warn = FA
 # Define function for converting right-hand side
 # of simple input lines in event log.
 convert_input_lines_value = function(x){
+  # Trim actionButton input statements to match others
+  x <- gsub("^.+shinyActionButtonValue' ", "", x)
   # Remove the class indicators
   x <- gsub("^\\s*chr\\s*", "", x)
   x <- gsub("^\\s*num\\s*", "", x)
@@ -35,6 +37,7 @@ convert_input_lines_value = function(x){
 }
 # Function to convert `input (all)` lines.
 input_all_to_Rcode = function(x){
+  x <- gsub("Classes 'numeric', 'shinyActionButtonValue'", "", x)
   # Remove initial List statement.
   x <- gsub("List of \\d+\n \\$", "$", x)
   # Convert to input$ list directly

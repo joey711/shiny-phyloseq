@@ -1,14 +1,6 @@
 ################################################################################
 # Options, default settings, and load packages
 ################################################################################
-# load packages
-library("shiny"); packageVersion("shiny")
-library("phyloseq"); packageVersion("phyloseq")
-library("ggplot2"); packageVersion("ggplot2")
-library("data.table"); packageVersion("data.table")
-library("d3Network"); packageVersion("d3Network")
-# For pasting times into things
-simpletime = function(){gsub("\\D", "_", Sys.time())}
 # By default, the file size limit is 5MB. It can be changed by
 # setting this option. Here we'll raise limit to 9MB.
 options(shiny.maxRequestSize = 100*1024^2)
@@ -16,18 +8,6 @@ options(shiny.maxRequestSize = 100*1024^2)
 options(shiny.reactlog=TRUE)
 # Default ggplot2 theme.
 theme_set(theme_bw())
-################################################################################
-# Included Data
-# Define the named list of datasets to choose from
-################################################################################
-includedDatasets = c("GlobalPatterns", "enterotype", "esophagus", "soilrep")
-data(list=includedDatasets)
-datalist = list(GlobalPatterns=GlobalPatterns, 
-                enterotype=enterotype,
-                esophagus=esophagus,
-                soilrep=soilrep)
-load("data/kostic.RData")
-datalist <- c(list(study_1457_Kostic=kostic), datalist)
 ################################################################################
 # Begin Shiny Server definition.
 ################################################################################
@@ -89,45 +69,6 @@ shinyServer(function(input, output){
   # A generic selectInput UI. Plan is to pass a reactive argument to `choices`.
   uivar = function(id, label="Variable:", choices, selected="NULL"){
     selectInput(inputId=id, label=label, choices=choices, selected=selected)
-  }
-  ########################################
-  # Plot Rendering Stuff.
-  ########################################
-  # Define a dummy "failed plot" to return if render section cannot build valid plot.
-  fail_gen = function(main="Graphic Fail.", 
-                      subtext="Please change parameters and try again."){
-    qplot(x=0, y=0, main=main) + 
-      annotate("text", 0, 0, label=":-(",
-               size=75, angle=270, hjust=0.5, vjust=0.35) +
-      annotate("text", 0, 0, label=subtext, size=10, hjust=0.5, vjust=-7) +
-      theme_bw() + 
-      theme(panel.border=element_blank(), axis.line=element_blank(),
-            axis.text=element_blank(), axis.ticks=element_blank())
-  }
-  failp = fail_gen()
-  # Define a default controlled ggplot printing check for all print rendering
-  shiny_phyloseq_print = function(p, f=failp){
-    if(inherits(p, "ggplot")){
-      # Check that rendering will work
-      printout = NULL
-      try(printout <- print(p), silent=TRUE)
-      if(is.null(printout)){
-        # If still NULL, the print-render failed,
-        # otherwise print() would have returned a 'list'
-        # Nothing was printed. Print the fail graphic in its place.
-        print(f)
-      }
-    } else {
-      print(f)
-    }
-  }    
-  # Define generic function to access/clean variables
-  # This especially converts "NULL" to NULL
-  av = function(x){
-    if( isTRUE(all.equal(x, "")) | isTRUE(all.equal(x, "NULL")) ){
-      return(NULL)
-    }
-    return(x)
   }
   # Bar
   source("panels/panel-server-bar.R", local = TRUE)

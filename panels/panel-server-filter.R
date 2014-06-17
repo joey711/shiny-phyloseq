@@ -99,38 +99,6 @@ otu_sum_hist = reactive({
   ylab = "Number of OTUs"
   return(sums_hist(taxa_sums(get_phyloseq_data()), xlab, ylab))    
 })
-output$library_sizes <- renderPlot({
-  if(inherits(get_phyloseq_data(), "phyloseq")){
-    libtitle = "Histogram of Library Sizes in Selected Data"
-    p1 = lib_size_hist() + ggtitle(libtitle)
-    otusumtitle = "Histogram of OTU total counts in Selected Data"
-    p2 = otu_sum_hist() + ggtitle(otusumtitle)
-    gridExtra::grid.arrange(p1, p2, ncol=2)
-  } else {
-    libfailtext = "Press the `Load Selection` button \n to load/refresh data."
-    print(qplot(x=0, y=0, main="") + xlim(-1, 1) + ylim(-1, 1) + 
-            geom_segment(aes(x=0, y=0, xend=-0.5, yend=0.15), size=3,
-                         arrow=grid::arrow(length=grid::unit(0.5, "cm"))) +
-            annotate("text", 0, 0, label=libfailtext, size=12, hjust=0.5, vjust=-1) +
-            theme(line=element_blank(), text=element_blank(), panel.border=element_blank())
-    )
-  }
-})
-output$OTU_count_thresh_hist <- renderPlot({
-  ps0 = get_phyloseq_data()
-  if(inherits(get_phyloseq_data(), "phyloseq")){
-    mx = as(otu_table(ps0), "matrix")
-    if(!taxa_are_rows(ps0)){mx <- t(mx)}
-    thresh = input$dataset_count_threshold
-    df = data.frame(x=apply(mx, 1, function(x, thresh){sum(x>thresh)}, thresh))
-    p = ggplot(df, aes(x=x)) + geom_histogram()
-    p = p + xlab("Number of Samples with Count Above Threshold") + ylab("Number of OTUs")
-    p = p + ggtitle(paste("Histogram of OTUs Observed More Than", thresh, "Times"))
-    return(shiny_phyloseq_print(p))
-  } else {
-    return(qplot(0))
-  }
-})
 output$sample_variables <- renderText({return(
   paste0(sample_variables(get_phyloseq_data(), errorIfNULL=FALSE), collapse=", ")
 )})
@@ -150,7 +118,7 @@ output$filter_summary_plot <- renderPlot({
     ) + 
       ggtitle("Filtered Data")
   } else {
-    potu1 = plib1 = failp
+    potu1 = plib1 = fail_gen()
   }
   gridExtra::grid.arrange(plib0, potu0, plib1, potu1, ncol=2, 
                           main="Histograms: Before and After Filtering")

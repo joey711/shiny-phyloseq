@@ -2,6 +2,9 @@
 # Define the available phyloseq datasets for plotting.
 ################################################################################
 get_qiime_data = reactive({
+  if(input$actionb_data_qiime < 1){
+    return(NULL)
+  }
   qiime_data = NULL
   if(!is.null(av(input$qiime_server_ID))){
     if( !is.na(as.integer(input$qiime_server_ID)) ){
@@ -77,5 +80,34 @@ get_phyloseq_data = reactive({
     return(ps0)
   } else {
     return(NULL)
+  }
+})
+output$library_sizes <- renderPlot({
+  if(inherits(get_phyloseq_data(), "phyloseq")){
+    libtitle = "Histogram of Library Sizes in Selected Data"
+    p1 = lib_size_hist() + ggtitle(libtitle)
+    otusumtitle = "Histogram of OTU total counts in Selected Data"
+    p2 = otu_sum_hist() + ggtitle(otusumtitle)
+    gridExtra::grid.arrange(p1, p2, ncol=2)
+  } else {
+    fail_gen("")
+  }
+})
+output$OTU_count_thresh_hist <- renderPlot({
+  if(input$actionb_data < 1){
+    return(fail_gen("Click 'Make Histogram' Button"))
+  }
+  ps0 = get_phyloseq_data()
+  if(inherits(get_phyloseq_data(), "phyloseq")){
+    mx = as(otu_table(ps0), "matrix")
+    if(!taxa_are_rows(ps0)){mx <- t(mx)}
+    thresh = input$dataset_count_threshold
+    df = data.frame(x=apply(mx, 1, function(x, thresh){sum(x>thresh)}, thresh))
+    p = ggplot(df, aes(x=x)) + geom_histogram()
+    p = p + xlab("Number of Samples with Count Above Threshold") + ylab("Number of OTUs")
+    p = p + ggtitle(paste("Histogram of OTUs Observed More Than", thresh, "Times"))
+    return(shiny_phyloseq_print(p))
+  } else {
+    return(fail_gen())
   }
 })

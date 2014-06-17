@@ -9,7 +9,7 @@ graphicTypeUI = function(inputId, label="Select Download Format:", choices=graph
 }
 ggfilegen = function(prefix, graphictype="pdf"){
   return({
-    function(){paste0(prefix, gsub("[[:punct:][:space:]]", "_", Sys.time()), ".", graphictype)}
+    function(){paste0(prefix, simpletime(), ".", graphictype)}
   })
 }
 ggsave2 <- function(filename = "ggplot2save2", plot = last_plot(),
@@ -72,7 +72,8 @@ ggsave2 <- function(filename = "ggplot2save2", plot = last_plot(),
   # if either width or height is not specified, display an information message
   # units are those specified by the user
   if (missing(width) || missing(height)) {
-    message("Saving ", prettyNum(convert_from_inches(width * scale, units), digits=3), " x ", prettyNum(convert_from_inches(height * scale, units), digits=3), " ", units, " image")
+    message("Saving ", prettyNum(convert_from_inches(width * scale, units), digits=3), 
+            " x ", prettyNum(convert_from_inches(height * scale, units), digits=3), " ", units, " image")
   }
   width <- width * scale
   height <- height * scale

@@ -3,12 +3,15 @@ datapage = fluidPage(
   titlePanel(""),
   sidebarLayout(
     sidebarPanel(
-      h4('Select Dataset'),
+      h3('Select Dataset'),
       uiOutput("phyloseqDataset"),
       tags$hr(),
-      h4('Import Biom-Format File'),
+      h4(a("Upload Biom-Format File",
+           href="http://joey711.github.io/phyloseq/import-data.html#import_biom")),
       fileInput('filebiom', "", multiple = TRUE),
-      h4('Upload Custom .RData'),
+      tags$hr(),
+      h4(a("Upload Custom .RData File",
+           href="http://joey711.github.io/phyloseq/import-data.html")),
       fileInput('file1', ""),
       tags$hr(),
       actionButton("actionb_data_qiime", "Load QIIME Data", icon("cloud-download")),

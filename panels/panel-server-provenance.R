@@ -101,30 +101,21 @@ event_code = reactive({
   # - Others?
   ########################################
   ctxlogs = which(sapply(eventlog, function(x){x$action=="ctx"}))
-  #   # What `type`s are there?
-  #   unique(sapply(eventlog[ctxlogs], function(x) x$type))
-  #   table(sapply(eventlog[ctxlogs], function(x) x$type))
-  #   # observer
-  #   ctxlogs.observer = which(sapply(eventlog[ctxlogs], function(x) x$type=="observer"))
-  #   ctxlogs.observer <- ctxlogs[ctxlogs.observer]
-  #   eventlog[ctxlogs.observer]
-  # isolate
-  #   ctxlogs.isolate = which(sapply(eventlog[ctxlogs], function(x) x$type=="isolate"))
-  #   ctxlogs.isolate <- ctxlogs[ctxlogs.isolate]
-  #   if(length(ctxlogs.isolate)>0){
-  #     # Process isolate.
-  #     # eventlog[ctxlogs.isolate]
-  #   }
-  # "observable"s appear to be the main reactive function calls that we need to process
-  ctxlogs.observable = which(sapply(eventlog[ctxlogs],
-                                    function(x){x$type=="observable"}))
-  ctxlogs.observable <- ctxlogs[ctxlogs.observable]
-  # Should be zero
-  #intersect(ctxlogs.observable, inputAllLines)
-  #intersect(ctxlogs.observable, inputLines)
-  eventCode[ctxlogs.observable] <- sapply(eventlog[ctxlogs.observable], function(x){
-    x <- gsub("^reactive\\(", "eval(expression(", x$label)
+  # Omit provenance reactive (if present)
+  ProvenanceSelfLinks = which(sapply(eventlog[ctxlogs], function(x){
+    length(grep("shiny:::.graphEnv$log", x$label, fixed = TRUE)) > 0
+  }))
+  ctxlogs <- ctxlogs[-ProvenanceSelfLinks]
+  # Keep only renderPlot reactives
+  renderPlotEvents = which(sapply(eventlog[ctxlogs], function(x){
+    length(grep("^output\\$.+renderPlot\\(", x$label)) > 0
+  }))
+  renderPlotEvents <- ctxlogs[renderPlotEvents]
+  eventCode[renderPlotEvents] <- sapply(eventlog[renderPlotEvents], function(x){
+    x <- gsub("^output\\$.+renderPlot\\(", "eval(expression(", x$label)
     x <- gsub("\\)$", "))", x)
+    # Add comment marker.
+    x <- paste0("# Event: renderPlot reactive call \n", x)
     return(x)
   })
   ########################################
@@ -143,9 +134,9 @@ output$provenance <- renderUI({
   x <- knitr::knit2html(fragment.only=TRUE,
                        text = c(
                          '<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=r&skin=sunburst"></script>',
-                         "## Last 3 Chunks",
+                         "### Last 10 Events",
                          "```{r last-3-chunks, echo=TRUE, eval=FALSE}",
-                         tail(event_code(), 3),
+                         tail(event_code(), 10),
                          "```")
   )
   x <- gsub("<pre>", '<pre class="prettyprint">', x, fixed = TRUE)

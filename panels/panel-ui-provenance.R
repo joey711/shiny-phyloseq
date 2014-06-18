@@ -26,7 +26,7 @@ provpage = fluidPage(
   sidebarLayout(
     sidebarPanel=sbp_prov,
     mainPanel=mainPanel(
-      h4("Record of App-Executed Code. Make sure to click the 'Render Code' button."),
+      h5("Snippet of App-Executed Code. Click the 'Render Code' Button to Update."),
       tags$hr(),
       htmlOutput('provenance')
     )

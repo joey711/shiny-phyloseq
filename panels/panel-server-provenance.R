@@ -89,11 +89,11 @@ event_code = reactive({
                                     paste0("# Event: input$* assignment/replacement \n",
                                            paste(x$id, "<-", convert_input_lines_value(x$value)))
                                   }, simplify = FALSE)
-  # Convert all `input (all)` lines
-  eventCode[inputAllLines] <- sapply(eventlog[inputAllLines],
-                                     function(x){
-                                       paste0("# Event: input(all) \n", input_all_to_Rcode(x$value))
-                                     }, simplify = FALSE)
+  #   # Convert all `input (all)` lines
+  #   eventCode[inputAllLines] <- sapply(eventlog[inputAllLines],
+  #                                      function(x){
+  #                                        paste0("# Event: input(all) \n", input_all_to_Rcode(x$value))
+  #                                      }, simplify = FALSE)
   ########################################
   # 3. Process all code executions.
   # - ctx observables
@@ -109,13 +109,13 @@ event_code = reactive({
   #   ctxlogs.observer <- ctxlogs[ctxlogs.observer]
   #   eventlog[ctxlogs.observer]
   # isolate
-  ctxlogs.isolate = which(sapply(eventlog[ctxlogs], function(x) x$type=="isolate"))
-  ctxlogs.isolate <- ctxlogs[ctxlogs.isolate]
-  if(length(ctxlogs.isolate)>0){
-    # Process isolate.
-    # eventlog[ctxlogs.isolate]
-  }
-  # "observable"s appear to be the reactive function calls.
+  #   ctxlogs.isolate = which(sapply(eventlog[ctxlogs], function(x) x$type=="isolate"))
+  #   ctxlogs.isolate <- ctxlogs[ctxlogs.isolate]
+  #   if(length(ctxlogs.isolate)>0){
+  #     # Process isolate.
+  #     # eventlog[ctxlogs.isolate]
+  #   }
+  # "observable"s appear to be the main reactive function calls that we need to process
   ctxlogs.observable = which(sapply(eventlog[ctxlogs],
                                     function(x){x$type=="observable"}))
   ctxlogs.observable <- ctxlogs[ctxlogs.observable]
@@ -123,7 +123,9 @@ event_code = reactive({
   #intersect(ctxlogs.observable, inputAllLines)
   #intersect(ctxlogs.observable, inputLines)
   eventCode[ctxlogs.observable] <- sapply(eventlog[ctxlogs.observable], function(x){
-    return(paste0("isolate({", x$label, "()})"))
+    x <- gsub("^reactive\\(", "eval(expression(", x$label)
+    x <- gsub("\\)$", "))", x)
+    return(x)
   })
   ########################################
   # Return event code as character vector

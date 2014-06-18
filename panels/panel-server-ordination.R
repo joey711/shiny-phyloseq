@@ -17,7 +17,6 @@ get_formula <- reactive({
     return(as.formula(input$formula))
   }
 })
-#observe({print(paste0("formula argument: ", get_formula()))})
 # Define global reactive distance matrix. Will re-calc if method or plot-type change.
 gdist <- reactive({
   if(input$dist_ord %in% distance("list")$vegdist){

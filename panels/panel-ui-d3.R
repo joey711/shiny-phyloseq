@@ -2,7 +2,7 @@
 # sbp for d3 network
 ################################################################################
 sbp_d3 = sidebarPanel(
-  submitButton("Reload d3", icon("refresh")),
+  actionButton("actionb_d3", "Re-build Network", icon("refresh")),
   radioButtons(inputId = "type_d3",
                label="Network Node Type:",
                choices=list("Taxa"="taxa", "Samples"="samples"),

@@ -1,7 +1,8 @@
 ################################################################################
 # bar_plot sbp definition
 ################################################################################
-sbp_bar = sidebarPanel(uibutton, br(),
+sbp_bar = sidebarPanel(actionButton("actionb_bar", "(Re)Build Graphic", icon("bar-chart-o")),
+                       br(),
                        uiOutput("bar_uix_xvar"),
                        uiOutput("bar_uix_colvar"),
                        textInput("facform_bar", "Facet Formula:", value="NULL"),

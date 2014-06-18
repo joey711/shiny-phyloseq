@@ -50,7 +50,7 @@ finalize_scatter_plot = reactive({
   } else {
     # If for any reason pscat is not a ggplot at this point,
     # render fail-plot rather than tinker with innards.
-    return(failp)
+    return(fail_gen())
   }
 })
 # Render plot in panel and in downloadable file with format specified by user selection

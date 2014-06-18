@@ -3,7 +3,9 @@
 ################################################################################
 ordtypelist = as.list(phyloseq::plot_ordination("list"))
 names(ordtypelist) <- c("Samples", "Species", "Biplot", "Split Plot", "Scree Plot")
-sbp_ord = sidebarPanel(uibutton, br(), uitype("type_ord", "samples"),
+sbp_ord = sidebarPanel(actionButton("actionb_ord", "Re-Build Graphic", icon("refresh")),
+                       br(),
+                       uitype("type_ord", "samples"),
                        uidist("dist_ord"),
                        uiOutput("ord_uix_color"),
                        uiOutput("ord_uix_shape"),

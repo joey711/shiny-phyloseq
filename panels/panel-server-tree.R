@@ -23,8 +23,8 @@ output$tree_uix_point_thresh <- renderUI({
 ################################################################################
 filter_phyloseq = reactive({
   filterPhyseq = physeq()
-  observe({print(paste0("tree obs min threshold: ", input$abundance_threshold_tree))})
-  observe({print(paste0("Class of tree obs min threshold: ", class(input$abundance_threshold_tree)))})
+  # observe({print(paste0("tree obs min threshold: ", input$abundance_threshold_tree))})
+  # observe({print(paste0("Class of tree obs min threshold: ", class(input$abundance_threshold_tree)))})
   otu_table(filterPhyseq)[otu_table(filterPhyseq) < input$abundance_threshold_tree] <- 0
   return(filterPhyseq)
 })

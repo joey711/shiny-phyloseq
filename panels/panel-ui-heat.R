@@ -2,7 +2,8 @@
 # sbp for plot_heatmap()
 ################################################################################
 sbp_heat = sidebarPanel(
-  uibutton, br(),
+  actionButton("actionb_heat", "Re-Build Graphic", icon("refresh")),
+  br(),
   selectInput("ord_method_heat", "Ordination Method (axis ordering):", 
               ordlist, selected="NMDS"),
   uidist("dist_heat"),

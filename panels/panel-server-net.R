@@ -22,16 +22,30 @@ output$network_uix_layout <- renderUI({
               selected = "fruchterman.reingold")
 })
 output$network_uix_color <- renderUI({
-  uivar("color_net", "Color Variable:", vars(input$type_net))
+  uivar("color_net", "Color Variable", vars(input$type_net))
 })
 output$network_uix_shape <- renderUI({
-  uivar("shape_net", "Shape Variable:", vars(input$type_net))
+  uivar("shape_net", "Shape Variable", vars(input$type_net))
 })
 output$network_uix_label <- renderUI({
-  selectInput("label_net", "Node Label:",
+  selectInput("label_net", "Node Label",
               choices = vars(input$type_net, TRUE, TRUE),
               selected = default_netLabel,
               multiple = TRUE)
+})
+output$network_uix_edgeSlider <- renderUI({
+  # ui for distance to display
+  uinetdispdist = sliderInput("uinetdispdist", "Display Edge Maximum",
+                              min = 0.0,
+                              max = input$uinetdistmax,
+                              value = input$uinetdistmax,
+                              step = input$uinetdistmax/animation_steps,
+                              animate = animationOptions(
+                                playButton = "Play",
+                                pauseButton = "Pause",
+                                interval=interval,
+                                loop=loop)
+  )
 })
 ################################################################################
 # Static Network Plot using ggplot2 
@@ -164,7 +178,9 @@ p_net_label = reactive({
   NodeData
   return(p_net() + geom_text(aes(x, y, label=ShowLabels),
                              data = NodeData,
-                             size = 2, hjust = 1.35, na.rm = TRUE))
+                             size = input$text_size_net,
+                             hjust = input$text_hjust_net,
+                             na.rm = TRUE))
 })
 # 6.
 # Reactive update to ggplot

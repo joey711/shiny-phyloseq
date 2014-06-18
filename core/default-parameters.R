@@ -20,10 +20,10 @@ kovera_k = 25
 ################################################################################
 # Network Default Parameters
 ################################################################################
-# The maximum distance with which the network structure is based. 
+# The default maximum distance with which the network structure is based. 
 netdist = 0.7
-# The distance step size to use in the animation.
-step = netdist/30
+# The number of steps to in include in an animation.
+animation_steps = 30
 default_netLabel = "NULL"
 netThreshColorVariableDefault = "DIAGNOSIS"
 netThreshShapeVariableDefault = "SEX"

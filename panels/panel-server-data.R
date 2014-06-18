@@ -2,18 +2,18 @@
 # Define the available phyloseq datasets for plotting.
 ################################################################################
 get_qiime_data = reactive({
+  if(input$actionb_data_qiime < 1){
+    return(NULL)
+  }
   qiime_data = NULL
   if(!is.null(av(input$qiime_server_ID))){
     if( !is.na(as.integer(input$qiime_server_ID)) ){
-      observe({print(paste0("Attempting integer ID import: ", input$qiime_server_ID))})
       zipftp = as(isolate({input$qiime_server_ID}), "integer")
       studyname = input$qiime_server_ID
     } else {
-      observe({print(paste0("Attempting character ID import: ", input$qiime_server_ID))})
       zipftp = as(isolate({input$qiime_server_ID}), "character")
       studyname = gsub("\\_split\\_.+$", "", basename(zipftp))
     }
-    observe({print(paste0("Extension Chosen: ", input$qiime_server_ext))})
     trash = try({qiime_data <- microbio_me_qiime(zipftp, ext=input$qiime_server_ext)}, silent=TRUE)
   }
   if(inherits(qiime_data, "phyloseq")){
@@ -21,7 +21,7 @@ get_qiime_data = reactive({
     names(qiime_data) <- studyname
     datalist <<- c(qiime_data, datalist)
   } else {
-    observe({print("Attempt made to access qiime server data, but didn't work this pass...")})
+    message("Attempt made to access qiime server data, but didn't work this pass...")
   }
   return(NULL)
 })
@@ -37,16 +37,12 @@ get_loaded_data = reactive({
       loadedObjects <- NULL
     }
     datalist <<- c(loadedObjects, datalist)
-    observe({print(
-      paste("get_loaded_data(). Available objects in datalist:", 
-            paste0(names(datalist), collapse=", "), sep=" ")
-    )})
   }
   return(NULL)
 })
 get_biom_data = reactive({
   if(!is.null(input$filebiom$name)){
-    observe({print(paste("Biom File(s) Uploaded:", input$filebiom$name, collapse=", "))})
+    # observe({print(paste("Biom File(s) Uploaded:", input$filebiom$name, collapse=", "))})
     # Loop through each uploaded file
     # Added uploaded data, if provided, and it is phyloseq-class.
     importedBiom = NULL
@@ -62,10 +58,6 @@ get_biom_data = reactive({
       importedBiom <- NULL
     }
     datalist <<- c(importedBiom, datalist)
-    observe({print(
-      paste("get_biom_data(). Available objects in datalist:", 
-            paste0(names(datalist), collapse=", "), sep=" ")
-    )})
   }
   return(NULL)
 })  
@@ -84,11 +76,38 @@ get_phyloseq_data = reactive({
       ps0 <- datalist[[input$physeqSelect]]
     }
   }
-  observe({print(ps0)})
   if(inherits(ps0, "phyloseq")){
     return(ps0)
   } else {
-    observe({print("ps0 is NULL in get_phyloseq_data()")})
     return(NULL)
+  }
+})
+output$library_sizes <- renderPlot({
+  if(inherits(get_phyloseq_data(), "phyloseq")){
+    libtitle = "Histogram of Library Sizes in Selected Data"
+    p1 = lib_size_hist() + ggtitle(libtitle)
+    otusumtitle = "Histogram of OTU total counts in Selected Data"
+    p2 = otu_sum_hist() + ggtitle(otusumtitle)
+    gridExtra::grid.arrange(p1, p2, ncol=2)
+  } else {
+    fail_gen("")
+  }
+})
+output$OTU_count_thresh_hist <- renderPlot({
+  if(input$actionb_data < 1){
+    return(fail_gen("Click 'Make Histogram' Button"))
+  }
+  ps0 = get_phyloseq_data()
+  if(inherits(get_phyloseq_data(), "phyloseq")){
+    mx = as(otu_table(ps0), "matrix")
+    if(!taxa_are_rows(ps0)){mx <- t(mx)}
+    thresh = input$dataset_count_threshold
+    df = data.frame(x=apply(mx, 1, function(x, thresh){sum(x>thresh)}, thresh))
+    p = ggplot(df, aes(x=x)) + geom_histogram()
+    p = p + xlab("Number of Samples with Count Above Threshold") + ylab("Number of OTUs")
+    p = p + ggtitle(paste("Histogram of OTUs Observed More Than", thresh, "Times"))
+    return(shiny_phyloseq_print(p))
+  } else {
+    return(fail_gen())
   }
 })

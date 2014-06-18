@@ -1,15 +1,13 @@
-require("shiny")
-require("ggplot2")
 # Define supported format labels
 vectorGraphicFormats = c("emf", "eps", "pdf", "tex", "svg", "wmf")
 rasterGraphicFormats = c("bmp", "jpg", "png", "tiff")
 graphicFormats = c(vectorGraphicFormats, rasterGraphicFormats)
-graphicTypeUI = function(inputId, label="Select Download Format:", choices=graphicFormats, selected="pdf"){
+graphicTypeUI = function(inputId, label="Select Download Format", choices=graphicFormats, selected="pdf"){
   selectInput(inputId, label, choices, selected, multiple = FALSE, selectize = TRUE)
 }
 ggfilegen = function(prefix, graphictype="pdf"){
   return({
-    function(){paste0(prefix, gsub("[[:punct:][:space:]]", "_", Sys.time()), ".", graphictype)}
+    function(){paste0(prefix, simpletime(), ".", graphictype)}
   })
 }
 ggsave2 <- function(filename = "ggplot2save2", plot = last_plot(),
@@ -72,7 +70,8 @@ ggsave2 <- function(filename = "ggplot2save2", plot = last_plot(),
   # if either width or height is not specified, display an information message
   # units are those specified by the user
   if (missing(width) || missing(height)) {
-    message("Saving ", prettyNum(convert_from_inches(width * scale, units), digits=3), " x ", prettyNum(convert_from_inches(height * scale, units), digits=3), " ", units, " image")
+    message("Saving ", prettyNum(convert_from_inches(width * scale, units), digits=3), 
+            " x ", prettyNum(convert_from_inches(height * scale, units), digits=3), " ", units, " image")
   }
   width <- width * scale
   height <- height * scale

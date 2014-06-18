@@ -14,13 +14,18 @@ output$richness_uix_shape <- renderUI({
 # Alpha Diversity plot definition
 ################################################################################
 make_richness_plot = reactive({
-  p4 = NULL
-  try(p4 <- plot_richness(physeq(), x=av(input$x_alpha),
-                          color=av(input$color_alpha),
-                          shape=av(input$shape_alpha),
-                          measures=input$measures_alpha),
-      silent=TRUE)
-  return(p4)
+  if(input$actionb_rich == 0){
+    return(NULL)
+  }
+  isolate({
+    p4 = NULL
+    try(p4 <- plot_richness(physeq(), x=av(input$x_alpha),
+                            color=av(input$color_alpha),
+                            shape=av(input$shape_alpha),
+                            measures=input$measures_alpha),
+        silent=TRUE)
+    return(p4)
+  })
 })
 finalize_richness_plot = reactive({
   p4 = make_richness_plot()
@@ -33,7 +38,7 @@ finalize_richness_plot = reactive({
   } else {
     # If for any reason p4 is not a ggplot at this point,
     # render fail-plot rather than tinker with innards.
-    return(failp)
+    return(fail_gen())
   }
 })
 # Render plot in panel and in downloadable file with format specified by user selection

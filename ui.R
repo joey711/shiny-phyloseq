@@ -1,8 +1,3 @@
-# Default options for app startup
-source("default-parameters.R", local=FALSE)
-source("ggsave.R", local=FALSE)
-# ui submit button for input changes
-uibutton = submitButton("Build/Rebuild Plot", icon("refresh"))
 # Type for distance/network/etc. Samples or Taxa
 uitype = function(id="type", selected="taxa"){
   selectInput(inputId=id, label="Calculation: Samples or Taxa?",
@@ -11,11 +6,11 @@ uitype = function(id="type", selected="taxa"){
 }
 # ui for point size slider
 uiptsz = function(id="size"){
-  sliderInput(inputId=id, label="Point Size:", min=1, max=10, value=5, step=1)
+  numericInput(inputId=id, label="Point Size", min=1, max=NA, value=5, step=1)
 }
 # ui for point opacity slider
 uialpha = function(id="alpha"){
-  sliderInput(inputId=id, label="Opacity:", min=0, max=1, value=1, step=0.1)
+  sliderInput(inputId=id, label="Opacity", min=0, max=1, value=1, step=0.1)
 }
 # UI function to define 
 uipal = function(id, default="Set1"){
@@ -39,7 +34,7 @@ names(distlist) <- distlist
 uidist = function(id, selected="bray"){
   distlist = as.list(unlist(phyloseq::distance("list")))
   names(distlist) <- distlist
-  return(selectInput(id, "Distance Method:", distlist, selected=selected))
+  return(selectInput(id, "Distance Method", distlist, selected=selected))
 }
 # Whether to use proportions or counts
 uicttype = function(id="uicttype"){
@@ -83,17 +78,18 @@ make_fluidpage = function(fptitle="", sbp, outplotid){
 #                       ))
 # )
 ################################################################################
-source("panel-ui-net.R", local = TRUE)
-source("panel-ui-bar.R", local = TRUE)
-source("panel-ui-ord.R", local = TRUE)
-source("panel-ui-rich.R", local = TRUE)
-source("panel-ui-tree.R", local = TRUE)
-source("panel-ui-heat.R", local = TRUE)
-source("panel-ui-scat.R", local = TRUE)
-source("panel-ui-d3.R", local = TRUE)
-source("panel-ui-data.R", local = TRUE)
-source("panel-ui-filter.R", local = TRUE)
-source("panel-ui-palette.R", local = TRUE)
+source("panels/panel-ui-net.R", local = TRUE)
+source("panels/panel-ui-bar.R", local = TRUE)
+source("panels/panel-ui-ord.R", local = TRUE)
+source("panels/panel-ui-rich.R", local = TRUE)
+source("panels/panel-ui-tree.R", local = TRUE)
+source("panels/panel-ui-heat.R", local = TRUE)
+source("panels/panel-ui-scat.R", local = TRUE)
+source("panels/panel-ui-d3.R", local = TRUE)
+source("panels/panel-ui-data.R", local = TRUE)
+source("panels/panel-ui-filter.R", local = TRUE)
+source("panels/panel-ui-palette.R", local = TRUE)
+source("panels/panel-ui-provenance.R", local = TRUE)
 # Define the full user-interface, `ui`
 ################################################################################
 ui = navbarPage("Shiny + phyloseq",
@@ -108,6 +104,7 @@ ui = navbarPage("Shiny + phyloseq",
                 tabPanel("Heatmap", heatpage),
                 tabPanel("Scatter", scatpage),
                 tabPanel("Palette", palpage),
+                tabPanel("Provenance", provpage),
                 theme = "bootstrap.css"
 )
 shinyUI(ui)

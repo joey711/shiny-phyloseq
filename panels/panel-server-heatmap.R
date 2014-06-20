@@ -20,6 +20,9 @@ physeq_heat = reactive({
   return(switch(input$uicttype_heat, Counts=physeq(), Proportions=physeqProp()))
 })
 make_heatmap = reactive({
+  if(input$actionb_heat < 1){
+    return(NULL)
+  }
   p3 = NULL
   try(p3 <- plot_heatmap(physeq_heat(), method=input$ord_method_heat, distance=input$dist_heat,
                          sample.label=av(input$sample.label),

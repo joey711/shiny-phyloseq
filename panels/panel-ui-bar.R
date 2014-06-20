@@ -1,7 +1,7 @@
 ################################################################################
 # bar_plot sbp definition
 ################################################################################
-sbp_bar = sidebarPanel(actionButton("actionb_bar", "(Re)Build Graphic", icon("bar-chart-o")),
+sbp_bar = sidebarPanel(actionButton("actionb_bar", "(Re)Build Graphic", icon("signal")),
                        br(),
                        uiOutput("bar_uix_xvar"),
                        uiOutput("bar_uix_colvar"),

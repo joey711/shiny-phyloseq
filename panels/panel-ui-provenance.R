@@ -13,7 +13,7 @@
 ################################################################################
 # Provenance Tracking Code Record, sbp definition
 ################################################################################
-sbp_prov = sidebarPanel(actionButton("actionb_prov", "Render Code", icon("refresh")),
+sbp_prov = sidebarPanel(actionButton("actionb_prov", "Render Code", icon("code")),
                        br(),
                        h3("Records code/session up to button-click above."),
                        selectInput("compress_prov", "Compression Type",

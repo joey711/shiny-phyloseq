@@ -94,7 +94,11 @@ LinksData0 = reactive({
 # 3. Create vertex layout
 # Make the vertices-coordinates data.table
 vertex_layout = function(LinksData, physeq=NULL, type="samples",
-                         laymeth=igraph::layout.fruchterman.reingold, ...){
+                         laymeth=igraph::layout.fruchterman.reingold,
+                         RNGseed=input$RNGseed_net, ...){
+  # Set the random number generation seed explicitly for this process.
+  # RNG is used by `laymeth` in some cases.
+  set.seed(as(RNGseed, "integer"))
   # `physeq` can be anything, only has effect when non-NULL returned by sample_data or tax_table
   g = igraph::graph.data.frame(LinksData, directed=FALSE)
   vertexDT = data.table(laymeth(g, ...),

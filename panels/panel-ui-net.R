@@ -24,6 +24,7 @@ sbp_net = sidebarPanel(
   numericInput("text_size_net", label="Label Size", min=1, max=NA, value=8, step=2),
   numericInput("text_hjust_net", label="Label H-Justification", min=1, max=NA, value=1, step=0.1),
   uiptsz("size_net"), uialpha("alpha_net"), uipal("pal_net"),
+  numericInput("RNGseed_net", "RNG Seed", value = 711L, min = 1L, step = 1L),
   tags$hr(),
   h4('Figure Dimensions'),
   numericInput("width_net", "Figure Width (inches)", 8, 1, 100, 1),

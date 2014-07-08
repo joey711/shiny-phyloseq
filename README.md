@@ -25,7 +25,11 @@ which are provided within the Shiny-phyloseq package.
 
 ## Launching Shiny-phyloseq Local Session
 
-You've been added. In the end, we will host the server "backend" somewhere so that users only need to point their web browser to a link. We will also release the source code, in case you want or need to run it locally. This latter option is what you'll be testing. The server backend will be an R session on your own machine.
+While it is possible to host the server "back end" somewhere
+so that users only need to point their web browser to a link,
+the following instructions apply to running both the back and front "ends" on your local machine.
+The server back end will be an R session on your own machine,
+while the front end is your web browser, pointed to the appropriate local URL.
 
 See the "[Running an App](http://shiny.rstudio.com/tutorial/lesson1/)" section 
 of [the Shiny Tutorials](http://shiny.rstudio.com/tutorial).

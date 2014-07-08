@@ -1,11 +1,37 @@
 ---
-title: "Install Shiny + phyloseq"
+title: "Install Shiny-phyloseq"
 output: html_document
 ---
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-R packages required to run the full-version of `Shiny + phyloseq`, and their versions:
+## Shiny-phyloseq Dependencies
+
+If you are reading this, it is because you are interested
+in launching/running a local instance of Shiny-phyloseq.
+The Shiny-phyloseq "front end", the GUI web application,
+will run on any modern web browswer.
+Note that older versions of Microsoft's Internet Explorer are **not supported**.
+Firefox, Chrome, Opera, Safari and others should be fine
+for connecting to a Shiny-phyloseq session.
+For running the Shiny-phyloseq "back end", you must have
+the latest version of R installed on your system
+as well as several additional R packages.
+
+The following R code will install required packages on your local system.
+Note that this assumes that you have an active internet connection and updated R installation.
+
+```{r, eval=FALSE}
+# Dependency installation
+source("http://bioconductor.org/biocLite.R")
+installpkgs = c("phyloseq", "shiny", "data.table", "d3Network", "genefilter", "ggplot2", "grid",
+  "gridExtra", "png", "RColorBrewer", "scales")
+biocLite(pkgs = installpkgs)
+```
+
+Note that this will install the latest release version of phyloseq, but some of the functionality of `Shiny-phyloseq` may depend upon utilities in the newer development version. See [the phyloseq installation instructions](http://joey711.github.io/phyloseq/install) and install the latest development release of phyloseq to guarantee full functionality.
+
+The following lists the recommended version numbers of relevant packages:
 
 ```{r}
 packageVersion("phyloseq")
@@ -20,16 +46,3 @@ packageVersion("png")
 packageVersion("RColorBrewer")
 packageVersion("scales")
 ```
-
-If any of these are not installed on your system, use the following code to install. Note that this assumes that you have an active internet connection and updated R installation.
-
-```{r, eval=FALSE}
-# Dependency installation
-source("http://bioconductor.org/biocLite.R")
-installpkgs = c("phyloseq", "shiny", "data.table", "d3Network", "genefilter", "ggplot2", "grid",
-  "gridExtra", "png", "RColorBrewer", "scales")
-biocLite(pkgs = installpkgs)
-```
-
-Note that this will install the latest release version of phyloseq, but some of the functionality of `Shiny + phyloseq` may depend upon utilities in the newer development version. See [the phyloseq installation instructions](http://joey711.github.io/phyloseq/install) and install the latest development release of phyloseq to guarantee full functionality.
-

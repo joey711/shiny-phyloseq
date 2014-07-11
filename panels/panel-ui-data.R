@@ -10,15 +10,15 @@ datapage = fluidPage(
            href="http://joey711.github.io/phyloseq/import-data.html#import_biom")),
       fileInput('filebiom', "", multiple = TRUE),
       tags$hr(),
-      h4(a("Upload Custom .RData File",
+      h4(a("Upload .RData File",
            href="http://joey711.github.io/phyloseq/import-data.html")),
       fileInput('file1', ""),
       tags$hr(),
       actionButton("actionb_data_qiime", "Load QIIME Data", icon("cloud-download")),
-      h4(a("QIIME Public Microbiome Data",
+      h4(a("QIIME-DB Data",
                  href="http://www.microbio.me/qiime/")),
       p('(requires phyloseq 1.9.5+)'),
-      textInput("qiime_server_ID", "Identifier for QIIME server", value="NULL"),
+      textInput("qiime_server_ID", "QIIME-DB project ID", value="NULL"),
       radioButtons("qiime_server_ext", "File Extension",
                    choices=list(".zip", ".tgz", ".tar.gz")),
       tags$hr(),
@@ -29,6 +29,9 @@ datapage = fluidPage(
       tags$hr(),
       p('Big thanks to',
         a(href = 'http://shiny.rstudio.com/', 'Shiny', 'web apps.')
+      ),
+      p('For documentation, check out:',
+        a(href = "http://joey711.github.io/shiny-phyloseq/", "'About Shiny-phyloseq'")
       )
     ),
     mainPanel(

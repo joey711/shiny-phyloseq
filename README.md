@@ -1,7 +1,7 @@
 
 # Shiny-phyloseq
 
-[Shiny-phyloseq](https://github.com/joey711/shiny-phyloseq) 
+[Shiny-phyloseq](http://joey711.github.io/shiny-phyloseq/)
 is an interactive web application that provides 
 a graphical user interface to the microbiome analysis package for R,
 called [phyloseq](http://joey711.github.io/phyloseq/).
@@ -20,7 +20,7 @@ PLoS ONE 8(4):e61217.
 
 ## Installation
 
-See the [Shiny-phyloseq installation instructions](www/Install.html),
+See the [Shiny-phyloseq installation instructions](http://joey711.github.io/shiny-phyloseq/Install.html),
 which are provided within the Shiny-phyloseq package.
 
 ## Launching Shiny-phyloseq Local Session

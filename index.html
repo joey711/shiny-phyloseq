@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Shiny-phyloseq : An interactive web application for demonstrating and using phyloseq." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Shiny-phyloseq</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/joey711/shiny-phyloseq">View on GitHub</a>
+
+          <h1 id="project_title">Shiny-phyloseq</h1>
+          <h2 id="project_tagline">An interactive web application for demonstrating and using phyloseq.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/joey711/shiny-phyloseq/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/joey711/shiny-phyloseq/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="shiny-phyloseq" class="anchor" href="#shiny-phyloseq"><span class="octicon octicon-link"></span></a>Shiny-phyloseq</h1>
+
+<p><a href="https://github.com/joey711/shiny-phyloseq">Shiny-phyloseq</a> 
+is an interactive web application that provides 
+a graphical user interface to the microbiome analysis package for R,
+called <a href="http://joey711.github.io/phyloseq/">phyloseq</a>.
+For details about using the phyloseq package directly,
+see <a href="http://joey711.github.io/phyloseq/">The phyloseq Homepage</a>.</p>
+
+<h2>
+<a name="citation" class="anchor" href="#citation"><span class="octicon octicon-link"></span></a>Citation</h2>
+
+<p>Shiny-phyloseq is provided under a free-of-charge, open-source license (A-GPL3).
+All we require is that you cite/attribute the following
+in any work that benefits from this code or application.</p>
+
+<h3>
+<a name="the-web-application" class="anchor" href="#the-web-application"><span class="octicon octicon-link"></span></a>The Web Application</h3>
+
+<p>McMurdie and Holmes (2014) Shiny-phyloseq: Web Application for Interactive Microbiome Analysis with Provenance Tracking. <em>Submitted</em>.</p>
+
+<h3>
+<a name="the-r-package-underneath-the-hood" class="anchor" href="#the-r-package-underneath-the-hood"><span class="octicon octicon-link"></span></a>The R package "underneath the hood"</h3>
+
+<p>McMurdie and Holmes (2013) <a href="http://dx.plos.org/10.1371/journal.pone.0061217">phyloseq: An R package for reproducible interactive analysis and graphics of microbiome census data</a>. 
+PLoS ONE 8(4):e61217.</p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>See the <a href="Install.html">Shiny-phyloseq installation instructions</a>,
+which are provided within the Shiny-phyloseq package.</p>
+
+<h2>
+<a name="launching-shiny-phyloseq-local-session" class="anchor" href="#launching-shiny-phyloseq-local-session"><span class="octicon octicon-link"></span></a>Launching Shiny-phyloseq Local Session</h2>
+
+<p>While it is possible to host the server "back end" somewhere
+so that users only need to point their web browser to a link,
+the following instructions apply to running both the back and front "ends" on your local machine.
+The server back end will be an R session on your own machine,
+while the front end is your web browser, pointed to the appropriate local URL.</p>
+
+<p>See the "<a href="http://shiny.rstudio.com/tutorial/lesson1/">Running an App</a>" section 
+of <a href="http://shiny.rstudio.com/tutorial">the Shiny Tutorials</a>.</p>
+
+<p>If you are using RStudio (recommended) you can 
+launch Shiny-phyloseq with the click of a button
+after opening one of the main source files (e.g. <code>server.R</code>)
+in the Shiny-phyloseq directory.
+Note that the best behavior (uploads, downloads, etc.)
+comes from <strong>not-using the RStudio built-in browser</strong>,
+but instead clicking the "open in browser" button at the top. </p>
+
+<p>Your default browser will then open at the live (local) URL. Then click away!</p>
+
+<p>Brief steps:</p>
+
+<ol>
+<li>(Re)start RStudio by opening <code>server.R</code> or <code>ui.R</code>
+</li>
+<li>Click the "Run App" button that appears.</li>
+<li>Click the "Open in Browser" button above the new RStudio window that just launched.</li>
+</ol><p>Note that any R installation/session can launch a Shiny app.
+For alternative launch methods that don't use RStudio,
+see "<a href="http://shiny.rstudio.com/tutorial/lesson1/">Running an App</a>".</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Shiny-phyloseq maintained by <a href="https://github.com/joey711">joey711</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-32799541-4");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>

@@ -18,6 +18,7 @@ datapage = fluidPage(
                  href="http://www.microbio.me/qiime/")),
       actionButton("actionb_data_qiime", "Load QIIME Data", icon("cloud-download")),
       uiOutput("qiimeDBopts"),
+      numericInput("qiimeDBsizeMax", "Size Max [MB]", value = 50L, min = 0, step = 10L),
       tags$hr(),
       p('Summary Graphic:'),
       actionButton("actionb_data", "Make Histogram", icon("bar-chart-o")),

@@ -16,8 +16,7 @@ output$qiimeDBopts <- renderUI({
   QIIMEDB_keep_entry = grep("study_.+seqs_and_mapping", QIIMEDB_files_tab[, "name"])
   QIIMEDB_files_tab <- QIIMEDB_files_tab[QIIMEDB_keep_entry, ]
   # Remove entries that are too large (above a threshold, in MB)
-  QIIMEDB_size_threshold = 50L
-  QIIMEDB_files_tab <- QIIMEDB_files_tab[((QIIMEDB_files_tab[, "size"]/1E6) < QIIMEDB_size_threshold), ]
+  QIIMEDB_files_tab <- QIIMEDB_files_tab[((QIIMEDB_files_tab[, "size"]/1E6) < input$qiimeDBsizeMax), ]
   # Create list for widget.
   QIIMEDB_full_links = paste0(QIIMEDB_ftp, QIIMEDB_files_tab$name)
   QIIMEDB_choices = as.list(QIIMEDB_full_links)

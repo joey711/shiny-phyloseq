@@ -45,7 +45,8 @@ finalize_scatter_plot = reactive({
     # Adjust size/alpha of points, but not error bars
     pscat$layers[[1]]$geom_params$size <- input$size_scat
     pscat$layers[[1]]$geom_params$alpha <- input$alpha_scat
-    pscat <- pscat + scale_colour_brewer(palette = input$pal_scat)
+    pscat <- pscat + scale_colour_brewer(palette = input$pal_scat) +
+      shiny_phyloseq_ggtheme_list[[input$theme_scat]]
     return(pscat)
   } else {
     # If for any reason pscat is not a ggplot at this point,

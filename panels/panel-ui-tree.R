@@ -21,6 +21,7 @@ sbp_tree = sidebarPanel(actionButton("actionb_tree", "Re-Build Graphic", icon("t
                         h4('Figure Details'),
                         uiptsz("size_tree"), 
                         uipal("pal_tree"),
+                        uitheme("theme_tree"),
                         h4('Figure Dimensions'),
                         numericInput("width_tree", "Figure Width (inches)", 8, 1, 100, 1),
                         numericInput("height_tree", "Figure Height (inches)", 8, 1, 100, 1),

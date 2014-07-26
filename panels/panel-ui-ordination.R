@@ -15,6 +15,7 @@ sbp_ord = sidebarPanel(
   uiptsz("size_ord"),
   uialpha("alpha_ord"),
   uipal("pal_ord"),
+  uitheme("theme_ord"),
   tags$hr(),
   h4('Figure Dimensions'),
   numericInput("width_ord", "Figure Width (inches)", 8, 1, 100, 1),

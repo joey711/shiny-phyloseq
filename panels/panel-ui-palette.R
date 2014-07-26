@@ -9,7 +9,10 @@
 ################################################################################
 # Color Palette sbp definition
 ################################################################################
-sbp_pal = sidebarPanel(uipal("pal_main"))
+sbp_pal = sidebarPanel(
+  uipal("pal_pal"),
+  uitheme("theme_pal")
+)
 palpage = fluidPage(
   titlePanel(""),
   sidebarLayout(

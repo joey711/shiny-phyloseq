@@ -33,7 +33,8 @@ finalize_richness_plot = reactive({
     # Adjust size/alpha of points, but not error bars
     p4$layers[[1]]$geom_params$size <- input$size_rich
     p4$layers[[1]]$geom_params$alpha <- input$alpha_rich
-    p4 <- p4 + scale_colour_brewer(palette = input$pal_rich)
+    p4 <- p4 + scale_colour_brewer(palette = input$pal_rich) +
+      shiny_phyloseq_ggtheme_list[[input$theme_rich]]
     return(p4)
   } else {
     # If for any reason p4 is not a ggplot at this point,

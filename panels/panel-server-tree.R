@@ -56,7 +56,8 @@ finalize_tree_plot = reactive({
     p2 = fail_gen("No Tree in Input Data",
                   "Cannot Make Tree Graphic without Tree")        
   }
-  p2 <- p2 + scale_color_brewer(palette = input$pal_tree)
+  p2 <- p2 + scale_color_brewer(palette = input$pal_tree) +
+    shiny_phyloseq_ggtheme_list[[input$theme_tree]]
   return(p2)
 })
 # Render plot in panel and in downloadable file with format specified by user selection

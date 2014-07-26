@@ -52,7 +52,8 @@ finalize_ordination_plot = reactive({
       p1 <- update_labels(p1, list(shape = input$shape_ord))
     }
   }
-  p1 <- p1 + scale_colour_brewer(palette=input$pal_ord) 
+  p1 <- p1 + scale_colour_brewer(palette=input$pal_ord) +
+    shiny_phyloseq_ggtheme_list[[input$theme_ord]]
   return(p1)
 })
 # Render plot in panel and in downloadable file with format specified by user selection

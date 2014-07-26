@@ -17,7 +17,9 @@ palExData <- ggplot2::diamonds[sample(nrow(ggplot2::diamonds), 1000), ]
 output$paletteExample <- renderPlot({
   dpal <- qplot(carat, price, data=palExData, colour=clarity, size=I(10),
                 main = paste("Example Output,", input$pal_main, "Palette"))
-  print(dpal + scale_colour_brewer(palette=input$pal_main))
+  dpal <- dpal + scale_colour_brewer(palette=input$pal_pal)
+  dpal <- dpal + shiny_phyloseq_ggtheme_list[[input$theme_pal]] 
+  print(dpal)
 })
 output$paletteTable <- renderDataTable({
   SupportedPalTab <- RColorBrewer::brewer.pal.info

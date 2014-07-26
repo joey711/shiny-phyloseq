@@ -12,6 +12,29 @@ simpletime = function(){gsub("\\D", "_", Sys.time())}
 # Graphic-saving utilities
 source("core/ggsave.R", local = TRUE)
 ################################################################################
+# Supported ggplot2 themes
+################################################################################
+theme_blank_custom = theme_bw() + theme(
+  plot.title = element_text(size = 28),
+  panel.grid.major = element_blank(), 
+  panel.grid.minor = element_blank(), 
+  axis.text.x      = element_blank(),
+  axis.text.y      = element_blank(),
+  axis.title.x     = element_blank(),
+  axis.title.y     = element_blank(),
+  axis.ticks       = element_blank(),
+  panel.border     = element_blank()
+)
+shiny_phyloseq_ggtheme_list <- list(
+  `black/white` = theme_bw(),
+  blank = theme_blank_custom,
+  `thin line` = theme_linedraw(),
+  light = theme_light(),
+  minimal = theme_minimal(),
+  classic = theme_classic(),
+  gray = theme_gray()
+)
+################################################################################
 # Included Data
 # Define the named list of datasets to choose from
 ################################################################################

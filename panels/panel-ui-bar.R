@@ -10,6 +10,7 @@ sbp_bar = sidebarPanel(actionButton("actionb_bar", "(Re)Build Graphic", icon("si
                                     choices=c("Counts", "Proportions")),
                        tags$hr(),
                        uipal("pal_bar"),
+                       uitheme("theme_bar"),
                        h4('Figure Dimensions'),
                        numericInput("width_bar", "Figure Width (inches)", 8, 1, 100, 1),
                        numericInput("height_bar", "Figure Height (inches)", 8, 1, 100, 1),

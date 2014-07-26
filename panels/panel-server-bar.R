@@ -44,7 +44,8 @@ finalize_bar_plot = reactive({
   isolate({
     p0 <- make_bar_plot()
   })
-  p0 <- p0 + scale_fill_brewer(palette=input$pal_bar) 
+  p0 <- p0 + scale_fill_brewer(palette=input$pal_bar) + 
+    shiny_phyloseq_ggtheme_list[[input$theme_bar]]
   return(p0)
 })
 # Render plot in panel and in downloadable file with format specified by user selection

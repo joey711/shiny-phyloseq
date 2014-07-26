@@ -12,10 +12,17 @@ uiptsz = function(id="size"){
 uialpha = function(id="alpha"){
   sliderInput(inputId=id, label="Opacity", min=0, max=1, value=1, step=0.1)
 }
-# UI function to define 
+# UI function to define palettes. Reused in many panels.
 uipal = function(id, default="Set1"){
   selectInput(id, "Color Palette",  
               choices = rownames(RColorBrewer::brewer.pal.info), 
+              selected = default
+  )
+}
+# UI function to define ggplot2 themes. Reused in many panels.
+uitheme = function(id, default="black/white"){
+  selectInput(id, "Style Theme",
+              choices = names(shiny_phyloseq_ggtheme_list),
               selected = default
   )
 }

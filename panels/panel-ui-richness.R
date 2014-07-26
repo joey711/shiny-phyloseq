@@ -14,6 +14,7 @@ sbp_rich = sidebarPanel(actionButton("actionb_rich", "(Re)Build Graphic", icon("
                         uiOutput("richness_uix_shape"),
                         h4('Figure Details'),
                         uipal("pal_rich"),
+                        uitheme("theme_rich"),
                         uiptsz("size_rich"),
                         uialpha("alpha_rich"),
                         tags$hr(),

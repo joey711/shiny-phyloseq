@@ -6,7 +6,7 @@
 options(shiny.maxRequestSize = 100*1024^2)
 # Set Shiny Reaction Log to TRUE
 options(shiny.reactlog=TRUE)
-# Default ggplot2 theme.
+# Default ggplot2 theme (Only relevant if panel-specific theme missing or NULL)
 theme_set(theme_bw())
 ################################################################################
 # Begin Shiny Server definition.

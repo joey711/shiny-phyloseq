@@ -3,7 +3,7 @@
 ################################################################################
 trim_qiime_db_names = function(filename){
   filename <- basename(filename)
-  gsub("^(study_.+)(_split_library_.+)", "\\1", filename)
+  return(gsub("^(study_.+)(_split_library_.+)", "\\1", filename))
 }
 output$qiimeDBopts <- renderUI({
   # Get the current list of available datasets from QIIMEDB

@@ -1,24 +1,49 @@
 ################################################################################
 # Define the available phyloseq datasets for plotting.
 ################################################################################
+trim_qiime_db_names = function(filename){
+  filename <- basename(filename)
+  return(gsub("^(study_.+)(_split_library_.+)", "\\1", filename))
+}
+output$qiimeDBopts <- renderUI({
+  # Get the current list of available datasets from QIIMEDB
+  # Requires RCurl package
+  QIIMEDB_ftp = "ftp://thebeast.colorado.edu/pub/QIIME_DB_Public_Studies/"
+  QIIMEDB_files_list = RCurl::getURL(QIIMEDB_ftp)
+  QIIMEDB_files_tab  = read.table(text = QIIMEDB_files_list, stringsAsFactors = FALSE)
+  colnames(QIIMEDB_files_tab)[c(5, 8, 9)] <- c("size", "year", "name")
+  # Keep only files that follow a certain naming convention that appears to have OTU-cluster results  
+  QIIMEDB_keep_entry = grep("study_.+seqs_and_mapping", QIIMEDB_files_tab[, "name"])
+  QIIMEDB_files_tab <- QIIMEDB_files_tab[QIIMEDB_keep_entry, ]
+  # Remove entries that are too large (above a threshold, in MB)
+  QIIMEDB_files_tab <- QIIMEDB_files_tab[((QIIMEDB_files_tab[, "size"]/1E6) < input$qiimeDBsizeMax), ]
+  # Create list for widget.
+  QIIMEDB_full_links = paste0(QIIMEDB_ftp, QIIMEDB_files_tab$name)
+  QIIMEDB_choices = as.list(QIIMEDB_full_links)
+  # Add names for searching
+  names(QIIMEDB_choices) <- paste0(trim_qiime_db_names(QIIMEDB_files_tab$name),
+                                  " (", QIIMEDB_files_tab$year, ")",
+                                  " [", round(QIIMEDB_files_tab$size/1e6, digits = 1), " MB]")
+  # Add NULL as default
+  QIIMEDB_choices <- c(list("NULL"=NULL), QIIMEDB_choices)
+  return(
+    selectInput("qiime_server_ID", label = "",
+                choices = QIIMEDB_choices, selected = "NULL")
+  )
+})
 get_qiime_data = reactive({
   if(input$actionb_data_qiime < 1){
     return(NULL)
   }
   qiime_data = NULL
   if(!is.null(av(input$qiime_server_ID))){
-    if( !is.na(as.integer(input$qiime_server_ID)) ){
-      zipftp = as(isolate({input$qiime_server_ID}), "integer")
-      studyname = input$qiime_server_ID
-    } else {
-      zipftp = as(isolate({input$qiime_server_ID}), "character")
-      studyname = gsub("\\_split\\_.+$", "", basename(zipftp))
-    }
-    trash = try({qiime_data <- microbio_me_qiime(zipftp, ext=input$qiime_server_ext)}, silent=TRUE)
+    trash = try({
+      qiime_data <- microbio_me_qiime(input$qiime_server_ID, ext = NULL)
+    }, silent=TRUE)
   }
   if(inherits(qiime_data, "phyloseq")){
     qiime_data <- list(qiime_data)
-    names(qiime_data) <- studyname
+    names(qiime_data) <- trim_qiime_db_names(input$qiime_server_ID)
     datalist <<- c(qiime_data, datalist)
   } else {
     message("Attempt made to access qiime server data, but didn't work this pass...")

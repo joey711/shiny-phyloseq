@@ -24,4 +24,17 @@ sbp_ord = sidebarPanel(
   downloadButton('downloadOrdination', 'Download Graphic')
 )
 ################################################################################
-ordpage = make_fluidpage("", sbp_ord, "ordination")
+# ordpage = make_fluidpage("", sbp_ord, "ordination")
+ordpage = fluidPage(
+  titlePanel(""),
+  sidebarLayout(
+    sidebarPanel=sbp_ord,
+    mainPanel=mainPanel(
+      plotOutput("ordination"),
+      p("  "),
+      tags$hr(),
+      p("  "),
+      plotOutput("scree_ord")
+    )
+  )
+)

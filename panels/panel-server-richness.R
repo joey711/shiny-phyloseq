@@ -13,13 +13,16 @@ output$richness_uix_shape <- renderUI({
 ################################################################################
 # Alpha Diversity plot definition
 ################################################################################
+physeq_rich = reactive({
+  return(switch(input$uicttype_rich, Original=get_phyloseq_data(), Filtered=physeq()))
+})
 make_richness_plot = reactive({
   if(input$actionb_rich == 0){
     return(NULL)
   }
   isolate({
     p4 = NULL
-    try(p4 <- plot_richness(physeq(), x=av(input$x_alpha),
+    try(p4 <- plot_richness(physeq_rich(), x=av(input$x_alpha),
                             color=av(input$color_alpha),
                             shape=av(input$shape_alpha),
                             measures=input$measures_alpha),

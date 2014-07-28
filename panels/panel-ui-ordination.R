@@ -25,15 +25,18 @@ sbp_ord = sidebarPanel(
 )
 ################################################################################
 # ordpage = make_fluidpage("", sbp_ord, "ordination")
+dummyText = paste0(rep("  \n  ", 7), collapse = "")
 ordpage = fluidPage(
   titlePanel(""),
   sidebarLayout(
     sidebarPanel=sbp_ord,
     mainPanel=mainPanel(
       plotOutput("ordination"),
-      p("  "),
-      tags$hr(),
-      p("  "),
+      tags$hr(dummyText),
+      tags$br(dummyText),
+      tags$hr(dummyText),
+      tags$br(dummyText),
+      tags$hr(dummyText),
       plotOutput("scree_ord")
     )
   )

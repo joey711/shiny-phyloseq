@@ -74,4 +74,4 @@ output$scree_ord <- renderPlot({
   pscree = NULL
   try(pscree <- plot_ordination(physeq(), get_ord(), type="scree", title = "Scree Plot"), silent=TRUE)
   return(shiny_phyloseq_print(pscree))
-}, width=function(){72*input$width_ord}, height=function(){72*input$height_ord})
+}, width=400, height=250)

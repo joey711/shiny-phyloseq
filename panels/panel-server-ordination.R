@@ -69,3 +69,9 @@ output$downloadOrdination <- downloadHandler(
             width=input$width_ord, height=input$height_ord, dpi=300L, units="in")
   }
 )
+# Always add a 'supplemental' scree plot, if supported, below the ordination plot itself
+output$scree_ord <- renderPlot({
+  pscree = NULL
+  try(pscree <- plot_ordination(physeq(), get_ord(), type="scree", title = "Scree Plot"), silent=TRUE)
+  return(shiny_phyloseq_print(pscree))
+}, width=400, height=250)

@@ -24,15 +24,20 @@ make_heatmap = reactive({
     return(NULL)
   }
   p3 = NULL
-  try(p3 <- plot_heatmap(physeq_heat(), method=input$ord_method_heat, distance=input$dist_heat,
-                         sample.label=av(input$sample.label),
-                         taxa.label=av(input$taxa.label),
-                         sample.order=av(input$sample.order),
-                         taxa.order=av(input$taxa.order),
-                         low = input$locolor_heat,
-                         high = input$hicolor_heat,
-                         na.value = input$NAcolor_heat),
+  isolate({
+    try(p3 <- plot_heatmap(
+      physeq_heat(), 
+      method=input$ord_method_heat,
+      distance=input$dist_heat,
+      sample.label=av(input$sample.label),
+      taxa.label=av(input$taxa.label),
+      sample.order=av(input$sample.order),
+      taxa.order=av(input$taxa.order),
+      low = input$locolor_heat,
+      high = input$hicolor_heat,
+      na.value = input$NAcolor_heat),
       silent=TRUE)
+  })
   return(p3)
 })
 # Render plot in panel and in downloadable file with format specified by user selection

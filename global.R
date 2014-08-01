@@ -1,10 +1,10 @@
 # load packages
 library("shiny"); packageVersion("shiny")
 library("phyloseq"); packageVersion("phyloseq")
+library("DESeq2"); packageVersion("DESeq2")
 library("ggplot2"); packageVersion("ggplot2")
 library("data.table"); packageVersion("data.table")
 library("d3Network"); packageVersion("d3Network")
-library("ggplot2")
 # Default options for app startup
 source("core/default-parameters.R", local = TRUE)
 # For pasting times into things
@@ -45,7 +45,8 @@ datalist = list(GlobalPatterns=GlobalPatterns,
                 esophagus=esophagus,
                 soilrep=soilrep)
 load("data/kostic.RData")
-datalist <- c(list(study_1457_Kostic=kostic), datalist)
+load("data/example-data.RData")
+datalist <- c(list(small_demo=closedps, study_1457_Kostic=kostic), datalist)
 ########################################
 # Plot Rendering Stuff.
 ########################################

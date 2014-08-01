@@ -89,6 +89,7 @@ source("panels/panel-ui-net.R", local = TRUE)
 source("panels/panel-ui-bar.R", local = TRUE)
 source("panels/panel-ui-ordination.R", local = TRUE)
 source("panels/panel-ui-richness.R", local = TRUE)
+source("panels/panel-ui-differential-abundance.R", local = TRUE)
 source("panels/panel-ui-tree.R", local = TRUE)
 source("panels/panel-ui-heatmap.R", local = TRUE)
 source("panels/panel-ui-scatter.R", local = TRUE)
@@ -99,10 +100,13 @@ source("panels/panel-ui-palette.R", local = TRUE)
 source("panels/panel-ui-provenance.R", local = TRUE)
 # Define the full user-interface, `ui`
 ################################################################################
-ui = navbarPage(title = a(href="http://joey711.github.io/shiny-phyloseq/", style="color:#F0F0F0",  "Shiny-phyloseq"), 
+ui = navbarPage(title = a(href="http://joey711.github.io/shiny-phyloseq/",
+                          style="color:#F0F0F0",
+                          "Shiny-phyloseq"), 
                 tabPanel("Select Dataset", datapage),
                 tabPanel("Filter", filterpage),
                 tabPanel("Alpha Diversity", richpage),
+                tabPanel("Diff. Abundance", diffabundpage),
                 tabPanel("Network", netpage),
                 tabPanel("d3Network", d3netpage),
                 tabPanel("Bar", barpage),

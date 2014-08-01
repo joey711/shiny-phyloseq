@@ -70,25 +70,31 @@ shinyServer(function(input, output){
   uivar = function(id, label="Variable:", choices, selected="NULL"){
     selectInput(inputId=id, label=label, choices=choices, selected=selected)
   }
+  # Richness
+  source("panels/panel-server-richness.R", local = TRUE)
+  # Network
+  source("panels/panel-server-net.R", local = TRUE)
+  # d3
+  source("panels/panel-server-d3.R", local = TRUE)
+  # Ordination
+  source("panels/panel-server-ordination.R", local = TRUE)  
   # Bar
   source("panels/panel-server-bar.R", local = TRUE)
   # Tree
   source("panels/panel-server-tree.R", local = TRUE)
   # Heatmap
-  source("panels/panel-server-heatmap.R", local = TRUE)
-  # Richness
-  source("panels/panel-server-richness.R", local = TRUE)
-  # Ordination
-  source("panels/panel-server-ordination.R", local = TRUE)
-  # Network
-  source("panels/panel-server-net.R", local = TRUE)
-  # d3
-  source("panels/panel-server-d3.R", local = TRUE)
+  source("panels/panel-server-heatmap.R", local = TRUE)  
   # Scatter
   source("panels/panel-server-scatter.R", local = TRUE)
   # Palette
   source("panels/panel-server-palette.R", local = TRUE)
   # Provenance
   source("panels/panel-server-provenance.R", local = TRUE)
+  # Differential Abundance
+  # Data conversion functions
+  #source("differential-abundance/metagenomeSeq.R", local = TRUE)
+  #source("differential-abundance/edgeR.R", local = TRUE)
+  # diffabund server
+  source("panels/panel-server-differential-abundance.R", local = TRUE)  
 })
 ################################################################################

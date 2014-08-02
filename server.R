@@ -8,6 +8,20 @@ options(shiny.maxRequestSize = 100*1024^2)
 options(shiny.reactlog=TRUE)
 # Default ggplot2 theme (Only relevant if panel-specific theme missing or NULL)
 theme_set(theme_bw())
+# Install the required packages if not previously installed.
+download_not_installed<-function(x){
+  for(i in x){
+    if(!require(i,character.only=TRUE)){
+      source("http://bioconductor.org/biocLite.R")
+      biocLite(i)
+      library(i,character.only=TRUE)
+    }
+  }
+}
+installpkgs = c("phyloseq", "shiny", "data.table", "d3Network", 
+  "genefilter", "ggplot2", "grid", "gridExtra", "png", 
+  "RColorBrewer", "scales")
+download_not_installed(installpkgs)
 ################################################################################
 # Begin Shiny Server definition.
 ################################################################################

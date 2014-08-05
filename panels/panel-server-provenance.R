@@ -68,6 +68,8 @@ event_code = reactive({
   ########################################
   # 1. Grab current event log from within Shiny namespace
   ########################################
+  # Need to grab token regarding user session.
+  # See Joe Cheng branch on feature/graph-domain
   eventlog <- shiny:::.graphEnv$log
   # Initialize list of event code, as character strings:
   eventCode = vector("list", length = length(eventlog))

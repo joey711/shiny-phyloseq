@@ -16,7 +16,7 @@ sbp_diffabund = sidebarPanel(
   numericInput("size_diffabund", "Point Size:", value = 5, min = 1, step = 1),
   numericInput("alpha_diffabund", "Point Opacity:", value = 1, min = 0, max = 1, step = 0.1),
   uitheme("theme_diffabund"),
-  #numericInput("diffabund_ncol", "Number of Columns", value = 1L, min = 1L, step = 1L),
+  numericInput("diffabund_ncol", "Number of Columns", value = 1L, min = 1L, step = 1L),
   tags$hr(),
   h4('Figure Dimensions'),
   numericInput("width_diffabund", "Figure Width (inches)", 8, 1, 100, 1),

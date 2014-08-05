@@ -121,7 +121,14 @@ finalize_diffabund_plot = reactive({
 #   }
 # Render plot in panel and in downloadable file with format specified by user selection
 output$diffabund <- renderPlot({
-  shiny_phyloseq_print(finalize_diffabund_plot())
+  #shiny_phyloseq_print(finalize_diffabund_plot())
+  p = finalize_diffabund_plot()
+  p = list(p, p, p)
+  if(length(p) > 1){
+    do.call(gridExtra::grid.arrange, c(p, list(ncol=input$diffabund_ncol)))
+  } else {
+    shiny_phyloseq_print(p)
+  }  
 }, width=function(){72*input$width_diffabund},
    height=function(){72*input$height_diffabund}
 )

@@ -46,14 +46,20 @@ finalize_ordination_plot = reactive({
     if(!is.null(av(input$color_ord))){
       p1$mapping$colour <- as.symbol(av(input$color_ord))
       p1 <- update_labels(p1, list(colour = input$color_ord))
+      if(plyr::is.discrete(p1$data[[input$color_ord]])){
+        # Discrete brewer palette mapping
+        p1 <- p1 + scale_colour_brewer(palette=input$pal_ord)
+      } else {
+        # Continuous brewer palette mapping
+        p1 <- p1 + scale_colour_distiller(palette=input$pal_ord) 
+      }    
     }
     if(!is.null(av(input$shape_ord))){
       p1$mapping$shape  <- as.symbol(av(input$shape_ord))
       p1 <- update_labels(p1, list(shape = input$shape_ord))
     }
   }
-  p1 <- p1 + scale_colour_brewer(palette=input$pal_ord) +
-    shiny_phyloseq_ggtheme_list[[input$theme_ord]]
+  p1 <- p1 + shiny_phyloseq_ggtheme_list[[input$theme_ord]]
   return(p1)
 })
 # Render plot in panel and in downloadable file with format specified by user selection

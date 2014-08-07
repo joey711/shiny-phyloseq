@@ -45,7 +45,9 @@ datalist = list(GlobalPatterns=GlobalPatterns,
                 esophagus=esophagus,
                 soilrep=soilrep)
 load("data/kostic.RData")
-datalist <- c(list(study_1457_Kostic=kostic), datalist)
+load("data/1457_uparse.RData")
+datalist <- c(list(closed_1457_uparse = closed_1457_uparse,
+                   study_1457_Kostic = kostic), datalist)
 ########################################
 # Plot Rendering Stuff.
 ########################################

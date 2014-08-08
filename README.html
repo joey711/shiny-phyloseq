@@ -59,16 +59,29 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="citation" class="section level2">
 <h2>Citation</h2>
 <p>Shiny-phyloseq is provided under a free-of-charge, open-source license (A-GPL3). All we require is that you cite/attribute the following in any work that benefits from this code or application.</p>
+<div id="the-app" class="section level3">
+<h3>The App</h3>
 <p>McMurdie and Holmes (2014) Shiny-phyloseq: Web Application for Interactive Microbiome Analysis with Provenance Tracking. <em>Submitted</em>.</p>
+</div>
+<div id="under-the-hood" class="section level3">
+<h3>“Under the Hood”</h3>
 <p>McMurdie and Holmes (2013) <a href="http://dx.plos.org/10.1371/journal.pone.0061217">phyloseq: An R package for reproducible interactive analysis and graphics of microbiome census data</a>. PLoS ONE 8(4):e61217.</p>
 </div>
-<div id="installation" class="section level2">
-<h2>Installation</h2>
-<p>See the <a href="http://joey711.github.io/shiny-phyloseq/Install.html">Shiny-phyloseq installation instructions</a>, which are provided within the Shiny-phyloseq package.</p>
 </div>
 <div id="launching-shiny-phyloseq-local-session" class="section level2">
 <h2>Launching Shiny-phyloseq Local Session</h2>
 <p>While it is possible to host the server “back end” somewhere so that users only need to point their web browser to a link, the following instructions apply to running both the back and front “ends” on your local machine. The server back end will be an R session on your own machine, while the front end is your web browser, pointed to the appropriate local URL.</p>
+<div id="auto-installlaunch-shiny-phyloseq-recommended" class="section level3">
+<h3>Auto-Install/Launch Shiny-phyloseq (Recommended)</h3>
+<p>Simply launching Shiny-phyloseq should also install missing/old packages.</p>
+<p>The following R code will launch Shiny-phyloseq on most systems.</p>
+<pre class="r"><code>install.packages(&quot;shiny&quot;)
+shiny::runGitHub(&quot;shiny-phyloseq&quot;,&quot;joey711&quot;)</code></pre>
+<p>See the <a href="http://joey711.github.io/shiny-phyloseq/Install.html">Shiny-phyloseq installation instructions</a>, for further details.</p>
+</div>
+<div id="launch-using-rstudios-ide" class="section level3">
+<h3>Launch using RStudio’s IDE</h3>
+<p>Alternatively, you can launch a Shiny app from within RStudio. This is not necessary if you launch the app using the R code above.</p>
 <p>See the “<a href="http://shiny.rstudio.com/tutorial/lesson1/">Running an App</a>” section of <a href="http://shiny.rstudio.com/tutorial">the Shiny Tutorials</a>.</p>
 <p>If you are using RStudio (recommended) you can launch Shiny-phyloseq with the click of a button after opening one of the main source files (e.g. <code>server.R</code>) in the Shiny-phyloseq directory. Note that the best behavior (uploads, downloads, etc.) comes from <strong>not-using the RStudio built-in browser</strong>, but instead clicking the “open in browser” button at the top.</p>
 <p>Your default browser will then open at the live (local) URL. Then click away!</p>
@@ -79,6 +92,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li>Click the “Open in Browser” button above the new RStudio window that just launched.</li>
 </ol>
 <p>Note that any R installation/session can launch a Shiny app. For alternative launch methods that don’t use RStudio, see “<a href="http://shiny.rstudio.com/tutorial/lesson1/">Running an App</a>”.</p>
+</div>
 </div>
 </div>
 

@@ -1,3 +1,8 @@
+---
+output:
+  html_document:
+    keep_md: yes
+---
 
 # Shiny-phyloseq
 
@@ -37,8 +42,7 @@ Simply launching Shiny-phyloseq should also install missing/old packages.
 
 The following R code will launch Shiny-phyloseq on most systems.
 
-
-```r
+```{r, eval=FALSE}
 install.packages("shiny")
 shiny::runGitHub("shiny-phyloseq","joey711")
 ```

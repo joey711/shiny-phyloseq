@@ -33,7 +33,7 @@ The following R code will install required packages on your local system.
 Note that this assumes that you have an active internet connection and updated R installation.
 
 ```{r, eval=FALSE}
-source("https://raw.githubusercontent.com/joey711/shiny-phyloseq/master/server.R")
+source("https://raw.githubusercontent.com/joey711/shiny-phyloseq/master/install.R")
 ```
 
 This line executes the same package install/update code that is used by the auto-installer in Shiny-phyloseq itself, but as a one-time batch event that you can run in advance. This is only recommended if you have never launched Shiny-phyloseq before and want to get the pakcage installation out of the way. This also provides the exact recommended dependency and installation code, in case your system has special requirements -- like special development versions of packages, or a non-standard installation of R. For most systems, this is not necessary.

@@ -52,9 +52,11 @@ get_qiime_data = reactive({
 })
 get_loaded_data = reactive({
   if(!is.null(input$file1$name)){
-    # Added uploaded data, if provided, and it is phyloseq-class.
-    objectNames = load(input$file1$datapath)
-    loadedObjects = mget(objectNames)
+    # Add uploaded data, if provided, and it is phyloseq-class.
+    # Load user-data into a new environment (essentially sandbox)
+    env_userdata = new.env()
+    objectNames = load(input$file1$datapath, envir = env_userdata)
+    loadedObjects = mget(objectNames, envir = env_userdata)
     arePhyloseq = sapply(loadedObjects, inherits, "phyloseq")
     if(any(arePhyloseq)){
       loadedObjects <- loadedObjects[which(arePhyloseq)]

@@ -56,8 +56,22 @@ finalize_tree_plot = reactive({
     p2 = fail_gen("No Tree in Input Data",
                   "Cannot Make Tree Graphic without Tree")        
   }
-  p2 <- p2 + scale_color_brewer(palette = input$pal_tree) +
-    shiny_phyloseq_ggtheme_list[[input$theme_tree]]
+  # Reactive Color section
+  if( !is.null(av(input$color_tree)) & input$method_tree == "sampledodge"){
+    # Find point-layer
+    treeptlay = which(sapply(p2$layers, function(x) x$geom$objname == "point"))[1]
+    # Test whether first point-layer color variable is discrete
+    if(plyr::is.discrete(p2$layers[[treeptlay]]$data[[input$color_tree]])){
+      # Discrete brewer palette mapping
+      p2 <- p2 + scale_colour_brewer(palette=input$pal_tree) + 
+        scale_fill_brewer(palette=input$pal_tree)
+    } else {
+      # Continuous brewer palette mapping
+      p2 <- p2 + scale_colour_distiller(palette=input$pal_tree) +
+        scale_fill_distiller(palette=input$pal_tree)
+    }    
+  }
+  p2 <- p2 + shiny_phyloseq_ggtheme_list[[input$theme_tree]]
   return(p2)
 })
 # Render plot in panel and in downloadable file with format specified by user selection

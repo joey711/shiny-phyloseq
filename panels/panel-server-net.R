@@ -193,9 +193,19 @@ p_net_update = reactive({
   p$data <- LinksData()[Distance < input$uinetdispdist, ]
   return(p)
 })
-# label=isolate(av(input$label_net)),
 finalize_network_plot = reactive({
-  return(p_net_update() + scale_colour_brewer(palette = input$pal_net))
+  #return(p_net_update() + scale_colour_brewer(palette = input$pal_net))
+  fpnet = p_net_update() 
+  if(!is.null(av(input$color_net))){
+    if(plyr::is.discrete(fpnet$layers[[2]]$data[[input$color_net]])){
+      # Discrete brewer palette mapping
+      fpnet <- fpnet + scale_colour_brewer(palette=input$pal_net)
+    } else {
+      # Continuous brewer palette mapping
+      fpnet <- fpnet + scale_colour_distiller(palette=input$pal_net) 
+    }
+  }
+  return(fpnet)
 })
 # Render plot in panel and in downloadable file with format specified by user selection
 output$network <- renderPlot({

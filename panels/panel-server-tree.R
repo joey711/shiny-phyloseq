@@ -60,16 +60,15 @@ finalize_tree_plot = reactive({
   if( !is.null(av(input$color_tree)) & input$method_tree == "sampledodge"){
     # Find point-layer
     treeptlay = which(sapply(p2$layers, function(x) x$geom$objname == "point"))[1]
-    p2$layers[[treeptlay]]$mapping$colour <- as.symbol(input$color_tree)
-    p2$layers[[treeptlay]]$mapping$fill <- as.symbol(input$color_tree)
-    p2 <- update_labels(p2, list(colour = input$color_tree))
     # Test whether first point-layer color variable is discrete
     if(plyr::is.discrete(p2$layers[[treeptlay]]$data[[input$color_tree]])){
       # Discrete brewer palette mapping
-      p2 <- p2 + scale_colour_brewer(palette=input$pal_tree)
+      p2 <- p2 + scale_colour_brewer(palette=input$pal_tree) + 
+        scale_fill_brewer(palette=input$pal_tree)
     } else {
       # Continuous brewer palette mapping
-      p2 <- p2 + scale_colour_distiller(palette=input$pal_tree) 
+      p2 <- p2 + scale_colour_distiller(palette=input$pal_tree) +
+        scale_fill_distiller(palette=input$pal_tree)
     }    
   }
   p2 <- p2 + shiny_phyloseq_ggtheme_list[[input$theme_tree]]

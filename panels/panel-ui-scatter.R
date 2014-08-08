@@ -1,7 +1,7 @@
 ################################################################################
 # sbp for scatter plot
 ################################################################################
-sbp_scat = sidebarPanel(actionButton("actionb_scat", "Re-Build Plot", icon("refresh")),
+sbp_scat = sidebarPanel(#actionButton("actionb_scat", "Re-Build Plot", icon("refresh")),
                         br(),
                         uiOutput("scat_uix_x"),
                         uiOutput("scat_uix_y"),

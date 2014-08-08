@@ -64,12 +64,15 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>The following R code will launch Shiny-phyloseq on most systems.</p>
 <pre class="r"><code>install.packages(&quot;shiny&quot;)
 shiny::runGitHub(&quot;shiny-phyloseq&quot;,&quot;joey711&quot;)</code></pre>
+<p>If this worked without errors, then you are done! No further installation necessary.</p>
 </div>
-<div id="manual-install-of-shiny-phyloseq-dependencies" class="section level2">
-<h2>Manual Install of Shiny-phyloseq Dependencies</h2>
+<div id="manual-install-dependencies-special-case-only" class="section level2">
+<h2>Manual Install Dependencies (Special Case Only)</h2>
+<p>If the previous code worked, you can skip this section.</p>
 <p>The following R code will install required packages on your local system. Note that this assumes that you have an active internet connection and updated R installation.</p>
-<pre class="r"><code>source(&quot;https://raw.githubusercontent.com/joey711/shiny-phyloseq/master/install.R&quot;)</code></pre>
-<p>This line executes the same package install/update code that is used by the auto-installer in Shiny-phyloseq itself, but as a one-time batch event that you can run in advance. This is only recommended if you have never launched Shiny-phyloseq before and want to get the pakcage installation out of the way. This also provides the exact recommended dependency and installation code, in case your system has special requirements – like special development versions of packages, or a non-standard installation of R. For most systems, this is not necessary.</p>
+<pre class="r"><code>install.packages(&quot;devtools&quot;)
+devtools::source_url(&quot;https://raw.githubusercontent.com/joey711/shiny-phyloseq/master/install.R&quot;)</code></pre>
+<p>This code executes the same package install/update code that is used by the auto-installer in Shiny-phyloseq itself (and will be run if the previous “Auto-Install” instructions work for you). However, in special cases you may want to run this as a one-time batch event, for instance of a test of system compatibility. This is only recommended/necessary if you have never launched Shiny-phyloseq before <em>and</em> you want/need to perform/test installation ahead of launch. In addition, the web link provides the exact recommended dependency and installation code, in case your system has special requirements or you need to debug installation manually – for instance if you have special development versions of packages, or a non-standard installation of R. For most systems, this “manual install” is not necessary.</p>
 </div>
 
 

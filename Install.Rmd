@@ -26,15 +26,20 @@ install.packages("shiny")
 shiny::runGitHub("shiny-phyloseq","joey711")
 ```
 
+If this worked without errors, then you are done! No further installation necessary.
 
-## Manual Install of Shiny-phyloseq Dependencies
+
+## Manual Install Dependencies (Special Case Only)
+
+If the previous code worked, you can skip this section.
 
 The following R code will install required packages on your local system.
 Note that this assumes that you have an active internet connection and updated R installation.
 
 ```{r, eval=FALSE}
-source("https://raw.githubusercontent.com/joey711/shiny-phyloseq/master/install.R")
+install.packages("devtools")
+devtools::source_url("https://raw.githubusercontent.com/joey711/shiny-phyloseq/master/install.R")
 ```
 
-This line executes the same package install/update code that is used by the auto-installer in Shiny-phyloseq itself, but as a one-time batch event that you can run in advance. This is only recommended if you have never launched Shiny-phyloseq before and want to get the pakcage installation out of the way. This also provides the exact recommended dependency and installation code, in case your system has special requirements -- like special development versions of packages, or a non-standard installation of R. For most systems, this is not necessary.
+This code executes the same package install/update code that is used by the auto-installer in Shiny-phyloseq itself (and will be run if the previous "Auto-Install" instructions work for you). However, in special cases you may want to run this as a one-time batch event, for instance of a test of system compatibility. This is only recommended/necessary if you have never launched Shiny-phyloseq before *and* you want/need to perform/test installation ahead of launch. In addition, the web link provides the exact recommended dependency and installation code, in case your system has special requirements or you need to debug installation manually -- for instance if you have special development versions of packages, or a non-standard installation of R. For most systems, this "manual install" is not necessary.
 

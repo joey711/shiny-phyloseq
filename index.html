@@ -59,18 +59,27 @@ in any work that benefits from this code or application.</p>
 <p>McMurdie and Holmes (2013) <a href="http://dx.plos.org/10.1371/journal.pone.0061217">phyloseq: An R package for reproducible interactive analysis and graphics of microbiome census data</a>. 
 PLoS ONE 8(4):e61217.</p>
 
-<h2>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
-
-<p>See the <a href="Install.html">Shiny-phyloseq installation instructions</a>,
-which are provided within the Shiny-phyloseq package.</p>
+<div id="auto-install-shiny-phyloseq" class="section level2">
+<h2>Launch/Install Shiny-phyloseq</h2>
+<p>Simply launching Shiny-phyloseq will also install missing/old packages.</p>
+<p>The following R code will launch Shiny-phyloseq on most systems.</p>
+<pre class="r"><code>install.packages(&quot;shiny&quot;)
+shiny::runGitHub(&quot;shiny-phyloseq&quot;,&quot;joey711&quot;)</code></pre>
+</div>
+      
+<p>See the <a href="Install.html">Shiny-phyloseq installation page</a>
+for further details regarding installation, and required packages.</p>
 
 <h2>
 <a name="launching-shiny-phyloseq-local-session" class="anchor" href="#launching-shiny-phyloseq-local-session"><span class="octicon octicon-link"></span></a>Launching Shiny-phyloseq Local Session</h2>
 
 <p>While it is possible to host the server "back end" somewhere
 so that users only need to point their web browser to a link,
-the following instructions apply to running both the back and front "ends" on your local machine.
+the following instructions apply to running both the back and front
+"ends" on your local machine.
+The Launch/Install code above is an example of how to do this from within a running R session.
+It is also possible launch the app after downloading the
+Shiny-phyloseq repository.
 The server back end will be an R session on your own machine,
 while the front end is your web browser, pointed to the appropriate local URL.</p>
 

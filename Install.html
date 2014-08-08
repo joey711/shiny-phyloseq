@@ -56,40 +56,20 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 
 
-<p>This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <a href="http://rmarkdown.rstudio.com">http://rmarkdown.rstudio.com</a>.</p>
-<div id="shiny-phyloseq-dependencies" class="section level2">
-<h2>Shiny-phyloseq Dependencies</h2>
-<p>If you are reading this, it is because you are interested in launching/running a local instance of Shiny-phyloseq. The Shiny-phyloseq “front end”, the GUI web application, will run on any modern web browswer. Note that older versions of Microsoft’s Internet Explorer are <strong>not supported</strong>. Firefox, Chrome, Opera, Safari and others should be fine for connecting to a Shiny-phyloseq session. For running the Shiny-phyloseq “back end”, you must have the latest version of R installed on your system as well as several additional R packages.</p>
+<p>If you are reading this, it is because you are interested in launching/running an instance of Shiny-phyloseq. The Shiny-phyloseq “front end”, the GUI web application, will run on any modern web browser. Note that older versions of Microsoft’s Internet Explorer are <strong>not supported</strong>. Firefox, Chrome, Opera, Safari and others should be fine for connecting to a Shiny-phyloseq session.</p>
+<p>For running the Shiny-phyloseq “back end”, you must have the latest version of R installed on your system as well as several additional R packages.</p>
+<div id="auto-install-shiny-phyloseq-recommended" class="section level2">
+<h2>Auto-Install Shiny-phyloseq (Recommended)</h2>
+<p>Simply launching Shiny-phyloseq should also install missing/old packages.</p>
+<p>The following R code will launch Shiny-phyloseq on most systems.</p>
+<pre class="r"><code>install.packages(&quot;shiny&quot;)
+shiny::runGitHub(&quot;shiny-phyloseq&quot;,&quot;joey711&quot;)</code></pre>
+</div>
+<div id="manual-install-of-shiny-phyloseq-dependencies" class="section level2">
+<h2>Manual Install of Shiny-phyloseq Dependencies</h2>
 <p>The following R code will install required packages on your local system. Note that this assumes that you have an active internet connection and updated R installation.</p>
-<pre class="r"><code># Dependency installation
-source(&quot;http://bioconductor.org/biocLite.R&quot;)
-installpkgs = c(&quot;phyloseq&quot;, &quot;shiny&quot;, &quot;data.table&quot;, &quot;d3Network&quot;, &quot;genefilter&quot;, &quot;ggplot2&quot;, &quot;grid&quot;,
-  &quot;gridExtra&quot;, &quot;png&quot;, &quot;RColorBrewer&quot;, &quot;scales&quot;)
-biocLite(pkgs = installpkgs)</code></pre>
-<p>Note that this will install the latest release version of phyloseq, but some of the functionality of <code>Shiny-phyloseq</code> may depend upon utilities in the newer development version. See <a href="http://joey711.github.io/phyloseq/install">the phyloseq installation instructions</a> and install the latest development release of phyloseq to guarantee full functionality.</p>
-<p>The following lists the recommended version numbers of relevant packages:</p>
-<pre class="r"><code>packageVersion(&quot;phyloseq&quot;)</code></pre>
-<pre><code>## [1] '1.9.11'</code></pre>
-<pre class="r"><code>packageVersion(&quot;shiny&quot;)</code></pre>
-<pre><code>## [1] '0.10.0'</code></pre>
-<pre class="r"><code>packageVersion(&quot;d3Network&quot;)</code></pre>
-<pre><code>## [1] '0.5'</code></pre>
-<pre class="r"><code>packageVersion(&quot;data.table&quot;)</code></pre>
-<pre><code>## [1] '1.9.2'</code></pre>
-<pre class="r"><code>packageVersion(&quot;genefilter&quot;)</code></pre>
-<pre><code>## [1] '1.46.1'</code></pre>
-<pre class="r"><code>packageVersion(&quot;ggplot2&quot;)</code></pre>
-<pre><code>## [1] '1.0.0'</code></pre>
-<pre class="r"><code>packageVersion(&quot;grid&quot;)</code></pre>
-<pre><code>## [1] '3.1.0'</code></pre>
-<pre class="r"><code>packageVersion(&quot;gridExtra&quot;)</code></pre>
-<pre><code>## [1] '0.9.1'</code></pre>
-<pre class="r"><code>packageVersion(&quot;png&quot;)</code></pre>
-<pre><code>## [1] '0.1.7'</code></pre>
-<pre class="r"><code>packageVersion(&quot;RColorBrewer&quot;)</code></pre>
-<pre><code>## [1] '1.0.5'</code></pre>
-<pre class="r"><code>packageVersion(&quot;scales&quot;)</code></pre>
-<pre><code>## [1] '0.2.4'</code></pre>
+<pre class="r"><code>source(&quot;https://raw.githubusercontent.com/joey711/shiny-phyloseq/master/server.R&quot;)</code></pre>
+<p>This line executes the same package install/update code that is used by the auto-installer in Shiny-phyloseq itself, but as a one-time batch event that you can run in advance. This is only recommended if you have never launched Shiny-phyloseq before and want to get the pakcage installation out of the way. This also provides the exact recommended dependency and installation code, in case your system has special requirements – like special development versions of packages, or a non-standard installation of R. For most systems, this is not necessary.</p>
 </div>
 
 

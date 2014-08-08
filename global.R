@@ -38,16 +38,20 @@ shiny_phyloseq_ggtheme_list <- list(
 # Included Data
 # Define the named list of datasets to choose from
 ################################################################################
-includedDatasets = c("GlobalPatterns", "enterotype", "esophagus", "soilrep")
-data(list=includedDatasets)
-datalist = list(GlobalPatterns=GlobalPatterns, 
-                enterotype=enterotype,
-                esophagus=esophagus,
-                soilrep=soilrep)
-load("data/kostic.RData")
-load("data/1457_uparse.RData")
-datalist <- c(list(closed_1457_uparse = closed_1457_uparse,
-                   study_1457_Kostic = kostic), datalist)
+# Create an environment to store original loaded data
+env_psdata = new.env()
+# Keep server-loaded data into a special environemnt, `env_psdata`
+data(list=c("GlobalPatterns", "enterotype", "esophagus"), envir = env_psdata)
+load("data/kostic.RData", envir = env_psdata)
+load("data/1457_uparse.RData", envir = env_psdata)
+attach(env_psdata)
+# Define initial list of available datasets
+datalist = list(
+  closed_1457_uparse = closed_1457_uparse,
+  study_1457_Kostic = kostic,
+  GlobalPatterns = GlobalPatterns,
+  enterotype = enterotype,
+  esophagus = esophagus)
 ########################################
 # Plot Rendering Stuff.
 ########################################

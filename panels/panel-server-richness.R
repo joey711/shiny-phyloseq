@@ -2,13 +2,22 @@
 # UI
 ################################################################################
 output$richness_uix_x <- renderUI({
-  uivar("x_alpha", "Horizontal (x) Variable:", vars("samples"))
+  selectInput("x_alpha",
+        label = "Horizontal (x) Variable:",
+        choices = c(list("samples"), vars("samples")),
+        selected = "samples")
 })
 output$richness_uix_color <- renderUI({
-  uivar("color_alpha", "Color Variable:", vars("samples"))
+  selectInput("color_alpha",
+              label = "Color Variable:",
+              choices = c(list("samples"), vars("samples")),
+              selected = "NULL")
 })
 output$richness_uix_shape <- renderUI({
-  uivar("shape_alpha", "Shape Variable:", vars("samples"))
+  selectInput("shape_alpha",
+              label = "Shape Variable:",
+              choices = c(list("samples"), vars("samples")),
+              selected = "NULL")
 })
 ################################################################################
 # Alpha Diversity plot definition
@@ -22,10 +31,11 @@ make_richness_plot = reactive({
   }
   isolate({
     p4 = NULL
-    try(p4 <- plot_richness(physeq_rich(), x=av(input$x_alpha),
-                            color=av(input$color_alpha),
-                            shape=av(input$shape_alpha),
-                            measures=input$measures_alpha),
+    try(p4 <- plot_richness(physeq_rich(),
+                            x = av(input$x_alpha),
+                            color = av(input$color_alpha),
+                            shape = av(input$shape_alpha),
+                            measures = input$measures_alpha),
         silent=TRUE)
     return(p4)
   })
@@ -36,8 +46,9 @@ finalize_richness_plot = reactive({
     # Adjust size/alpha of points, but not error bars
     p4$layers[[1]]$geom_params$size <- input$size_rich
     p4$layers[[1]]$geom_params$alpha <- input$alpha_rich
-    p4 <- p4 + scale_colour_brewer(palette = input$pal_rich) +
-      shiny_phyloseq_ggtheme_list[[input$theme_rich]]
+    p4$layers[[2]]$geom_params$alpha <- input$alpha_rich
+    p4 <- p4 + scale_colour_brewer(palette = input$pal_rich) 
+    p4 <- p4 + shiny_phyloseq_ggtheme_list[[input$theme_rich]]
     return(p4)
   } else {
     # If for any reason p4 is not a ggplot at this point,

@@ -1,4 +1,15 @@
 ################################################################################
+# Check that the currently-installed version of R
+# is at least the minimum required version.
+################################################################################
+R_min_version = "3.1.0"
+R_version = paste0(R.Version()$major, ".", R.Version()$minor)
+if(compareVersion(R_version, R_min_version) < 0){
+  stop("You do not have the latest required version of R installed.\n", 
+       "Launch should fail.\n",
+       "Go to http://cran.r-project.org/ and update your version of R.")
+}
+################################################################################
 # Should use latest GitHub version of shiny
 ################################################################################
 shiny_okay = FALSE

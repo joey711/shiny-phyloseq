@@ -56,23 +56,47 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 
 
-<p>If you are reading this, it is because you are interested in launching/running an instance of Shiny-phyloseq. The Shiny-phyloseq “front end”, the GUI web application, will run on any modern web browser. Note that older versions of Microsoft’s Internet Explorer are <strong>not supported</strong>. Firefox, Chrome, Opera, Safari and others should be fine for connecting to a Shiny-phyloseq session.</p>
-<p>For running the Shiny-phyloseq “back end”, you must have the latest version of R installed on your system as well as several additional R packages.</p>
-<div id="auto-install-shiny-phyloseq-recommended" class="section level2">
-<h2>Auto-Install Shiny-phyloseq (Recommended)</h2>
-<p>Simply launching Shiny-phyloseq should also install missing/old packages.</p>
+<p>If you are reading this, it is because you are interested in launching/running an instance of Shiny-phyloseq on your own computer. This requires that you have both a <em>front end</em> (<a href="http://en.wikipedia.org/wiki/Web_browser">browser</a>) and a <em>back end</em> (<a href="http://cran.r-project.org/">R</a>).</p>
+<hr />
+<div id="front-end" class="section level2">
+<h2>Front End</h2>
+<p>The Shiny-phyloseq <em>front end</em>, the GUI web application, will run on any modern web browser.</p>
+<div id="supported" class="section level4">
+<h4>Supported:</h4>
+<ul>
+<li><a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a></li>
+<li><a href="https://www.google.com/intl/en-US/chrome/browser/">Chrome</a></li>
+<li><a href="https://www.apple.com/safari/">Safari</a></li>
+<li>other modern <a href="http://en.wikipedia.org/wiki/Web_browser">browsers</a> likely fine for connecting to a Shiny-phyloseq session.</li>
+</ul>
+</div>
+<div id="not-supported" class="section level4">
+<h4>Not Supported:</h4>
+<ul>
+<li>Older versions of Microsoft’s Internet Explorer</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="back-end" class="section level2">
+<h2>Back End</h2>
+<p>For running the Shiny-phyloseq <em>back end</em>, you must have <a href="http://cran.r-project.org/">the latest version of R installed on your system</a>, as well as several additional R packages.</p>
+<div id="auto-install-shiny-phyloseq-recommended" class="section level4">
+<h4>Auto-Install Shiny-phyloseq (Recommended)</h4>
+<p>Once you have installed or updated to <a href="http://cran.r-project.org/">the latest version of R</a>, simply launching Shiny-phyloseq will also install requisite R packages that are missing or old. Note that this also <strong>requires</strong> an <strong>internet connection</strong> and <strong>installation permission</strong> on your system.</p>
 <p>The following R code will launch Shiny-phyloseq on most systems.</p>
 <pre class="r"><code>install.packages(&quot;shiny&quot;)
 shiny::runGitHub(&quot;shiny-phyloseq&quot;,&quot;joey711&quot;)</code></pre>
 <p>If this worked without errors, then you are done! No further installation necessary.</p>
 </div>
-<div id="manual-install-dependencies-special-case-only" class="section level2">
-<h2>Manual Install Dependencies (Special Case Only)</h2>
+<div id="manual-install-dependencies-special-case-only" class="section level4">
+<h4>Manual Install Dependencies (Special Case Only)</h4>
 <p>If the previous code worked, you can skip this section.</p>
 <p>The following R code will install required packages on your local system. Note that this assumes that you have an active internet connection and updated R installation.</p>
 <pre class="r"><code>install.packages(&quot;devtools&quot;)
 devtools::source_url(&quot;https://raw.githubusercontent.com/joey711/shiny-phyloseq/master/install.R&quot;)</code></pre>
 <p>This code executes the same package install/update code that is used by the auto-installer in Shiny-phyloseq itself (and will be run if the previous “Auto-Install” instructions work for you). However, in special cases you may want to run this as a one-time batch event, for instance of a test of system compatibility. This is only recommended/necessary if you have never launched Shiny-phyloseq before <em>and</em> you want/need to perform/test installation ahead of launch. In addition, the web link provides the exact recommended dependency and installation code, in case your system has special requirements or you need to debug installation manually – for instance if you have special development versions of packages, or a non-standard installation of R. For most systems, this “manual install” is not necessary.</p>
+</div>
 </div>
 
 

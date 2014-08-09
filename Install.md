@@ -1,9 +1,4 @@
----
-title: "Install Shiny-phyloseq"
-output:
-  html_document:
-    keep_md: yes
----
+# Install Shiny-phyloseq
 
 If you are reading this, it is because you are interested
 in launching/running an instance of Shiny-phyloseq on your own computer.
@@ -50,7 +45,8 @@ Note that this also **requires** an **internet connection** and
 
 The following R code will launch Shiny-phyloseq on most systems.
 
-```{r eval=FALSE}
+
+```r
 install.packages("shiny")
 shiny::runGitHub("shiny-phyloseq","joey711")
 ```
@@ -65,7 +61,8 @@ If the previous code worked, you can skip this section.
 The following R code will install required packages on your local system.
 Note that this assumes that you have an active internet connection and updated R installation.
 
-```{r, eval=FALSE}
+
+```r
 install.packages("devtools")
 devtools::source_url("https://raw.githubusercontent.com/joey711/shiny-phyloseq/master/install.R")
 ```

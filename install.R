@@ -32,6 +32,7 @@ download_not_installed = function(x){
   source("http://bioconductor.org/biocLite.R")
   for(i in x){
     if(!i %in% availpacks){
+      cat("Installing", i, "package using biocLite... \n")
       biocLite(i)
     }
   }
@@ -63,9 +64,7 @@ if(!phyloseq_okay) {
 ################################################################################
 # Load packages that must be fully-loaded 
 ################################################################################
-shiny_phyloseq_full_load_packages = c("shiny", "phyloseq", "data.table", "scales",
-                                      "d3Network", "genefilter", "ggplot2",
-                                      "grid", "gridExtra", "png", "RColorBrewer")
+shiny_phyloseq_full_load_packages = c("shiny", "phyloseq", vanilla_install_pkgs)
 for(i in shiny_phyloseq_full_load_packages){
   library(i, character.only = TRUE); packageVersion(i)
 }

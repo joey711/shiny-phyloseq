@@ -59,6 +59,17 @@ finalize_richness_plot = reactive({
       }    
     }
     p4 <- p4 + shiny_phyloseq_ggtheme_list[[input$theme_rich]]
+    # Add the x-axis label rotation as specified by user
+    #p4 <- p4 + theme(axis.text.x=element_blank())
+    if(!is.null(av(input$x_alpha))){
+      if(plyr::is.discrete(p4$data[[input$x_alpha]])){
+        # Check the number of discrete classes (e.g. factor levels)
+        if(length(unique(p4$data[[input$x_alpha]])) > 30){
+          # If number of classes is above max, set x-axis theme to blank
+          p4 <- p4 + theme(axis.text.x=element_blank())
+        } 
+      }      
+    }
     return(p4)
   } else {
     # If for any reason p4 is not a ggplot at this point,

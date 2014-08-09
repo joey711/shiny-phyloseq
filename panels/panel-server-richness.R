@@ -46,8 +46,18 @@ finalize_richness_plot = reactive({
     # Adjust size/alpha of points, but not error bars
     p4$layers[[1]]$geom_params$size <- input$size_rich
     p4$layers[[1]]$geom_params$alpha <- input$alpha_rich
-    p4$layers[[2]]$geom_params$alpha <- input$alpha_rich
-    p4 <- p4 + scale_colour_brewer(palette = input$pal_rich) 
+    if(length(p4$layers) >= 2){
+      p4$layers[[2]]$geom_params$alpha <- input$alpha_rich 
+    }
+    if(!is.null(av(input$color_rich))){
+      if(plyr::is.discrete(p4$data[[input$color_rich]])){
+        # Discrete brewer palette mapping
+        p4 <- p4 + scale_colour_brewer(palette=input$pal_rich)
+      } else {
+        # Continuous brewer palette mapping
+        p4 <- p4 + scale_colour_distiller(palette=input$pal_rich) 
+      }    
+    }
     p4 <- p4 + shiny_phyloseq_ggtheme_list[[input$theme_rich]]
     return(p4)
   } else {

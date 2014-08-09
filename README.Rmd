@@ -32,49 +32,25 @@ PLoS ONE 8(4):e61217.
 
 While it is possible to host the server "back end" somewhere
 so that users only need to point their web browser to a link,
-the following instructions apply to running both the back and front "ends" on your local machine.
+it is also possible to launch both the back and front "ends" on your local machine.
 The server back end will be an R session on your own machine,
-while the front end is your web browser, pointed to the appropriate local URL.
+while the front end is your web browser,
+pointed to the appropriate local URL.
 
-### Auto-Install/Launch Shiny-phyloseq (Recommended)
+### [Quick install/launch instructions](http://joey711.github.io/shiny-phyloseq/Install.html)
 
-Simply launching Shiny-phyloseq should also install missing/old packages.
+Simply [launching Shiny-phyloseq](http://joey711.github.io/shiny-phyloseq/Install.html)
+should also install missing/old packages.
+Make sure that you first have installed
+[the latest version of R](http://cran.r-project.org/).
 
 The following R code will launch Shiny-phyloseq on most systems.
 
 ```{r, eval=FALSE}
-install.packages("shiny")
+install.packages("shiny") 
 shiny::runGitHub("shiny-phyloseq","joey711")
 ```
 
-See the [Shiny-phyloseq installation instructions](http://joey711.github.io/shiny-phyloseq/Install.html),
+See the 
+[Shiny-phyloseq installation instructions](http://joey711.github.io/shiny-phyloseq/Install.html),
 for further details.
-
-
-### Launch using RStudio's IDE
-
-Alternatively, you can launch a Shiny app from within RStudio.
-This is not necessary if you launch the app using the R code above.
-
-See the "[Running an App](http://shiny.rstudio.com/tutorial/lesson1/)" section 
-of [the Shiny Tutorials](http://shiny.rstudio.com/tutorial).
-
-If you are using RStudio (recommended) you can 
-launch Shiny-phyloseq with the click of a button
-after opening one of the main source files (e.g. `server.R`)
-in the Shiny-phyloseq directory.
-Note that the best behavior (uploads, downloads, etc.)
-comes from **not-using the RStudio built-in browser**,
-but instead clicking the "open in browser" button at the top. 
-
-Your default browser will then open at the live (local) URL. Then click away!
-
-Brief steps:
-
-1. (Re)start RStudio by opening `server.R` or `ui.R`
-2. Click the "Run App" button that appears.
-3. Click the "Open in Browser" button above the new RStudio window that just launched.
-
-Note that any R installation/session can launch a Shiny app.
-For alternative launch methods that don't use RStudio,
-see "[Running an App](http://shiny.rstudio.com/tutorial/lesson1/)".

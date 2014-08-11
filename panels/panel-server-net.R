@@ -194,7 +194,6 @@ p_net_update = reactive({
   return(p)
 })
 finalize_network_plot = reactive({
-  #return(p_net_update() + scale_colour_brewer(palette = input$pal_net))
   fpnet = p_net_update() 
   if(!is.null(av(input$color_net))){
     if(plyr::is.discrete(fpnet$layers[[2]]$data[[input$color_net]])){

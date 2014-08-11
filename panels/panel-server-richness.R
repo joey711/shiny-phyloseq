@@ -65,7 +65,10 @@ finalize_richness_plot = reactive({
     }
     p4 <- p4 + shiny_phyloseq_ggtheme_list[[input$theme_rich]]
     # Add the x-axis label rotation as specified by user
-    #p4 <- p4 + theme(axis.text.x=element_text(angle = 90, vjust = 0.5))
+    p4 <- p4 + theme(axis.text.x = element_text(
+      angle = input$x_axis_angle_rich,
+      vjust = 0.5)
+    )
     if(!is.null(av(input$x_rich))){
       if(plyr::is.discrete(p4$data[[input$x_rich]])){
         # Check the number of discrete classes (e.g. factor levels)

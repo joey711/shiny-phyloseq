@@ -29,11 +29,11 @@ if(!shiny_okay){
 ################################################################################
 download_not_installed = function(x){
   availpacks = .packages(all.available = TRUE)
-  source("http://bioconductor.org/biocLite.R")
-  for(i in x){
-    if(!i %in% availpacks){
-      cat("Installing", i, "package using biocLite... \n")
-      biocLite(i)
+  if(any(!x %in% availpacks)){
+    source("http://bioconductor.org/biocLite.R")
+    for(i in x[!x %in% availpacks]){
+        cat("Installing", i, "package using biocLite... \n")
+        biocLite(i)
     }
   }
 }

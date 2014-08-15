@@ -1,3 +1,20 @@
+# http://shiny.rstudio.com/tutorial/lesson2/
+# http://shiny.rstudio.com/articles/layout-guide.html
+# http://stackoverflow.com/questions/20637248/shiny-4-small-textinput-boxes-side-by-side
+# http://getbootstrap.com/2.3.2/base-css.html#forms
+numericInputRow <- function(inputId, label, value, min = NA, max = NA, step = NA, class="input-small", ...){
+  inputTag <- tags$input(id = inputId, type = "number", value = value, class=class, ...)
+  if (!is.na(min)) 
+    inputTag$attribs$min = min
+  if (!is.na(max)) 
+    inputTag$attribs$max = max
+  if (!is.na(step)) 
+    inputTag$attribs$step = step
+  div(style="display:inline-block",
+      #class="controls controls-row",
+      tags$label(label, `for` = inputId), 
+      inputTag)
+}
 # Type for distance/network/etc. Samples or Taxa
 uitype = function(id="type", selected="taxa"){
   selectInput(inputId=id, label="Calculation: Samples or Taxa?",

@@ -1,6 +1,6 @@
 ################################################################################
 filterpage = fluidPage(
-  titlePanel(""),
+  titlePanel("Basic Data Filtering"),
   sidebarLayout(
     sidebarPanel(
       actionButton("actionb_filter", "Execute Filter", icon("filter")),
@@ -39,3 +39,24 @@ filterpage = fluidPage(
   )
 )
 ################################################################################
+# evaluated in the following order;
+# subsetting by specific taxonomic ranks or sample covariates,
+# minimum thresholds for library size or cross-dataset OTU-counts,
+# as well as an interface for so-called \texttt{kOverA} filtering.
+# After clicking the button to execute the filtering parameters,
+# a set of histograms of OTU and library count totals are displayed
+# for comparing raw and filtered results.
+
+# richpage = fluidPage(
+#   headerPanel("Alpha Diversity Estimates", "windowTitle"), 
+#   fluidRow(
+#     sbp_rich,
+#     column(width = 8, plotOutput("richness"), offset = 0)
+#   ),
+#   fluidRow(
+#     column(width = 12,
+#            "Placeholder -  information about this tab here. See ",
+#            a(href="http://joey711.github.io/shiny-phyloseq/", "the plot_richness tutorial")
+#     )
+#   )
+# )

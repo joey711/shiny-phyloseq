@@ -15,30 +15,37 @@ numericInputRow <- function(inputId, label, value, min = NA, max = NA, step = NA
       tags$label(label, `for` = inputId), 
       inputTag)
 }
+# Define supported download format labels
+vectorGraphicFormats = c("emf", "eps", "pdf", "tex", "svg", "wmf")
+rasterGraphicFormats = c("bmp", "jpg", "png", "tiff")
+graphicFormats = c(vectorGraphicFormats, rasterGraphicFormats)
+graphicTypeUI = function(inputId, label="Format", choices=graphicFormats, selected="pdf"){
+  selectInput(inputId, label, choices, selected, multiple = FALSE, selectize = TRUE)
+}
 # Type for distance/network/etc. Samples or Taxa
 uitype = function(id="type", selected="taxa"){
   selectInput(inputId=id, label="Calculation: Samples or Taxa?",
               selected=selected,
               choices=list("Taxa"="taxa", "Samples"="samples"))
 }
-# ui for point size slider
-uiptsz = function(id="size"){
-  numericInput(inputId=id, label="Point Size", min=1, max=NA, value=5, step=1)
+# ui for point size
+uiptsz = function(id, ...){
+  numericInputRow(inputId=id, label="Size", min=1, max=NA, value=5, step=1, ...)
 }
 # ui for point opacity slider
-uialpha = function(id="alpha"){
-  sliderInput(inputId=id, label="Opacity", min=0, max=1, value=1, step=0.1)
+uialpha = function(id, ...){
+  numericInputRow(inputId=id, label="Opacity", min=0, max=1, value=1, step=0.1, ...)
 }
 # UI function to define palettes. Reused in many panels.
 uipal = function(id, default="Set1"){
-  selectInput(id, "Color Palette",  
+  selectInput(id, "Palette",  
               choices = rownames(RColorBrewer::brewer.pal.info), 
               selected = default
   )
 }
 # UI function to define ggplot2 themes. Reused in many panels.
 uitheme = function(id, default="black/white"){
-  selectInput(id, "Style Theme",
+  selectInput(id, "Theme",
               choices = names(shiny_phyloseq_ggtheme_list),
               selected = default
   )
@@ -88,19 +95,6 @@ make_fluidpage = function(fptitle="", sbp, outplotid){
     )
   )
 }
-# Trial of non-sidebarLayout page. Needs design-devel...
-# https://github.com/rstudio/shiny/wiki/Shiny-Application-Layout-Guide#grid-layouts-in-depth
-# richpage = fluidPage(titlePanel(""), 
-#                       fluidRow(
-#                         column(6, sbp_rich),
-#                         column(6, plotOutput("richness"))
-#                       ),
-#                       fluidRow(column(12, 
-#                                       p("Testing download plot:"),
-#                                       graphicTypeUI("downtype_rich"),
-#                                       downloadLink('downloadRichness', 'Download Graphic')
-#                       ))
-# )
 ################################################################################
 source("panels/panel-ui-net.R", local = TRUE)
 source("panels/panel-ui-bar.R", local = TRUE)
@@ -116,20 +110,23 @@ source("panels/panel-ui-palette.R", local = TRUE)
 source("panels/panel-ui-provenance.R", local = TRUE)
 # Define the full user-interface, `ui`
 ################################################################################
-ui = navbarPage(title = a(href="http://joey711.github.io/shiny-phyloseq/", style="color:#F0F0F0",  "Shiny-phyloseq"), 
-                tabPanel("Select Dataset", datapage),
-                tabPanel("Filter", filterpage),
-                tabPanel("Alpha Diversity", richpage),
-                tabPanel("Network", netpage),
-                tabPanel("d3Network", d3netpage),
-                tabPanel("Bar", barpage),
-                tabPanel("Ordination", ordpage),
-                tabPanel("Tree", treepage),
-                tabPanel("Heatmap", heatpage),
-                tabPanel("Scatter", scatpage),
-                tabPanel("Palette", palpage),
-                tabPanel("Provenance", provpage),
-                theme = "bootstrap.css"
+ui = navbarPage(
+  title = a(href="http://joey711.github.io/shiny-phyloseq/", style="color:#F0F0F0",  "Shiny-phyloseq"), 
+  tabPanel("Select Dataset", datapage),
+  tabPanel("Filter", filterpage),
+  tabPanel("Alpha Diversity", richpage),
+  tabPanel("Network", netpage),
+  tabPanel("d3Network", d3netpage),
+  tabPanel("Bar", barpage),
+  tabPanel("Ordination", ordpage),
+  tabPanel("Tree", treepage),
+  tabPanel("Heatmap", heatpage),
+  tabPanel("Scatter", scatpage),
+  tabPanel("Palette", palpage),
+  tabPanel("Provenance", provpage),
+  collapsable = TRUE,
+  theme = "bootstrap.css",
+  windowTitle = "Shiny-phyloseq"
 )
 shinyUI(ui)
 ################################################################################

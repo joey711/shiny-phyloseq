@@ -44,7 +44,7 @@ uipal = function(id, default="Set1"){
   )
 }
 # UI function to define ggplot2 themes. Reused in many panels.
-uitheme = function(id, default="black/white"){
+uitheme = function(id, default="bl_wh"){
   selectInput(id, "Theme",
               choices = names(shiny_phyloseq_ggtheme_list),
               selected = default

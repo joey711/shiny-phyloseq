@@ -26,9 +26,9 @@ theme_blank_custom = theme_bw() + theme(
   panel.border     = element_blank()
 )
 shiny_phyloseq_ggtheme_list <- list(
-  `black/white` = theme_bw(),
+  bl_wh = theme_bw(),
   blank = theme_blank_custom,
-  `thin line` = theme_linedraw(),
+  thin = theme_linedraw(),
   light = theme_light(),
   minimal = theme_minimal(),
   classic = theme_classic(),

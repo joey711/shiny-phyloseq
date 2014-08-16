@@ -2,20 +2,6 @@
 # sbp of plot_richness
 ################################################################################
 richmeasvars = c("Observed", "Chao1", "ACE", "Shannon", "Simpson", "InvSimpson", "Fisher")
-#sbp_rich = list(
-#sbp_rich = sidebarPanel(
-#sbp_rich = wellPanel(
-# sbp_rich = tags$div(class = "row-fluid",
-#            tags$div(class = "span6",
-#                     h5("RichTitle:"),
-#                     selectInput(width = "40%",
-#                                 inputId="measures_rich",
-#                                 label="Alpha Diversity Measures:",
-#                                 choices=richmeasvars, 
-#                                 selected=c("Shannon", "Chao1"),
-#                                 multiple=TRUE)
-#            )),
-#sbp_rich = tags$div(class = "row-fluid",
 sbp_rich = sidebarPanel(
   h4('Aesthetic Mapping'),
   fluidRow(column(width = 12,                  
@@ -24,7 +10,7 @@ sbp_rich = sidebarPanel(
                   div(class='span5', uiOutput("richness_uix_shape")),
                   div(class='span6', 
                       selectInput(inputId="measures_rich",
-                              label="Alpha Diversity Measures:",
+                              label="alpha Measures:",
                               choices=richmeasvars, 
                               selected=c("Shannon", "Chao1"),
                               multiple=TRUE))
@@ -67,9 +53,6 @@ richpage = fluidPage(
     column(width = 8, plotOutput("richness"), offset = 0)
   ),
   fluidRow(
-    column(width = 12,
-      "Placeholder -  information about this tab here. See ",
-      a(href="http://joey711.github.io/shiny-phyloseq/", "the plot_richness tutorial")
-    )
+    column(width = 12, includeMarkdown("panels/paneldoc/richness.md"))
   )
 )

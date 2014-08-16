@@ -39,13 +39,6 @@ filterpage = fluidPage(
   )
 )
 ################################################################################
-# evaluated in the following order;
-# subsetting by specific taxonomic ranks or sample covariates,
-# minimum thresholds for library size or cross-dataset OTU-counts,
-# as well as an interface for so-called \texttt{kOverA} filtering.
-# After clicking the button to execute the filtering parameters,
-# a set of histograms of OTU and library count totals are displayed
-# for comparing raw and filtered results.
 
 # richpage = fluidPage(
 #   headerPanel("Alpha Diversity Estimates", "windowTitle"), 

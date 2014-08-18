@@ -1,9 +1,4 @@
----
-title: "Richness Panel"
-output:
-  html_document:
-    keep_md: yes
----
+# Richness Panel
 
 This panel is based on phyloseq's [plot_richness function](http://joey711.github.io/phyloseq/plot_richness-examples.html).
 

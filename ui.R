@@ -111,7 +111,7 @@ source("panels/panel-ui-provenance.R", local = TRUE)
 # Define the full user-interface, `ui`
 ################################################################################
 ui = navbarPage(
-  title = a(href="http://joey711.github.io/shiny-phyloseq/", style="color:#F0F0F0",  "Shiny-phyloseq"), 
+  title = h4(a(href="http://joey711.github.io/shiny-phyloseq/", style="color:#F0F0F0",  "Shiny-phyloseq")),
   tabPanel("Select Dataset", datapage),
   tabPanel("Filter", filterpage),
   tabPanel("Alpha Diversity", richpage),

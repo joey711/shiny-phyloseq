@@ -1,7 +1,8 @@
 ################################################################################
 filterpage = fluidPage(
-  titlePanel("Basic Data Filtering"),
-  sidebarLayout(
+  headerPanel("Basic Data Filtering"), 
+  fluidRow(
+    # Sidebar Panel default is 4-column.
     sidebarPanel(
       actionButton("actionb_filter", "Execute Filter", icon("filter")),
       p("  "),
@@ -21,7 +22,7 @@ filterpage = fluidPage(
       numericInput("filter_kOverA_count_threshold", "`A` - The Count Value Threshold", value=kovera_A, min=0, step=1),
       uiOutput("filter_ui_kOverA_k")
     ),
-    mainPanel(
+    column(width = 8, offset = 0, 
       plotOutput("filter_summary_plot"),
       tags$hr(),
       p("Original Data:"),
@@ -36,20 +37,9 @@ filterpage = fluidPage(
       p("Taxonomic Ranks:"),
       textOutput('rank_names')      
     )
+  ),
+  fluidRow(
+    column(width = 12, includeMarkdown("panels/paneldoc/filter.md"))
   )
 )
 ################################################################################
-
-# richpage = fluidPage(
-#   headerPanel("Alpha Diversity Estimates", "windowTitle"), 
-#   fluidRow(
-#     sbp_rich,
-#     column(width = 8, plotOutput("richness"), offset = 0)
-#   ),
-#   fluidRow(
-#     column(width = 12,
-#            "Placeholder -  information about this tab here. See ",
-#            a(href="http://joey711.github.io/shiny-phyloseq/", "the plot_richness tutorial")
-#     )
-#   )
-# )

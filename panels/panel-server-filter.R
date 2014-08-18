@@ -1,4 +1,27 @@
+################################################################################
+# UI subset_taxa expression cascade
+# filter_subset_taxa_expr
+################################################################################
+output$filter_uix_subset_taxa_ranks <- renderUI({
+  rankNames = list("NULL"="NULL")
+  rankNames <- c(rankNames, as.list(rank_names(get_phyloseq_data(), errorIfNULL=FALSE)))
+  rankNames <- c(rankNames, list(OTU="OTU"))
+  selectInput("filter_rank", "Taxonomic Ranks", rankNames, "NULL", multiple = FALSE)
+})
+output$filter_uix_subset_taxa_select <- renderUI({
+  rank_list = list("NULL" = "NULL")
+  if(!is.null(av(input$filter_rank))){
+    # If a filter rank is specified, use it, and provide the multi-select widget for these rank classes 
+    rank_list <- as.list(get_taxa_unique(get_phyloseq_data(), input$filter_rank))
+  }
+  return(
+    selectInput(inputId = "filter_rank_selection", label = "Select Taxa",
+                choices = rank_list, selected = "NULL", multiple = TRUE)
+  )
+})
+################################################################################
 # The main reactive data object. Returns a phyloseq-class instance.
+################################################################################
 physeq = reactive({
   ps0 = get_phyloseq_data()
   if(input$actionb_filter == 0){
@@ -12,9 +35,11 @@ physeq = reactive({
   # Isolate all filter code so that button click is required for update
   isolate({
     if(inherits(ps0, "phyloseq")){
-      # Expression filters
-      if( !is.null(av(input$filter_subset_taxa_expr)) ){
-        ps0 = eval(parse(text=paste0("subset_taxa(ps0, ", input$filter_subset_taxa_expr, ")")))
+      # Cascading selection filters
+      if( !is.null(av(input$filter_rank_selection)) ){
+        TT = cbind(as(tax_table(ps0), "matrix"), OTU=taxa_names(ps0))
+        keepTaxa = TT[, input$filter_rank] %in% input$filter_rank_selection
+        ps0 <- prune_taxa(keepTaxa, ps0)
       }
       if( !is.null(av(input$filter_subset_samp_expr)) ){
         ps0 = eval(parse(text=paste0("subset_samples(ps0, ", input$filter_subset_samp_expr, ")")))

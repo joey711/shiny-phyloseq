@@ -34,15 +34,7 @@ sbp_rich = sidebarPanel(
                                selected="Original",
                                inline = TRUE)
                   )),
-  fluidRow(column(width = 12,
-                  h4('Dimensions & Download'),
-                  #div(class="controls controls-row",
-                  div(class="span3", numericInputRow("width_rich", "Width (in)", 8, 1, 100, 1, class="span12")),
-                  div(class="span3", numericInputRow("height_rich", "Height (in)", 8, 1, 100, 1, class="span12")),
-                  div(class='span3', graphicTypeUI("downtype_rich")),
-                  div(class='span2', div(style="display:inline-block", tags$label("DL"),
-                                         downloadButton('downloadRichness', '  ')))
-                  ))
+  dim_and_down("_rich")
 )
 ################################################################################
 ## https://github.com/rstudio/shiny/wiki/Shiny-Application-Layout-Guide#grid-layouts-in-depth

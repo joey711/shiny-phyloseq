@@ -51,6 +51,53 @@ uitheme = function(id, default="bl_wh"){
   )
 }
 ################################################################################
+# Multi-Widget Definitions
+################################################################################
+# Figure Dimensions and Download. Should return a single fluidRow, all 12 cols
+dim_and_down = function(suffix, secTitle='Dimensions & Download'){
+  fluidRow(column(
+    width = 12,
+    h4(secTitle),
+    div(class="span3", numericInputRow(paste0("width", suffix), "Width (in)", 8, 1, 100, 1, class="span12")),
+    div(class="span3", numericInputRow(paste0("height", suffix), "Height (in)", 8, 1, 100, 1, class="span12")),
+    div(class='span3', graphicTypeUI(paste0("downtype", suffix))),
+    div(class='span2', div(style="display:inline-block", tags$label("DL"),
+                           downloadButton(paste0("download", suffix), '  ')))
+  ))
+}
+# Theme and details. Some elements are optional. Suffix is required.
+# Attempts to return a single row with palette, theme, and optionally point-size and opacity.
+# `addList` is a list of additional elements for UI, attempt to add to row.
+theme_ui_details = function(suffix, secTitle="Details", ptsz=FALSE, alpha=FALSE, addList=NULL){
+  elementList = list(width = 12)
+  elementList <- c(elementList,
+                   list(h4(secTitle),
+                        div(class='span3', uipal(paste0("pal", suffix))),
+                        div(class='span4', uitheme(paste0("theme", suffix)))
+                   ))
+  if(ptsz){
+    elementList <- c(elementList, list(
+      div(class="span2", uiptsz(paste0("size", suffix), class="span12"))
+    ))
+  }
+  if(alpha){
+    elementList <- c(elementList, list(
+      div(class="span2", uialpha(paste0("alpha", suffix), class="span12"))
+    ))
+  }
+  # Add any additional row elements, if present
+  elementList <- c(elementList, addList)
+  return(fluidRow(do.call("column", args = elementList)))
+}
+# # Generic fluid row-split. r is number of elements in a row (max 12). 
+# ui_row_split = function(..., r=2L){
+#   elementList = list(width = 12L)
+#   spanN = paste0("span", floor(12/r))
+#   elementList <- c(elementList,
+#                    lapply(..., function(x, spanN){div(class=spanN, x)}, spanN))
+#   return(fluidRow(do.call("column", args = elementList)))
+# }
+################################################################################
 # Generic distance UI stuff.
 ################################################################################
 # List of distances

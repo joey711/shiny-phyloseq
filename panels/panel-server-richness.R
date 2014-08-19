@@ -90,7 +90,7 @@ finalize_richness_plot = reactive({
 output$richness <- renderPlot({
   shiny_phyloseq_print(finalize_richness_plot())
 }, width=function(){72*input$width_rich}, height=function(){72*input$height_rich})
-output$downloadRichness <- downloadHandler(
+output$download_rich <- downloadHandler(
   filename = function(){paste0("Richness_", simpletime(), ".", input$downtype_rich)},
   content = function(file){
     ggsave2(filename=file,

@@ -36,7 +36,6 @@ get_facet <- reactive({
   return(as.formula(formstring))
 })
 make_bar_plot = reactive({
-  observe({print(paste("get_facet", get_facet()))})
   p0 = NULL
   # Try with facet argument included first. If fails, retry without it.
   try(p0 <- plot_bar(physeq_bar(),
@@ -72,7 +71,7 @@ finalize_bar_plot = reactive({
 output$bar <- renderPlot({
   shiny_phyloseq_print(finalize_bar_plot())
 }, width=function(){72*input$width_bar}, height=function(){72*input$height_bar})
-output$downloadBar <- downloadHandler(
+output$download_bar <- downloadHandler(
   filename = function(){paste0("Barplot_", simpletime(), ".", input$downtype_bar)},
   content = function(file){
     ggsave2(filename=file,

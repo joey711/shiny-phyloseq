@@ -85,14 +85,19 @@ ordlist = c(list("MDS/PCoA"="MDS"), ordlist)
 ################################################################################
 # Define each fluid page
 ################################################################################
-# Define in a single function, a standard definition
-make_fluidpage = function(fptitle="", sbp, outplotid){
+# Define in a single function, a standard definition of panel-page
+make_fluidpage = function(fptitle="", sbp, outplotid, markdownDoc=""){
+  mdRow = fluidRow(column(width = 12, " "))
+  if(nchar(markdownDoc) > 0){
+    # If md doc specified, replace `mdRow` with actual doc.
+    mdRow <- fluidRow(column(width = 12,
+      includeMarkdown(file.path("panels/paneldoc", markdownDoc))
+    )) 
+  }
   fluidPage(
-    titlePanel(fptitle),
-    sidebarLayout(
-      sidebarPanel=sbp,
-      mainPanel=mainPanel(plotOutput(outplotid))
-    )
+    headerPanel(fptitle, "windowTitle"), 
+    fluidRow(sbp, column(width=8, plotOutput(outplotid))),
+    mdRow
   )
 }
 ################################################################################

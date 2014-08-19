@@ -2,11 +2,17 @@
 # UI
 ################################################################################
 output$bar_uix_xvar <- renderUI({
-  selectInput("x_bar", "Horizontal ('x') Variable:", 
+  selectInput("x_bar", "X-Axis", 
               vars("both", TRUE, TRUE), "Sample")
 })
 output$bar_uix_colvar <- renderUI({
-  selectInput("color_bar", "Color Fill Variable:", vars("both"))
+  selectInput("color_bar", "Color", vars("both"))
+})
+output$bar_uix_facetrow <- renderUI({
+  selectInput("facetrow_bar", "Facet Row", vars("both"), multiple = TRUE)
+})
+output$bar_uix_facetcol <- renderUI({
+  selectInput("facetcol_bar", "Facet Col", vars("both"), multiple = TRUE)
 })
 ################################################################################
 # bar plot definition
@@ -15,13 +21,22 @@ physeq_bar = reactive({
   return(switch({input$uicttype_bar}, Counts=physeq(), Proportions=physeqProp()))
 })
 get_facet <- reactive({
-  if(is.null(input$facform_bar) | input$facform_bar=="NULL"){
+  if(is.null(av(input$facetrow_bar)) & is.null(av(input$facetcol_bar))){
     return(NULL)
+  } else if(is.null(av(input$facetcol_bar))){
+    # If no column value, add a "."
+    formstring = paste(paste(input$facetrow_bar, collapse = "+"), "~", ".")
   } else {
-    return(as.formula(input$facform_bar))
+    formstring = paste(
+      paste(input$facetrow_bar, collapse = "+"),
+      "~",
+      paste(input$facetcol_bar, collapse = "+")
+    )
   }
+  return(as.formula(formstring))
 })
 make_bar_plot = reactive({
+  observe({print(paste("get_facet", get_facet()))})
   p0 = NULL
   # Try with facet argument included first. If fails, retry without it.
   try(p0 <- plot_bar(physeq_bar(),
@@ -46,6 +61,11 @@ finalize_bar_plot = reactive({
   })
   p0 <- p0 + scale_fill_brewer(palette=input$pal_bar) + 
     shiny_phyloseq_ggtheme_list[[input$theme_bar]]
+  # Add the x-axis label rotation as specified by user
+  p0 <- p0 + 
+    theme(axis.text.x = element_text(angle = input$x_axis_angle_bar,
+                                     vjust = 0.5, hjust = 1)
+  )
   return(p0)
 })
 # Render plot in panel and in downloadable file with format specified by user selection

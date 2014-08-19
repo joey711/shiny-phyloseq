@@ -22,7 +22,12 @@ if any such subsetting arguments are provided.
 library size or cross-dataset OTU-counts
 are evaluated and the data filtered accordingly.
 - Third, an interface for [genefilter's kOverA filtering](http://www.bioconductor.org/packages/release/bioc/manuals/genefilter/man/genefilter.pdf)
-is evaluated on the result of any other filtering up to this.
+is evaluated on the result of any other filtering up to this. It has the form
+```{r eval=FALSE}
+flist = filterfun(kOverA(k, A))
+ps0 <- filter_taxa(ps0, flist, prune=TRUE)
+```
+where `filterfun` and `kOverA` are from [the genefilter package](http://www.bioconductor.org/packages/release/bioc/html/genefilter.html).
 
 After clicking the button to execute the filtering parameters,
 a set of histograms of OTU and library count totals are displayed

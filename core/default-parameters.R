@@ -13,10 +13,10 @@ loop=TRUE
 SampleSumDefault = 1000
 # taxa_sums threshold 
 # input$filter_taxa_sums_threshold
-OTUSumDefault = 100
+OTUSumDefault = 10
 # KoverA Default Filtering Settings
-kovera_A = 3
-kovera_k = 25
+kovera_A = 0
+kovera_k = 0
 ################################################################################
 # Network Default Parameters
 ################################################################################

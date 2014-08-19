@@ -6,18 +6,55 @@ output$filter_uix_subset_taxa_ranks <- renderUI({
   rankNames = list("NULL"="NULL")
   rankNames <- c(rankNames, as.list(rank_names(get_phyloseq_data(), errorIfNULL=FALSE)))
   rankNames <- c(rankNames, list(OTU="OTU"))
-  selectInput("filter_rank", "Taxonomic Ranks", rankNames, "NULL", multiple = FALSE)
+  return(
+    selectInput("filter_rank", "Taxonomic Ranks", rankNames, "NULL", multiple = FALSE)
+  )
 })
 output$filter_uix_subset_taxa_select <- renderUI({
   rank_list = list("NULL" = "NULL")
   if(!is.null(av(input$filter_rank))){
-    # If a filter rank is specified, use it, and provide the multi-select widget for these rank classes 
-    rank_list <- as.list(get_taxa_unique(get_phyloseq_data(), input$filter_rank))
+    # If a filter rank is specified, use it, and provide the multi-select widget for these rank classes
+    if(input$filter_rank == "OTU"){
+      rank_list <- c(rank_list, as.list(taxa_names(get_phyloseq_data())))
+    } else {
+      rank_list <- c(rank_list, as.list(get_taxa_unique(get_phyloseq_data(), input$filter_rank)))
+    }
   }
   return(
     selectInput(inputId = "filter_rank_selection", label = "Select Taxa",
                 choices = rank_list, selected = "NULL", multiple = TRUE)
   )
+})
+################################################################################
+# UI subset_samples expression cascade
+# filter_subset_samp_expr
+################################################################################
+output$filter_uix_subset_sample_vars <- renderUI({
+  sampVars = list("NULL"="NULL")
+  sampVars <- c(sampVars, as.list(sample_variables(get_phyloseq_data(), errorIfNULL=FALSE)))
+  sampVars <- c(sampVars, list(Sample="Sample"))
+  return(
+    selectInput("filter_samvars", "Sample Variables", sampVars, "NULL", multiple = FALSE)
+  )
+})
+output$filter_uix_subset_sample_select <- renderUI({
+  varLevels = list("NULL"="NULL")
+  if(!is.null(av(input$filter_samvars))){
+    if(input$filter_samvars == "Sample"){
+      varLevels <- c(varLevels, as.list(sample_names(get_phyloseq_data())))
+    } else {
+      if(!is.null(sample_variables(get_phyloseq_data(), FALSE))){
+        varvec = get_variable(get_phyloseq_data(), input$filter_samvars)
+        if(plyr::is.discrete(varvec)){
+          varLevels <- c(varLevels, as.list(unique(as(varvec, "character"))))
+        }
+      } 
+    }
+  }
+  return(
+    selectInput(inputId = "filter_samvars_selection", label = "Variable Classes",
+                choices = varLevels, selected = "NULL", multiple = TRUE)
+  )  
 })
 ################################################################################
 # The main reactive data object. Returns a phyloseq-class instance.
@@ -37,12 +74,38 @@ physeq = reactive({
     if(inherits(ps0, "phyloseq")){
       # Cascading selection filters
       if( !is.null(av(input$filter_rank_selection)) ){
-        TT = cbind(as(tax_table(ps0), "matrix"), OTU=taxa_names(ps0))
-        keepTaxa = TT[, input$filter_rank] %in% input$filter_rank_selection
-        ps0 <- prune_taxa(keepTaxa, ps0)
+        keepTaxa = NULL
+        if(!is.null(tax_table(ps0, FALSE))){
+          if(input$filter_rank == "OTU"){
+            # OTU IDs directly
+            keepTaxa = input$filter_rank_selection
+          } else {
+            TT = as(tax_table(ps0), "matrix")
+            keepTaxa = TT[, input$filter_rank] %in% input$filter_rank_selection 
+          }
+          if(length(keepTaxa) > 1){
+            ps0 <- prune_taxa(keepTaxa, ps0)
+          } else {
+            warning("Bad subset_taxa specification. ntaxa(ps0) one or fewer OTUs")
+          }
+        }
       }
-      if( !is.null(av(input$filter_subset_samp_expr)) ){
-        ps0 = eval(parse(text=paste0("subset_samples(ps0, ", input$filter_subset_samp_expr, ")")))
+      if( !is.null(av(input$filter_samvars_selection)) ){
+        keepSamples = NULL
+        if(!is.null(sample_data(ps0, FALSE))){
+          if(input$filter_samvars == "Sample"){
+            # Samples IDs directly
+            keepSamples = input$filter_samvars_selection
+          } else {
+            varvec = as(get_variable(ps0, input$filter_samvars), "character")
+            keepSamples = varvec %in% input$filter_samvars_selection 
+          }
+          if(length(keepSamples) > 1){
+            ps0 <- prune_samples(keepSamples, ps0)
+          } else {
+            warning("Bad subset_taxa specification. ntaxa(ps0) one or fewer OTUs")
+          }
+        }
       }
       if( input$filter_taxa_sums_threshold > 0 ){
         # OTU sums filter
@@ -59,7 +122,10 @@ physeq = reactive({
             genefilter::kOverA(input$filter_kOverA_sample_threshold,
                                input$filter_kOverA_count_threshold, na.rm=TRUE)
           )
-          ps0 <- filter_taxa(ps0, flist, prune=TRUE)
+          koatry = try(ps0 <- filter_taxa(ps0, flist, prune=TRUE), silent = TRUE)
+          if(inherits(koatry, "try-error")){
+            warning("kOverA parameters resulted in an error, kOverA filtering skipped.")
+          }
         }
       }
       return(ps0)

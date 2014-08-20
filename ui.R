@@ -118,7 +118,7 @@ names(distlist) <- distlist
 uidist = function(id, selected="bray"){
   distlist = as.list(unlist(phyloseq::distance("list")))
   names(distlist) <- distlist
-  return(selectInput(id, "Distance Method", distlist, selected=selected))
+  return(selectInput(id, "Distance", distlist, selected=selected))
 }
 # Whether to use proportions or counts
 uicttype = function(id="uicttype"){

@@ -4,7 +4,7 @@
 # ui for max distance to consider in initializing plot calculations
 uinetdistmax = numericInputRow(
   inputId="uinetdistmax",
-  label="Max.D",
+  label="Max D",
   min=0.0,
   max=1.0,
   value=netdist,
@@ -14,31 +14,33 @@ uinetdistmax = numericInputRow(
 sbp_net = sidebarPanel(
   h4('Network Structure'),
   fluidRow(column(width = 12,
-                  div(class='span3', selectInput(inputId="type_net", label="", selected="samples",
+                  div(class='span4', selectInput(inputId="type_net", label="Type", selected="samples",
                                                  choices=list("Taxa"="taxa", "Samples"="samples"))),
-                  div(class='span2', uinetdistmax),
-                  div(class='span6', uiOutput("network_uix_layout"))
+                  div(class='span3', uinetdistmax),
+                  div(class='span5', uiOutput("network_uix_layout"))
   )),
-  uidist("dist_net"),
-  uiOutput("network_uix_edgeSlider"),
+  fluidRow(column(width = 12,
+                  div(class='span5', uidist("dist_net")),
+                  div(class='span7', uiOutput("network_uix_edgeSlider"))
+  )),
   h4('Aesthetic Mapping'),
   fluidRow(column(width = 12,
                   div(class='span6', uiOutput("network_uix_color")),
                   div(class='span6', uiOutput("network_uix_shape")),
-                  div(class='span6', uiOutput("network_uix_label"))
+                  div(class='span12', uiOutput("network_uix_label"))
   )),
   theme_ui_details("_net", them = FALSE, ptsz = TRUE, alpha = TRUE,
-    addList = list(div(class="span3", 
-                       numericInputRow("text_size_net", label="Label Size",
-                                       min=1, max=NA, value=8, step=2, class="span12")),
-                   div(class="span3",
-                       numericInputRow("text_hjust_net", label="Label h-just",
-                                       min=1, max=NA, value=1, step=0.1, class="span12")),
-                   div(class="span3",
-                       numericInputRow("RNGseed_net", "RNG Seed", value = 711L,
-                                       min = 1L, step = 1L, class="span12"))
-                   )
-  ),
+    addList = list(
+      div(class="span3",
+          numericInputRow("RNGseed_net", "RNG Seed", value = 711L,
+                          min = 1L, step = 1L, class="span12")),
+      div(class="span3", 
+          numericInputRow("text_size_net", label="Label Sz",
+                          min=1, max=NA, value=8, step=2, class="span12")),
+      div(class="span3",
+          numericInputRow("text_hjust_net", label="H-just",
+                          min=1, max=NA, value=1, step=0.1, class="span12"))
+  )),
   dim_and_down("_net")
 )
 ################################################################################

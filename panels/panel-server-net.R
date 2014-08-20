@@ -17,7 +17,7 @@ available_layouts_net = list(
   svd = igraph::layout.svd
 )
 output$network_uix_layout <- renderUI({
-  selectInput("layout_net", "Network Layout Method",
+  selectInput("layout_net", "Layout",
               choices = names(available_layouts_net),
               selected = "fruchterman.reingold")
 })
@@ -35,7 +35,7 @@ output$network_uix_label <- renderUI({
 })
 output$network_uix_edgeSlider <- renderUI({
   # ui for distance to display
-  uinetdispdist = sliderInput("uinetdispdist", "Display Edge Maximum",
+  uinetdispdist = sliderInput("uinetdispdist", "Draw Max.",
                               min = 0.0,
                               max = input$uinetdistmax,
                               value = input$uinetdistmax,
@@ -210,7 +210,7 @@ finalize_network_plot = reactive({
 output$network <- renderPlot({
   shiny_phyloseq_print(finalize_network_plot())
 }, width=function(){72*input$width_net}, height=function(){72*input$height_net})
-output$downloadNetwork <- downloadHandler(
+output$download_net <- downloadHandler(
   filename = function(){paste0("Network_", simpletime(), ".", input$downtype_net)},
   content = function(file){
     ggsave2(filename=file,

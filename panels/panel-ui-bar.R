@@ -19,4 +19,4 @@ sbp_bar = sidebarPanel(
   dim_and_down("_bar")
 )
 ################################################################################
-barpage = make_fluidpage("", sbp_bar, "bar")
+barpage = make_fluidpage("Flexible Bar Plot", sbp_bar, "bar")

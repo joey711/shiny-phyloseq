@@ -68,13 +68,19 @@ dim_and_down = function(suffix, secTitle='Dimensions & Download'){
 # Theme and details. Some elements are optional. Suffix is required.
 # Attempts to return a single row with palette, theme, and optionally point-size and opacity.
 # `addList` is a list of additional elements for UI, attempt to add to row.
-theme_ui_details = function(suffix, secTitle="Details", ptsz=FALSE, alpha=FALSE, addList=NULL){
-  elementList = list(width = 12)
-  elementList <- c(elementList,
-                   list(h4(secTitle),
-                        div(class='span3', uipal(paste0("pal", suffix))),
-                        div(class='span4', uitheme(paste0("theme", suffix)))
-                   ))
+theme_ui_details = function(suffix, secTitle="Details", pal=TRUE, them=TRUE,
+                            ptsz=FALSE, alpha=FALSE, addList=NULL){
+  elementList = list(width = 12, h4(secTitle))
+  if(pal){
+    elementList <- c(elementList, list(
+      div(class='span3', uipal(paste0("pal", suffix)))
+    ))    
+  }
+  if(them){
+    elementList <- c(elementList, list(
+      div(class='span4', uitheme(paste0("theme", suffix)))
+    ))     
+  }
   if(ptsz){
     elementList <- c(elementList, list(
       div(class="span2", uiptsz(paste0("size", suffix), class="span12"))

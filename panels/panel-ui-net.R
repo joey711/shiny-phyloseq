@@ -44,4 +44,5 @@ sbp_net = sidebarPanel(
   dim_and_down("_net")
 )
 ################################################################################
-netpage = make_fluidpage("Distance Threshold Network", sbp_net, "network")
+netpage = make_fluidpage("Distance Threshold Network", sbp_net, "network",
+                         markdownDoc = "network.md")

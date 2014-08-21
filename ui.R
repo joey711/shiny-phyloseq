@@ -22,9 +22,9 @@ graphicFormats = c(vectorGraphicFormats, rasterGraphicFormats)
 graphicTypeUI = function(inputId, label="Format", choices=graphicFormats, selected="pdf"){
   selectInput(inputId, label, choices, selected, multiple = FALSE, selectize = TRUE)
 }
-# Type for distance/network/etc. Samples or Taxa
+# Type for distance/network/ordination/etc. Samples/Taxa toggle
 uitype = function(id="type", selected="taxa"){
-  selectInput(inputId=id, label="Calculation: Samples or Taxa?",
+  selectInput(inputId=id, label="Type",
               selected=selected,
               choices=list("Taxa"="taxa", "Samples"="samples"))
 }
@@ -58,8 +58,8 @@ dim_and_down = function(suffix, secTitle='Dimensions & Download'){
   fluidRow(column(
     width = 12,
     h4(secTitle),
-    div(class="span3", numericInputRow(paste0("width", suffix), "Width (in)", 8, 1, 100, 1, class="span12")),
-    div(class="span3", numericInputRow(paste0("height", suffix), "Height (in)", 8, 1, 100, 1, class="span12")),
+    div(class="span3", numericInputRow(paste0("width", suffix), "Width", 8, 1, 100, 1, class="span12")),
+    div(class="span3", numericInputRow(paste0("height", suffix), "Height", 8, 1, 100, 1, class="span12")),
     div(class='span3', graphicTypeUI(paste0("downtype", suffix))),
     div(class='span2', div(style="display:inline-block", tags$label("DL"),
                            downloadButton(paste0("download", suffix), '  ')))

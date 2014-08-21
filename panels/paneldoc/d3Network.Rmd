@@ -1,15 +1,21 @@
 ---
-title: "d3 Network Panel Details"
+title: "[D3](http://d3js.org/) Network Panel Details"
 output:
   html_document:
     keep_md: yes
 ---
 
-This panel provides a special d3 interactive interface to 
+This panel provides a special [D3](http://d3js.org/) interactive interface to 
 [phyloseq](http://joey711.github.io/phyloseq)'s
 [plot_net function](http://joey711.github.io/phyloseq/plot_network-examples.html).
+You can hover over node points to reveal a label,
+and you can grab nodes and drag them around 
+to your desired orientation. 
+Different subnetworks attempt to avoid overlapping one another
+via a slow repulsion-like algorithm.
+
 Calculation time depends a lot on the size of your data (number of OTUs/samples)
-and the distance method chosen. 
+and the distance method chosen.
 
 ## Widget Sections
 
@@ -18,21 +24,22 @@ and the distance method chosen.
 This top section defines key aspects of the network structure. 
 
 - **Type** - Toggle between a network with Samples or Taxa as nodes. 
-- **Max D** - Maximum Distance. Include an edge if two nodes have a smaller distance than this value.
 - **Distance** - The distance method. This is a direct interface to phyloseq's
-[distance function](http://joey711.github.io/phyloseq/distance)
+[distance function](http://joey711.github.io/phyloseq/distance).
+- **Max D** - Maximum Distance.
+The graphic includes an edge if two nodes have a smaller distance than this value.
+This is exactly the same as the `Max D` variable in the static Network panel.
 
 ### Aesthetic Mapping
 
 These widgets correspond to aesthetic mappings on nodes.
-`Color` and `Shape` are the same as in other panels. 
-`Label` allows labeling of nodes with text,
-according to one or more selected variables.
-If multiple non-`NULL` variables selected,
+`Color` map code-color to a particular single variable.
+`Label` allows labeling of nodes with text that
+**only appears after hovering over the node/point** of interest.
+If multiple non-`NULL` variables are selected,
 their values are concatenated together
-in order as a single label for each node.
-The size and horisontal justification of labels
-can be adjusted in the `Details` section below.
+in selected order as a single hover-actuated label for each node.
+
 
 ### Details
 
@@ -42,7 +49,9 @@ can be adjusted in the `Details` section below.
 
 ### Dimensions and Downloads
 
-Figure dimensions and download button (`DL`).
+This sections includes the figure dimensions
+scaling in pixels rather than inches,
+as well as a download button (`DL`).
 There is no file-format button because the format
 is always a stand-alone HTML that should be sharable as an interactive graphic.
 

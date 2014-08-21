@@ -12,11 +12,11 @@ sbp_d3 = sidebarPanel(
                     selected="taxa")
     ),
     div(class='span5',
-        selectInput("dist_d3", "Method", distlist, d3DefaultDistance)
+        selectInput("dist_d3", "Distance", distlist, d3DefaultDistance)
     ),
     div(class='span3',
         numericInputRow(inputId = "dist_d3_threshold",
-                        label = "Threshold",
+                        label = "Max D",
                         value = LinkDistThreshold,
                         min = 0, max = 1, step = 0.025, class="span12")
     )

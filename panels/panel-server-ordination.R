@@ -2,10 +2,10 @@
 # UI ordination
 ################################################################################
 output$ord_uix_color <- renderUI({
-  selectInput("color_ord", "Color Variable:", vars(input$type_ord), "NULL")
+  selectInput("color_ord", "Color", vars(input$type_ord), "NULL")
 })
 output$ord_uix_shape <- renderUI({
-  selectInput("shape_ord", "Shape Variable:", vars(input$type_ord), "NULL")
+  selectInput("shape_ord", "Shape", vars(input$type_ord), "NULL")
 })
 ################################################################################
 # Ordination functions
@@ -66,7 +66,7 @@ finalize_ordination_plot = reactive({
 output$ordination <- renderPlot({
   shiny_phyloseq_print(finalize_ordination_plot())
 }, width=function(){72*input$width_ord}, height=function(){72*input$height_ord})
-output$downloadOrdination <- downloadHandler(
+output$download_ord <- downloadHandler(
   filename = function(){paste0("Ordination_", simpletime(), ".", input$downtype_ord)},
   content = function(file){
     ggsave2(filename=file,

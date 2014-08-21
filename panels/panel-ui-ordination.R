@@ -4,40 +4,43 @@
 ordtypelist = as.list(phyloseq::plot_ordination("list"))
 names(ordtypelist) <- c("Samples", "Species", "Biplot", "Split Plot", "Scree Plot")
 sbp_ord = sidebarPanel(
-  uitype("type_ord", "samples"),
-  uidist("dist_ord"),
-  uiOutput("ord_uix_color"),
-  uiOutput("ord_uix_shape"),
-  selectInput("ord_method", "Ordination Method:", ordlist, selected="DCA"),
-  selectInput("ord_plot_type", "Ordination Plot Type:", ordtypelist), 
-  textInput("formula", "Ordination Constraint Formula", value="NULL"),
-  h4('Figure Details'),
-  uiptsz("size_ord"),
-  uialpha("alpha_ord"),
-  uipal("pal_ord"),
-  uitheme("theme_ord"),
-  tags$hr(),
-  h4('Figure Dimensions'),
-  numericInput("width_ord", "Figure Width (inches)", 8, 1, 100, 1),
-  numericInput("height_ord", "Figure Height (inches)", 8, 1, 100, 1),
-  graphicTypeUI("downtype_ord"),
-  downloadButton('downloadOrdination', 'Download Graphic')
+  h4("Structure"),
+  fluidRow(column(
+    width = 12,
+    div(class="span3", uitype("type_ord", "samples")),
+    div(class="span4", selectInput("ord_method", "Method", ordlist, selected="DCA")),
+    div(class="span5", uidist("dist_ord")),
+    div(class="span4", selectInput("ord_plot_type", "Display", ordtypelist)), 
+    div(class="span7", textInput("formula", "Constraint", value="NULL"))
+  )),
+  h4("Aesthetic Mapping"),
+  fluidRow(column(
+    width = 12,
+    div(class="span6", uiOutput("ord_uix_color")),
+    div(class="span5", uiOutput("ord_uix_shape"))
+  )),
+  theme_ui_details("_ord", ptsz=TRUE, alpha=TRUE),
+  dim_and_down("_ord")
 )
 ################################################################################
 # ordpage = make_fluidpage("", sbp_ord, "ordination")
 dummyText = paste0(rep("  \n  ", 7), collapse = "")
 ordpage = fluidPage(
-  titlePanel(""),
-  sidebarLayout(
-    sidebarPanel=sbp_ord,
-    mainPanel=mainPanel(
-      plotOutput("ordination"),
-      tags$hr(dummyText),
-      tags$br(dummyText),
-      tags$hr(dummyText),
-      tags$br(dummyText),
-      tags$hr(dummyText),
-      plotOutput("scree_ord")
-    )
-  )
+  headerPanel("Ordination Plot"),
+  fluidRow(
+    sbp_ord,
+    column(width=8, 
+           plotOutput("ordination"),
+           h4("Scree"),
+           #       tags$hr(dummyText),
+           #       tags$br(dummyText),
+           #       tags$hr(dummyText),
+           #       tags$br(dummyText),
+           #       tags$hr(dummyText),
+           plotOutput("scree_ord")
+  )),
+  fluidRow(column(width = 12,
+                  includeMarkdown("panels/paneldoc/ordination.md")
+  ))
 )
+

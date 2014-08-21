@@ -3,12 +3,12 @@
 # d3network uix
 ################################################################################
 output$d3_uix_color <- renderUI({
-  selectInput("color_d3", "Color Variable:",
+  selectInput("color_d3", "Color",
               choices = vars(input$type_d3, TRUE, TRUE),
               selected = d3NetworkColorVar)
 })
 output$d3_uix_node_label <- renderUI({
-  selectInput("d3_node_label", "Node Label (hover):",
+  selectInput("d3_node_label", "Label",
               choices = vars(input$type_d3, TRUE, TRUE),
               selected = d3NodeLabelVar,
               multiple = TRUE)

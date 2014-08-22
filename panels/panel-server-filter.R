@@ -152,21 +152,17 @@ maxSamples = reactive({
   }
 })
 output$filter_ui_kOverA_k <- renderUI({
-  numericInput("filter_kOverA_sample_threshold",
-               "`k` - Number of Samples that Must Exceed `A`",
-               min=0, max=maxSamples(), value=kovera_k, step=1)    
-})  
-output_phyloseq_print_html <- reactive({
-  HTML(paste0(capture.output(print(get_phyloseq_data())), collapse=" <br/> "))
+  numericInputRow("filter_kOverA_sample_threshold", "k",
+               min=0, max=maxSamples(), value=kovera_k, step=1, class="span12")
 })
 output$contents <- renderUI({
-  output_phyloseq_print_html()
+  output_phyloseq_print_html(get_phyloseq_data())
 })
 output$filtered_contents0 <- renderUI({
-  output_phyloseq_print_html()
+  output_phyloseq_print_html(get_phyloseq_data())
 })
 output$filtered_contents <- renderUI({
-  HTML(paste0(capture.output(print(physeq())), collapse=" <br/> "))
+  output_phyloseq_print_html(physeq())
 })
 # Generic Function for plotting marginal histograms
 sums_hist = function(thesums=NULL, xlab="", ylab=""){
@@ -211,6 +207,23 @@ output$filter_summary_plot <- renderPlot({
   } else {
     potu1 = plib1 = fail_gen()
   }
-  gridExtra::grid.arrange(plib0, potu0, plib1, potu1, ncol=2, 
-                          main="Histograms: Before and After Filtering")
+  gridExtra::grid.arrange(plib0, potu0, plib1, potu1, ncol=2) #, main="Histograms: Before and After Filtering")
 })
+################################################################################
+# Component Table
+################################################################################
+output$uix_available_components_filt <- renderUI({
+  selectInput("available_components_filt", "Available Components",
+              choices = component_options(physeq()))
+})
+# Render the user-selected data component using DataTables
+output$physeqComponentTable <- renderDataTable({
+  if(is.null(av(input$available_components_filt))){
+    return(NULL)
+  }
+  component = do.call(what = input$available_components_filt, args = list(physeq()))
+  return(tablify_phyloseq_component(component, input$component_table_colmax_filt))
+}, options = list(
+  iDisplayLength = 5 
+))
+################################################################################

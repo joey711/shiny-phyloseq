@@ -12,7 +12,33 @@ See the data tab for further info about importing/saving/uploading data.
 Most downstream analyses will use the data 
 that results from the most-recent click of this panel's button.
 
-### Subset section
+Filtering is always performed in the order
+displayed in the sidebar panel (top to bottom, left to right).
+Steps with zero/null parameter values are skipped.
+
+In summary
+
+- (1) The data is subsetted 
+by specific taxonomic ranks or sample covariates,
+if any such subsetting arguments are provided.
+- (2) Second, minimum thresholds for 
+library size or cross-dataset OTU-counts
+are evaluated and the data filtered accordingly.
+- (3) Third, an interface for
+[genefilter's kOverA filtering](http://www.bioconductor.org/packages/release/bioc/manuals/genefilter/man/genefilter.pdf)
+is evaluated on the result of any other filtering up to this. 
+
+After clicking the button to execute the filtering parameters,
+a set of histograms of OTU and library count totals are displayed
+for comparing raw (original) and filtered results.
+
+In addition, the `Available Components` widget
+allows you to select form available data components,
+and render an interactive table of the selected component.
+This is identical to the components-table display on the data panel,
+but in this case it displays the filtered data.
+
+### Subset sections
 
 This section of the sidebar panel 
 is for subsetting the microbiome data
@@ -25,30 +51,39 @@ Upon execution, only the samples (or OTUs)
 with the selected classes (or taxa) 
 will remain in the dataset.
 
-- **subset taxa**
-- **subset samples**
+- **Subset Taxa**
+**Left**. Select a particular taxonomic rank by which to filter (if available).
+**Right**. Select one or more taxa within this rank that you want to keep in the filtered data.
+The rest will be discarded.
+- **Subset Samples** - **Left**. Select a sample variable with categories you want to select amongst.
+**Right**. Select Classes within the selected variable that you want to keep.
+The rest will be discarded.
+Currently only categorical variables are supported for sample subsetting.
 
-Filtering and subsetting functions are evaluated
-in the order in which they appear in the sidebar panel.
+### Total Sums Filtering
 
-### Order of filtering operations
+After any subsetting, total sums filtering is applied.
+The `Sample Max` and `OTU Max` widgets specify minimum thresholds.
+Only samples or OTUs that have count totals above the displayed values
+will be retained in the filtered data after clicking the `Execute Filter` button.
 
-- (1) First the data is subsetted 
-by specific taxonomic ranks or sample covariates,
-if any such subsetting arguments are provided.
-- (2) Second, minimum thresholds for 
-library size or cross-dataset OTU-counts
-are evaluated and the data filtered accordingly.
-- (3) Third, an interface for [genefilter's kOverA filtering](http://www.bioconductor.org/packages/release/bioc/manuals/genefilter/man/genefilter.pdf)
-is evaluated on the result of any other filtering up to this. It has the form
+### kOverA OTU Filtering
+
+This is a useful and commonly-used heuristic.
+It is applied last, after other filtering steps
+have been applied to the data.
+
+- `A` -- The count value minmum threshold
+- `k` -- The number of samples in which an OTU exceeded `A`
+
+An OTU is retained in the dataset iff it exceeds the value `A` in at least `k` samples.
+
+In phyloseq code, this filtering step has the form
 
 ```r
 flist = filterfun(kOverA(k, A))
-ps0 <- filter_taxa(ps0, flist, prune=TRUE)
+physeq <- filter_taxa(ps0, flist, prune=TRUE)
 ```
-where `filterfun` and `kOverA` are from [the genefilter package](http://www.bioconductor.org/packages/release/bioc/html/genefilter.html).
-
-After clicking the button to execute the filtering parameters,
-a set of histograms of OTU and library count totals are displayed
-for comparing raw (original) and filtered results.
-
+where `physeq` and `ps0` are the filtered and unfiltered data, respectively.
+`filterfun` and `kOverA` are from
+[the genefilter package](http://www.bioconductor.org/packages/release/bioc/html/genefilter.html).

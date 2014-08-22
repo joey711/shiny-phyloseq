@@ -5,38 +5,55 @@ filterpage = fluidPage(
     # Sidebar Panel default is 4-column.
     sidebarPanel(
       actionButton("actionb_filter", "Execute Filter", icon("filter")),
-      p("  "),
-      p('Filtering Parameters:'),
-      tags$hr(),
       h4("Subset Taxa"),
-      uiOutput("filter_uix_subset_taxa_ranks"),
-      uiOutput("filter_uix_subset_taxa_select"),
+      fluidRow(column(width=12,
+                      div(class="span6", uiOutput("filter_uix_subset_taxa_ranks")),
+                      div(class="span6", uiOutput("filter_uix_subset_taxa_select"))
+      )),
       h4("Subset Samples"),
-      uiOutput("filter_uix_subset_sample_vars"),
-      uiOutput("filter_uix_subset_sample_select"),
+      fluidRow(column(width=12,
+                      div(class="span6", uiOutput("filter_uix_subset_sample_vars")),
+                      div(class="span6", uiOutput("filter_uix_subset_sample_select"))
+      )),
       h4('Total Sums Filtering'),
-      numericInput("filter_sample_sums_threshold", "Sample Max",
-                   value=SampleSumDefault, min=0, step=100),
-      numericInput("filter_taxa_sums_threshold", "OTU Max",
-                   value=OTUSumDefault, min=0, step=1),
+      fluidRow(column(width=12,
+                      div(class="span6",
+                          numericInputRow("filter_sample_sums_threshold", "Sample Max",
+                                          value=SampleSumDefault, min=0, step=100, class="span12")),
+                      div(class="span6",
+                          numericInputRow("filter_taxa_sums_threshold", "OTU Max",
+                                          value=OTUSumDefault, min=0, step=1, class="span12"))
+      )),
       h4('kOverA OTU Filtering'),
-      numericInput("filter_kOverA_count_threshold", "`A` - The Count Value Threshold", value=kovera_A, min=0, step=1),
-      uiOutput("filter_ui_kOverA_k")
+      fluidRow(column(width=12,
+                      div(class="span6",
+                          numericInputRow("filter_kOverA_count_threshold", "A",
+                                          value=kovera_A, min=0, step=1, class="span12")), 
+                      div(class="span6", uiOutput("filter_ui_kOverA_k"))
+      ))
     ),
-    column(width = 8, offset = 0, 
+    # Now the Main Panel.
+    column(
+      width = 8, offset = 0, 
+      h4("Histograms Before and After Filtering"),
       plotOutput("filter_summary_plot"),
-      tags$hr(),
-      p("Original Data:"),
-      htmlOutput('filtered_contents0'),
-      tags$hr(),
-      p("Filtered Data:"),
-      htmlOutput('filtered_contents'),
-      tags$hr(),
-      p("Sample Variables:"),
-      textOutput('sample_variables'),
-      tags$hr(),
-      p("Taxonomic Ranks:"),
-      textOutput('rank_names')      
+      h4("Data Summaries"),
+      fluidRow(
+        column(width = 6,
+               p("Original"),
+               htmlOutput('filtered_contents0')
+        ),
+        column(width = 6,
+               p("Filtered Data:"),
+               htmlOutput('filtered_contents')
+      )),
+      h4("Component Table, Filtered Data"),
+      fluidRow(column(width=12,
+          div(class="span8", uiOutput("uix_available_components_filt")),
+          div(class="span3", numericInputRow("component_table_colmax_filt", "Max. Columns",
+                                             value = 25L, min = 1L, step = 5L, class="span12"))
+      )),
+      dataTableOutput('physeqComponentTable')
     )
   ),
   fluidRow(

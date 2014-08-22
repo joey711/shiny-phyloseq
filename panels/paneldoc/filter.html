@@ -59,32 +59,45 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>This panel is a limited but hopefully useful interface to phyloseq’s <a href="http://joey711.github.io/phyloseq/preprocess.html">Preprocessing infrastructure</a>. It is intended for some of the simpler filtering tasks supported by phyloseq. For more advanced filtering consider manipulating your data via R/phyloseq directly, prior to uploading it to the Shiny-phyloseq app. See the data tab for further info about importing/saving/uploading data.</p>
 <p><strong>No filter calculations are performed until the</strong> <code>Execute Filter</code> <strong>button is clicked</strong></p>
 <p>Most downstream analyses will use the data that results from the most-recent click of this panel’s button.</p>
-<div id="subset-section" class="section level3">
-<h3>Subset section</h3>
-<p>This section of the sidebar panel is for subsetting the microbiome data through dynamic pairs of variable selection widgets. The first/left widget allows you to select a variable in the dataset (a sample variable or taxonomic rank), and the second widget allows you to select one or more classes of the just-selected variable. Upon execution, only the samples (or OTUs) with the selected classes (or taxa) will remain in the dataset.</p>
-<ul>
-<li><strong>subset taxa</strong></li>
-<li><strong>subset samples</strong></li>
-</ul>
-<p>Filtering and subsetting functions are evaluated in the order in which they appear in the sidebar panel.</p>
-</div>
-<div id="order-of-filtering-operations" class="section level3">
-<h3>Order of filtering operations</h3>
+<p>Filtering is always performed in the order displayed in the sidebar panel (top to bottom, left to right). Steps with zero/null parameter values are skipped.</p>
+<p>In summary</p>
 <ul>
 <li><ol style="list-style-type: decimal">
-<li>First the data is subsetted by specific taxonomic ranks or sample covariates, if any such subsetting arguments are provided.</li>
+<li>The data is subsetted by specific taxonomic ranks or sample covariates, if any such subsetting arguments are provided.</li>
 </ol></li>
 <li><ol start="2" style="list-style-type: decimal">
 <li>Second, minimum thresholds for library size or cross-dataset OTU-counts are evaluated and the data filtered accordingly.</li>
 </ol></li>
 <li><ol start="3" style="list-style-type: decimal">
-<li>Third, an interface for <a href="http://www.bioconductor.org/packages/release/bioc/manuals/genefilter/man/genefilter.pdf">genefilter’s kOverA filtering</a> is evaluated on the result of any other filtering up to this. It has the form</li>
+<li>Third, an interface for <a href="http://www.bioconductor.org/packages/release/bioc/manuals/genefilter/man/genefilter.pdf">genefilter’s kOverA filtering</a> is evaluated on the result of any other filtering up to this.</li>
 </ol></li>
 </ul>
-<pre class="r"><code>flist = filterfun(kOverA(k, A))
-ps0 &lt;- filter_taxa(ps0, flist, prune=TRUE)</code></pre>
-<p>where <code>filterfun</code> and <code>kOverA</code> are from <a href="http://www.bioconductor.org/packages/release/bioc/html/genefilter.html">the genefilter package</a>.</p>
 <p>After clicking the button to execute the filtering parameters, a set of histograms of OTU and library count totals are displayed for comparing raw (original) and filtered results.</p>
+<p>In addition, the <code>Available Components</code> widget allows you to select form available data components, and render an interactive table of the selected component. This is identical to the components-table display on the data panel, but in this case it displays the filtered data.</p>
+<div id="subset-sections" class="section level3">
+<h3>Subset sections</h3>
+<p>This section of the sidebar panel is for subsetting the microbiome data through dynamic pairs of variable selection widgets. The first/left widget allows you to select a variable in the dataset (a sample variable or taxonomic rank), and the second widget allows you to select one or more classes of the just-selected variable. Upon execution, only the samples (or OTUs) with the selected classes (or taxa) will remain in the dataset.</p>
+<ul>
+<li><strong>Subset Taxa</strong> <strong>Left</strong>. Select a particular taxonomic rank by which to filter (if available). <strong>Right</strong>. Select one or more taxa within this rank that you want to keep in the filtered data. The rest will be discarded.</li>
+<li><strong>Subset Samples</strong> - <strong>Left</strong>. Select a sample variable with categories you want to select amongst. <strong>Right</strong>. Select Classes within the selected variable that you want to keep. The rest will be discarded. Currently only categorical variables are supported for sample subsetting.</li>
+</ul>
+</div>
+<div id="total-sums-filtering" class="section level3">
+<h3>Total Sums Filtering</h3>
+<p>After any subsetting, total sums filtering is applied. The <code>Sample Max</code> and <code>OTU Max</code> widgets specify minimum thresholds. Only samples or OTUs that have count totals above the displayed values will be retained in the filtered data after clicking the <code>Execute Filter</code> button.</p>
+</div>
+<div id="kovera-otu-filtering" class="section level3">
+<h3>kOverA OTU Filtering</h3>
+<p>This is a useful and commonly-used heuristic. It is applied last, after other filtering steps have been applied to the data.</p>
+<ul>
+<li><code>A</code> – The count value minmum threshold</li>
+<li><code>k</code> – The number of samples in which an OTU exceeded <code>A</code></li>
+</ul>
+<p>An OTU is retained in the dataset iff it exceeds the value <code>A</code> in at least <code>k</code> samples.</p>
+<p>In phyloseq code, this filtering step has the form</p>
+<pre class="r"><code>flist = filterfun(kOverA(k, A))
+physeq &lt;- filter_taxa(ps0, flist, prune=TRUE)</code></pre>
+<p>where <code>physeq</code> and <code>ps0</code> are the filtered and unfiltered data, respectively. <code>filterfun</code> and <code>kOverA</code> are from <a href="http://www.bioconductor.org/packages/release/bioc/html/genefilter.html">the genefilter package</a>.</p>
 </div>
 
 

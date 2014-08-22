@@ -94,7 +94,9 @@ output$phyloseqDataset <- renderUI({
   get_loaded_data()
   get_biom_data()
   get_qiime_data()
-  return(radioButtons("physeqSelect", "Available Datasets:", names(datalist)))
+  return(
+    selectInput("physeqSelect", "Select Dataset", names(datalist))
+  )
 })
 get_phyloseq_data = reactive({
   ps0 = NULL
@@ -120,21 +122,4 @@ output$library_sizes <- renderPlot({
     fail_gen("")
   }
 })
-output$OTU_count_thresh_hist <- renderPlot({
-  if(input$actionb_data < 1){
-    return(fail_gen("Click 'Make Histogram' Button"))
-  }
-  ps0 = get_phyloseq_data()
-  if(inherits(get_phyloseq_data(), "phyloseq")){
-    mx = as(otu_table(ps0), "matrix")
-    if(!taxa_are_rows(ps0)){mx <- t(mx)}
-    thresh = input$dataset_count_threshold
-    df = data.frame(x=apply(mx, 1, function(x, thresh){sum(x>thresh)}, thresh))
-    p = ggplot(df, aes(x=x)) + geom_histogram()
-    p = p + xlab("Number of Samples with Count Above Threshold") + ylab("Number of OTUs")
-    p = p + ggtitle(paste("Histogram of OTUs Observed More Than", thresh, "Times"))
-    return(shiny_phyloseq_print(p))
-  } else {
-    return(fail_gen())
-  }
-})
+

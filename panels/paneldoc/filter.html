@@ -57,13 +57,35 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 
 <p>This panel is a limited but hopefully useful interface to phyloseq’s <a href="http://joey711.github.io/phyloseq/preprocess.html">Preprocessing infrastructure</a>. It is intended for some of the simpler filtering tasks supported by phyloseq. For more advanced filtering consider manipulating your data via R/phyloseq directly, prior to uploading it to the Shiny-phyloseq app. See the data tab for further info about importing/saving/uploading data.</p>
-<p>Filtering and subsetting functions are evaluated in the order in which they appear in the sidebar panel.</p>
+<p><strong>No filter calculations are performed until the</strong> <code>Execute Filter</code> <strong>button is clicked</strong></p>
+<p>Most downstream analyses will use the data that results from the most-recent click of this panel’s button.</p>
+<div id="subset-section" class="section level3">
+<h3>Subset section</h3>
+<p>This section of the sidebar panel is for subsetting the microbiome data through dynamic pairs of variable selection widgets. The first/left widget allows you to select a variable in the dataset (a sample variable or taxonomic rank), and the second widget allows you to select one or more classes of the just-selected variable. Upon execution, only the samples (or OTUs) with the selected classes (or taxa) will remain in the dataset.</p>
 <ul>
-<li>First the data is subsetted by specific taxonomic ranks or sample covariates, if any such subsetting arguments are provided.</li>
-<li>Second, minimum thresholds for library size or cross-dataset OTU-counts are evaluated and the data filtered accordingly.</li>
-<li>Third, an interface for <a href="http://www.bioconductor.org/packages/release/bioc/manuals/genefilter/man/genefilter.pdf">genefilter’s kOverA filtering</a> is evaluated on the result of any other filtering up to this.</li>
+<li><strong>subset taxa</strong></li>
+<li><strong>subset samples</strong></li>
 </ul>
+<p>Filtering and subsetting functions are evaluated in the order in which they appear in the sidebar panel.</p>
+</div>
+<div id="order-of-filtering-operations" class="section level3">
+<h3>Order of filtering operations</h3>
+<ul>
+<li><ol style="list-style-type: decimal">
+<li>First the data is subsetted by specific taxonomic ranks or sample covariates, if any such subsetting arguments are provided.</li>
+</ol></li>
+<li><ol start="2" style="list-style-type: decimal">
+<li>Second, minimum thresholds for library size or cross-dataset OTU-counts are evaluated and the data filtered accordingly.</li>
+</ol></li>
+<li><ol start="3" style="list-style-type: decimal">
+<li>Third, an interface for <a href="http://www.bioconductor.org/packages/release/bioc/manuals/genefilter/man/genefilter.pdf">genefilter’s kOverA filtering</a> is evaluated on the result of any other filtering up to this. It has the form</li>
+</ol></li>
+</ul>
+<pre class="r"><code>flist = filterfun(kOverA(k, A))
+ps0 &lt;- filter_taxa(ps0, flist, prune=TRUE)</code></pre>
+<p>where <code>filterfun</code> and <code>kOverA</code> are from <a href="http://www.bioconductor.org/packages/release/bioc/html/genefilter.html">the genefilter package</a>.</p>
 <p>After clicking the button to execute the filtering parameters, a set of histograms of OTU and library count totals are displayed for comparing raw (original) and filtered results.</p>
+</div>
 
 
 </div>

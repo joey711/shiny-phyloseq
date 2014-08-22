@@ -28,6 +28,14 @@ phyloseq's [ordinate function](http://joey711.github.io/phyloseq/ordinate).
 - **Display** - The ordination display type.
 This is equivalent to the `type` argument in 
 the [plot_ordination function](http://joey711.github.io/phyloseq/plot_ordination-examples.html).
+- **Constraint** - The variables to include for constrained ordination.
+Multiple non-`NULL` variables are combined in a formula.
+e.g. `~ Var1 + Var2 + Var3`.
+Not that for ordination constraints only the right-hand side is relevant.
+Generally speaking, this is less flexible than a full
+[formula interface](http://cran.r-project.org/doc/manuals/r-release/R-intro.html#Formulae-for-statistical-models).
+For conditioning variables, explicit interaction terms,
+and other features of R formulae, please use phyloseq/R directly.
 
 ### Aesthetic Mapping
 

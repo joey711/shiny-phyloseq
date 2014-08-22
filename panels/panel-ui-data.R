@@ -1,43 +1,34 @@
 # Data I/O page
+sbp_data = sidebarPanel(
+  uiOutput("phyloseqDataset"),
+  h5("Upload",
+     a("Biom-Format", href="http://joey711.github.io/phyloseq/import-data.html#import_biom"),
+     "File"),
+  fileInput('filebiom', "", multiple = TRUE),
+  h5("Upload", 
+     a(".RData", href="http://joey711.github.io/phyloseq/import-data.html"),
+     "File"),
+  fileInput('file1', ""),
+  h5("Load", a("QIIME-DB", href="http://www.microbio.me/qiime/"), "Data"),
+  fluidRow(column(width = 12,
+                  div(class="span3", 
+                      numericInputRow("qiimeDBsizeMax", "", 
+                                      value = 50L, min = 0, step = 10L, class="span12")
+                  ),
+                  actionButton("actionb_data_qiime", "Load QIIME-DB",
+                               icon("cloud-download"))
+  )),
+  uiOutput("qiimeDBopts")
+)
 datapage = fluidPage(
-  titlePanel(""),
-  sidebarLayout(
-    sidebarPanel(
-      h3('Select Dataset'),
-      uiOutput("phyloseqDataset"),
-      tags$hr(),
-      h4(a("Upload Biom-Format File",
-           href="http://joey711.github.io/phyloseq/import-data.html#import_biom")),
-      fileInput('filebiom', "", multiple = TRUE),
-      tags$hr(),
-      h4(a("Upload .RData File",
-           href="http://joey711.github.io/phyloseq/import-data.html")),
-      fileInput('file1', ""),
-      tags$hr(),
-      h4(a("QIIME-DB Data",
-                 href="http://www.microbio.me/qiime/")),
-      actionButton("actionb_data_qiime", "Load QIIME Data", icon("cloud-download")),
-      uiOutput("qiimeDBopts"),
-      numericInput("qiimeDBsizeMax", "Size Max [MB]", value = 50L, min = 0, step = 10L),
-      tags$hr(),
-      p('Summary Graphic:'),
-      actionButton("actionb_data", "Make Histogram", icon("bar-chart-o")),
-      numericInput("dataset_count_threshold", "Count Threshold", value=3, min=0, step=1),
-      p("See core/default-parameters.R to change default settings."),
-      tags$hr(),
-      p('Big thanks to',
-        a(href = 'http://shiny.rstudio.com/', 'Shiny', 'web apps.')
-      ),
-      p('For documentation, check out:',
-        a(href = "http://joey711.github.io/shiny-phyloseq/", "'About Shiny-phyloseq'")
-      )
-    ),
-    mainPanel(
-      p("Data Summary:"),
-      htmlOutput('contents'),
-      tags$hr(),
-      plotOutput("library_sizes"),
-      plotOutput("OTU_count_thresh_hist")
-    )
-  )
+  headerPanel("Dataset Upload and Selection"),
+  sbp_data,
+  column(width = 8,
+    plotOutput("library_sizes"),
+    p("Data Summary:"),
+    htmlOutput('contents')
+  ),
+  fluidRow(column(width = 12,
+                  includeMarkdown("panels/paneldoc/data.md")
+  ))
 )

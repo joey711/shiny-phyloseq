@@ -7,11 +7,14 @@ sbp_ord = sidebarPanel(
   h4("Structure"),
   fluidRow(column(
     width = 12,
-    div(class="span3", uitype("type_ord", "samples")),
+    div(class="span4", uitype("type_ord", "samples")),
     div(class="span4", selectInput("ord_method", "Method", ordlist, selected="DCA")),
-    div(class="span5", uidist("dist_ord")),
+    div(class="span4", uidist("dist_ord"))
+  )),
+  fluidRow(column(
+    width = 12,
     div(class="span4", selectInput("ord_plot_type", "Display", ordtypelist)), 
-    div(class="span7", textInput("formula", "Constraint", value="NULL"))
+    div(class="span7", uiOutput("ord_uix_constraint"))
   )),
   h4("Aesthetic Mapping"),
   fluidRow(column(
@@ -23,24 +26,17 @@ sbp_ord = sidebarPanel(
   dim_and_down("_ord")
 )
 ################################################################################
-# ordpage = make_fluidpage("", sbp_ord, "ordination")
-dummyText = paste0(rep("  \n  ", 7), collapse = "")
 ordpage = fluidPage(
   headerPanel("Ordination Plot"),
   fluidRow(
     sbp_ord,
-    column(width=8, 
-           plotOutput("ordination"),
-           h4("Scree"),
-           #       tags$hr(dummyText),
-           #       tags$br(dummyText),
-           #       tags$hr(dummyText),
-           #       tags$br(dummyText),
-           #       tags$hr(dummyText),
-           plotOutput("scree_ord")
-  )),
+    column(width=6, 
+           plotOutput("ordination")
+    ),
+    column(width = 2, plotOutput("scree_ord"))
+  ),
   fluidRow(column(width = 12,
                   includeMarkdown("panels/paneldoc/ordination.md")
   ))
 )
-
+################################################################################

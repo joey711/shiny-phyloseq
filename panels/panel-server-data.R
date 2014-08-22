@@ -113,13 +113,27 @@ get_phyloseq_data = reactive({
 })
 output$library_sizes <- renderPlot({
   if(inherits(get_phyloseq_data(), "phyloseq")){
-    libtitle = "Histogram of Library Sizes in Selected Data"
+    libtitle = "Library Sizes"
     p1 = lib_size_hist() + ggtitle(libtitle)
-    otusumtitle = "Histogram of OTU total counts in Selected Data"
+    otusumtitle = "OTU Totals"
     p2 = otu_sum_hist() + ggtitle(otusumtitle)
     gridExtra::grid.arrange(p1, p2, ncol=2)
   } else {
     fail_gen("")
   }
 })
-
+output$uix_available_components_orig <- renderUI({
+  selectInput("available_components_orig", "Available Components",
+              choices = component_options(get_phyloseq_data()))
+})
+# Render the user-selected data component using DataTables
+output$ps0ComponentTable <- renderDataTable({
+  if(is.null(av(input$available_components_orig))){
+    return(NULL)
+  }
+  component = do.call(what = input$available_components_orig, args = list(get_phyloseq_data()))
+  return(tablify_phyloseq_component(component, input$component_table_colmax))
+}, options = list(
+  iDisplayLength = 5 
+))
+################################################################################

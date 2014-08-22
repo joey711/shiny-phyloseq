@@ -102,3 +102,48 @@ av = function(x){
   }
   return(x)
 }
+################################################################################
+# Component table rendering functions.
+################################################################################
+# Defines a function to convert
+# a phyloseq data component
+# into a data.frame, data.table, or matrix
+# For the purpose of DataTables screen rendering
+tablify_phyloseq_component = function(component, colmax=25L){
+  if(inherits(component, "sample_data")){
+    Table = data.frame(component)
+  }
+  if(inherits(component, "taxonomyTable")){
+    Table = component@.Data
+  }
+  if(inherits(component, "otu_table")){
+    if(!taxa_are_rows(component)){component <- t(component)}
+    Table = component@.Data
+  }
+  return(Table[, 1:min(colmax, ncol(Table))])
+}
+# Determine available table-like components for on-screen rendering
+component_options = function(physeq){
+  # Initialize the return option list
+  component_option_list = list("NULL"="NULL")
+  # Get logical vector of components
+  nonEmpty = sapply(slotNames(physeq), function(x, ps){!is.null(access(ps, x))}, ps=physeq)
+  if(sum(nonEmpty)<1){return(NULL)}
+  # Convert to vector of slot-name strings for non-empty components
+  nonEmpty <- names(nonEmpty)[nonEmpty]
+  # Cull the non-table components
+  nonEmpty <- nonEmpty[!nonEmpty %in% c("phy_tree", "refseq")]
+  # If no tables available, return default empty option
+  if(length(nonEmpty)<1){return(component_option_list)}
+  # Otherwise add to the option list and return
+  compFuncString = names(phyloseq:::get.component.classes()[nonEmpty])
+  if("sam_data" %in% compFuncString){
+    compFuncString[compFuncString=="sam_data"] <- "sample_data"
+  }
+  NiceNames = c(otu_table="OTU Table",
+                sample_data="Sample Data",
+                tax_table = "Taxonomy Table")
+  names(compFuncString) <- NiceNames[compFuncString]
+  return(c(component_option_list, as.list(compFuncString)))
+}
+################################################################################

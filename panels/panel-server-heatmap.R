@@ -39,7 +39,7 @@ make_heatmap = reactive({
 output$heatmap <- renderPlot({
   shiny_phyloseq_print(make_heatmap())
 }, width=function(){72*input$width_heat}, height=function(){72*input$height_heat})
-output$downloadHeat <- downloadHandler(
+output$download_heat <- downloadHandler(
   filename = function(){paste0("Heatmap_", simpletime(), ".", input$downtype_heat)},
   content = function(file){
     ggsave2(filename=file,

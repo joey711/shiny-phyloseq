@@ -2,20 +2,20 @@
 # UI
 ################################################################################
 output$richness_uix_x <- renderUI({
-  selectInput("x_rich",
-        label = "Horizontal (x) Variable:",
+  selectInput("x_rich", 
+        label = "X:",
         choices = c(list("samples"), vars("samples")),
         selected = "samples")
 })
 output$richness_uix_color <- renderUI({
   selectInput("color_rich",
-              label = "Color Variable:",
+              label = "Color:",
               choices = c(list("samples"), vars("samples")),
               selected = "NULL")
 })
 output$richness_uix_shape <- renderUI({
-  selectInput("shape_rich",
-              label = "Shape Variable:",
+  selectInput("shape_rich", 
+              label = "Shape:",
               choices = c(list("samples"), vars("samples")),
               selected = "NULL")
 })
@@ -90,7 +90,7 @@ finalize_richness_plot = reactive({
 output$richness <- renderPlot({
   shiny_phyloseq_print(finalize_richness_plot())
 }, width=function(){72*input$width_rich}, height=function(){72*input$height_rich})
-output$downloadRichness <- downloadHandler(
+output$download_rich <- downloadHandler(
   filename = function(){paste0("Richness_", simpletime(), ".", input$downtype_rich)},
   content = function(file){
     ggsave2(filename=file,

@@ -2,19 +2,23 @@
 # UI ordination
 ################################################################################
 output$ord_uix_color <- renderUI({
-  selectInput("color_ord", "Color Variable:", vars(input$type_ord), "NULL")
+  selectInput("color_ord", "Color", vars(input$type_ord), "NULL")
 })
 output$ord_uix_shape <- renderUI({
-  selectInput("shape_ord", "Shape Variable:", vars(input$type_ord), "NULL")
+  selectInput("shape_ord", "Shape", vars(input$type_ord), "NULL")
+})
+output$ord_uix_constraint <- renderUI({
+  selectInput("constraint_ord", "Constraint", vars(input$type_ord), "NULL", multiple = TRUE)
 })
 ################################################################################
 # Ordination functions
 ################################################################################
-get_formula <- reactive({
-  if(is.null(av(input$formula)) | input$formula=="NULL"){
+get_formula_ord <- reactive({
+  if(is.null(av(input$constraint_ord))){
     return(NULL)
   } else {
-    return(as.formula(input$formula))
+    formstring = paste("~", paste(input$constraint_ord, collapse = "+"))
+    return(as.formula(formstring))
   }
 })
 # Define global reactive distance matrix. Will re-calc if method or plot-type change.
@@ -30,7 +34,7 @@ gdist <- reactive({
 })
 # Define reactive ordination access
 get_ord = reactive({
-  ordinate(physeq(), method=input$ord_method, distance=gdist(), formula=get_formula())
+  ordinate(physeq(), method=input$ord_method, distance=gdist(), formula=get_formula_ord())
 })
 make_ord_plot = reactive({
   p1 = NULL
@@ -66,7 +70,7 @@ finalize_ordination_plot = reactive({
 output$ordination <- renderPlot({
   shiny_phyloseq_print(finalize_ordination_plot())
 }, width=function(){72*input$width_ord}, height=function(){72*input$height_ord})
-output$downloadOrdination <- downloadHandler(
+output$download_ord <- downloadHandler(
   filename = function(){paste0("Ordination_", simpletime(), ".", input$downtype_ord)},
   content = function(file){
     ggsave2(filename=file,

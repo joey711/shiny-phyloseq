@@ -12,6 +12,56 @@ simpletime = function(){gsub("\\D", "_", Sys.time())}
 # Graphic-saving utilities
 source("core/ggsave.R", local = TRUE)
 ################################################################################
+# Function for standard-out phyloseq print summary in HTML
+#
+# http://stackoverflow.com/questions/18007440/how-to-change-font-size-in-html5
+# http://www.w3schools.com/cssref/pr_font_font-size.asp
+# http://stackoverflow.com/questions/19777515/r-shiny-mainpanel-display-style-and-font
+################################################################################
+output_phyloseq_print_html = function(physeq){
+  HTML(
+    paste(
+      '<p class="phyloseq-print">',
+      paste0(capture.output(print(physeq)), collapse=" <br/> "),
+      "</p>"
+    )
+  )
+  # Alternative tag way:
+  #   do.call("p", args = c(list(class="phyloseq-print", 
+  #                              sapply(c("alskfjs", "askfjls"), br, simplify = FALSE, USE.NAMES = FALSE))))
+}
+################################################################################
+# Special variant of numericInput() that has a smaller default width,
+# and is much more customizable, including `...`
+# and an explicitly exposed `class` argument
+#
+# This is used by both ui.R and server.R
+#
+# Some helpful details. 
+#
+# http://shiny.rstudio.com/tutorial/lesson2/
+# http://shiny.rstudio.com/articles/layout-guide.html
+# http://stackoverflow.com/questions/20637248/shiny-4-small-textinput-boxes-side-by-side
+# http://getbootstrap.com/2.3.2/base-css.html#forms
+################################################################################
+numericInputRow <- function(inputId, label, value, min = NA, max = NA, step = NA, class="input-small", ...){
+  inputTag <- tags$input(id = inputId, type = "number", value = value, class=class, ...)
+  if (!is.na(min)) 
+    inputTag$attribs$min = min
+  if (!is.na(max)) 
+    inputTag$attribs$max = max
+  if (!is.na(step)) 
+    inputTag$attribs$step = step
+  div(style="display:inline-block",
+      tags$label(label, `for` = inputId), 
+      inputTag)
+}
+textInputRow <- function(inputId, label, value = "", class="input-small", ...){
+  div(style="display:inline-block",
+      tags$label(label, `for` = inputId), 
+      tags$input(id = inputId, type = "text", value = value, class=class, ...))
+}
+################################################################################
 # Supported ggplot2 themes
 ################################################################################
 theme_blank_custom = theme_bw() + theme(
@@ -26,9 +76,9 @@ theme_blank_custom = theme_bw() + theme(
   panel.border     = element_blank()
 )
 shiny_phyloseq_ggtheme_list <- list(
-  `black/white` = theme_bw(),
+  bl_wh = theme_bw(),
   blank = theme_blank_custom,
-  `thin line` = theme_linedraw(),
+  thin = theme_linedraw(),
   light = theme_light(),
   minimal = theme_minimal(),
   classic = theme_classic(),
@@ -102,3 +152,48 @@ av = function(x){
   }
   return(x)
 }
+################################################################################
+# Component table rendering functions.
+################################################################################
+# Defines a function to convert
+# a phyloseq data component
+# into a data.frame, data.table, or matrix
+# For the purpose of DataTables screen rendering
+tablify_phyloseq_component = function(component, colmax=25L){
+  if(inherits(component, "sample_data")){
+    Table = data.frame(component)
+  }
+  if(inherits(component, "taxonomyTable")){
+    Table = component@.Data
+  }
+  if(inherits(component, "otu_table")){
+    if(!taxa_are_rows(component)){component <- t(component)}
+    Table = component@.Data
+  }
+  return(Table[, 1:min(colmax, ncol(Table))])
+}
+# Determine available table-like components for on-screen rendering
+component_options = function(physeq){
+  # Initialize the return option list
+  component_option_list = list("NULL"="NULL")
+  # Get logical vector of components
+  nonEmpty = sapply(slotNames(physeq), function(x, ps){!is.null(access(ps, x))}, ps=physeq)
+  if(sum(nonEmpty)<1){return(NULL)}
+  # Convert to vector of slot-name strings for non-empty components
+  nonEmpty <- names(nonEmpty)[nonEmpty]
+  # Cull the non-table components
+  nonEmpty <- nonEmpty[!nonEmpty %in% c("phy_tree", "refseq")]
+  # If no tables available, return default empty option
+  if(length(nonEmpty)<1){return(component_option_list)}
+  # Otherwise add to the option list and return
+  compFuncString = names(phyloseq:::get.component.classes()[nonEmpty])
+  if("sam_data" %in% compFuncString){
+    compFuncString[compFuncString=="sam_data"] <- "sample_data"
+  }
+  NiceNames = c(otu_table="OTU Table",
+                sample_data="Sample Data",
+                tax_table = "Taxonomy Table")
+  names(compFuncString) <- NiceNames[compFuncString]
+  return(c(component_option_list, as.list(compFuncString)))
+}
+################################################################################

@@ -3,24 +3,34 @@
 ################################################################################
 sbp_heat = sidebarPanel(
   actionButton("actionb_heat", "Re-Build Graphic", icon("qrcode")),
-  br(),
-  selectInput("ord_method_heat", "Ordination Method (axis ordering):", 
-              ordlist, selected="NMDS"),
-  uidist("dist_heat"),
-  uiOutput("heat_sample_label"),
-  uiOutput("heat_taxa_label"),
-  uiOutput("heat_sample_order"),
-  uiOutput("heat_taxa_order"),
-  textInput("locolor_heat", "Low Color", "#000033"),
-  textInput("hicolor_heat", "High Color", "#66CCFF"),
-  textInput("NAcolor_heat", "Missing Value Color", "black"),
-  uicttype("uicttype_heat"),
-  tags$hr(),
-  h4('Figure Dimensions'),
-  numericInput("width_heat", "Figure Width (inches)", 8, 1, 100, 1),
-  numericInput("height_heat", "Figure Height (inches)", 8, 1, 100, 1),
-  graphicTypeUI("downtype_heat"),
-  downloadButton('downloadHeat', 'Download Graphic')
+  h4("Structure"),
+  fluidRow(column(width = 12,
+                  div(class="span4",
+                      selectInput("ord_method_heat", "Method", 
+                                  ordlist, selected="NMDS")),
+                  div(class="span4", uidist("dist_heat")),
+                  div(class="span4", uicttype("uicttype_heat"))
+  )),
+  h4("Labels"),
+  fluidRow(column(width = 12,
+                  div(class="span6", uiOutput("heat_sample_label")),
+                  div(class="span6", uiOutput("heat_taxa_label"))
+  )),
+  h4("Manual Ordering"),
+  fluidRow(column(width = 12,
+                  div(class="span6", uiOutput("heat_sample_order")),
+                  div(class="span6", uiOutput("heat_taxa_order"))
+  )),
+  h4("Color Scale"),
+  fluidRow(column(width = 12,
+                  div(class="span4", 
+                      textInputRow("locolor_heat", "Low", "#000033", class="span12")),
+                  div(class="span4", 
+                      textInputRow("hicolor_heat", "High", "#66CCFF", class="span12")),
+                  div(class="span4", 
+                      textInputRow("NAcolor_heat", "Missing", "black", class="span12"))
+  )),
+  dim_and_down("_heat")
 )
 ################################################################################
-heatpage = make_fluidpage("", sbp_heat, "heatmap")
+heatpage = make_fluidpage("", sbp_heat, "heatmap", "heatmap.md")

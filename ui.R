@@ -1,31 +1,91 @@
-# Type for distance/network/etc. Samples or Taxa
+# Define supported download format labels
+vectorGraphicFormats = c("emf", "eps", "pdf", "tex", "svg", "wmf")
+rasterGraphicFormats = c("bmp", "jpg", "png", "tiff")
+graphicFormats = c(vectorGraphicFormats, rasterGraphicFormats)
+graphicTypeUI = function(inputId, label="Format", choices=graphicFormats, selected="pdf"){
+  selectInput(inputId, label, choices, selected, multiple = FALSE, selectize = TRUE)
+}
+# Type for distance/network/ordination/etc. Samples/Taxa toggle
 uitype = function(id="type", selected="taxa"){
-  selectInput(inputId=id, label="Calculation: Samples or Taxa?",
+  selectInput(inputId=id, label="Type",
               selected=selected,
               choices=list("Taxa"="taxa", "Samples"="samples"))
 }
-# ui for point size slider
-uiptsz = function(id="size"){
-  numericInput(inputId=id, label="Point Size", min=1, max=NA, value=5, step=1)
+# ui for point size
+uiptsz = function(id, ...){
+  numericInputRow(inputId=id, label="Size", min=1, max=NA, value=5, step=1, ...)
 }
 # ui for point opacity slider
-uialpha = function(id="alpha"){
-  sliderInput(inputId=id, label="Opacity", min=0, max=1, value=1, step=0.1)
+uialpha = function(id, ...){
+  numericInputRow(inputId=id, label="Opacity", min=0, max=1, value=1, step=0.1, ...)
 }
 # UI function to define palettes. Reused in many panels.
 uipal = function(id, default="Set1"){
-  selectInput(id, "Color Palette",  
+  selectInput(id, "Palette",  
               choices = rownames(RColorBrewer::brewer.pal.info), 
               selected = default
   )
 }
 # UI function to define ggplot2 themes. Reused in many panels.
-uitheme = function(id, default="black/white"){
-  selectInput(id, "Style Theme",
+uitheme = function(id, default="bl_wh"){
+  selectInput(id, "Theme",
               choices = names(shiny_phyloseq_ggtheme_list),
               selected = default
   )
 }
+################################################################################
+# Multi-Widget Definitions
+################################################################################
+# Figure Dimensions and Download. Should return a single fluidRow, all 12 cols
+dim_and_down = function(suffix, secTitle='Dimensions & Download'){
+  fluidRow(column(
+    width = 12,
+    h4(secTitle),
+    div(class="span3", numericInputRow(paste0("width", suffix), "Width", 8, 1, 100, 1, class="span12")),
+    div(class="span3", numericInputRow(paste0("height", suffix), "Height", 8, 1, 100, 1, class="span12")),
+    div(class='span3', graphicTypeUI(paste0("downtype", suffix))),
+    div(class='span2', div(style="display:inline-block", tags$label("DL"),
+                           downloadButton(paste0("download", suffix), '  ')))
+  ))
+}
+# Theme and details. Some elements are optional. Suffix is required.
+# Attempts to return a single row with palette, theme, and optionally point-size and opacity.
+# `addList` is a list of additional elements for UI, attempt to add to row.
+theme_ui_details = function(suffix, secTitle="Details", pal=TRUE, them=TRUE,
+                            ptsz=FALSE, alpha=FALSE, addList=NULL){
+  elementList = list(width = 12, h4(secTitle))
+  if(pal){
+    elementList <- c(elementList, list(
+      div(class='span3', uipal(paste0("pal", suffix)))
+    ))    
+  }
+  if(them){
+    elementList <- c(elementList, list(
+      div(class='span4', uitheme(paste0("theme", suffix)))
+    ))     
+  }
+  if(ptsz){
+    elementList <- c(elementList, list(
+      div(class="span2", uiptsz(paste0("size", suffix), class="span12"))
+    ))
+  }
+  if(alpha){
+    elementList <- c(elementList, list(
+      div(class="span2", uialpha(paste0("alpha", suffix), class="span12"))
+    ))
+  }
+  # Add any additional row elements, if present
+  elementList <- c(elementList, addList)
+  return(fluidRow(do.call("column", args = elementList)))
+}
+# # Generic fluid row-split. r is number of elements in a row (max 12). 
+# ui_row_split = function(..., r=2L){
+#   elementList = list(width = 12L)
+#   spanN = paste0("span", floor(12/r))
+#   elementList <- c(elementList,
+#                    lapply(..., function(x, spanN){div(class=spanN, x)}, spanN))
+#   return(fluidRow(do.call("column", args = elementList)))
+# }
 ################################################################################
 # Generic distance UI stuff.
 ################################################################################
@@ -41,11 +101,11 @@ names(distlist) <- distlist
 uidist = function(id, selected="bray"){
   distlist = as.list(unlist(phyloseq::distance("list")))
   names(distlist) <- distlist
-  return(selectInput(id, "Distance Method", distlist, selected=selected))
+  return(selectInput(id, "Distance", distlist, selected=selected))
 }
 # Whether to use proportions or counts
 uicttype = function(id="uicttype"){
-  radioButtons(inputId=id, label="Count Type",
+  selectInput(inputId=id, label="Count Type",
                choices=c("Counts", "Proportions"),
                selected="Counts")
 }
@@ -61,29 +121,21 @@ ordlist = c(list("MDS/PCoA"="MDS"), ordlist)
 ################################################################################
 # Define each fluid page
 ################################################################################
-# Define in a single function, a standard definition
-make_fluidpage = function(fptitle="", sbp, outplotid){
+# Define in a single function, a standard definition of panel-page
+make_fluidpage = function(fptitle="", sbp, outplotid, markdownDoc=""){
+  mdRow = fluidRow(column(width = 12, " "))
+  if(nchar(markdownDoc) > 0){
+    # If md doc specified, replace `mdRow` with actual doc.
+    mdRow <- fluidRow(column(width = 12,
+      includeMarkdown(file.path("panels/paneldoc", markdownDoc))
+    )) 
+  }
   fluidPage(
-    titlePanel(fptitle),
-    sidebarLayout(
-      sidebarPanel=sbp,
-      mainPanel=mainPanel(plotOutput(outplotid))
-    )
+    headerPanel(fptitle, "windowTitle"), 
+    fluidRow(sbp, column(width=8, plotOutput(outplotid))),
+    mdRow
   )
 }
-# Trial of non-sidebarLayout page. Needs design-devel...
-# https://github.com/rstudio/shiny/wiki/Shiny-Application-Layout-Guide#grid-layouts-in-depth
-# richpage = fluidPage(titlePanel(""), 
-#                       fluidRow(
-#                         column(6, sbp_rich),
-#                         column(6, plotOutput("richness"))
-#                       ),
-#                       fluidRow(column(12, 
-#                                       p("Testing download plot:"),
-#                                       graphicTypeUI("downtype_rich"),
-#                                       downloadLink('downloadRichness', 'Download Graphic')
-#                       ))
-# )
 ################################################################################
 source("panels/panel-ui-net.R", local = TRUE)
 source("panels/panel-ui-bar.R", local = TRUE)
@@ -97,22 +149,32 @@ source("panels/panel-ui-data.R", local = TRUE)
 source("panels/panel-ui-filter.R", local = TRUE)
 source("panels/panel-ui-palette.R", local = TRUE)
 source("panels/panel-ui-provenance.R", local = TRUE)
+################################################################################
+# Define general header tag list 
+# List of tags to display as a common header above all tabPanels.
+################################################################################
+headerTagList = list(tags$style(type="text/css", ".phyloseq-print { font-size: 10px; }"))
+################################################################################
 # Define the full user-interface, `ui`
 ################################################################################
-ui = navbarPage(title = a(href="http://joey711.github.io/shiny-phyloseq/", style="color:#F0F0F0",  "Shiny-phyloseq"), 
-                tabPanel("Select Dataset", datapage),
-                tabPanel("Filter", filterpage),
-                tabPanel("Alpha Diversity", richpage),
-                tabPanel("Network", netpage),
-                tabPanel("d3Network", d3netpage),
-                tabPanel("Bar", barpage),
-                tabPanel("Ordination", ordpage),
-                tabPanel("Tree", treepage),
-                tabPanel("Heatmap", heatpage),
-                tabPanel("Scatter", scatpage),
-                tabPanel("Palette", palpage),
-                tabPanel("Provenance", provpage),
-                theme = "bootstrap.css"
+ui = navbarPage(
+  title = h4(a(href="http://joey711.github.io/shiny-phyloseq/", style="color:#F0F0F0",  "Shiny-phyloseq")),
+  tabPanel("Select Dataset", datapage),
+  tabPanel("Filter", filterpage),
+  tabPanel("Alpha Diversity", richpage),
+  tabPanel("Network", netpage),
+  tabPanel("d3Network", d3netpage),
+  tabPanel("Ordination", ordpage),
+  tabPanel("Heatmap", heatpage),
+  tabPanel("Tree", treepage),
+  tabPanel("Scatter", scatpage),
+  tabPanel("Bar", barpage),
+  tabPanel("Palette", palpage),
+  tabPanel("Provenance", provpage),
+  header = headerTagList,
+  collapsable = TRUE,
+  theme = "bootstrap.css",
+  windowTitle = "Shiny-phyloseq"
 )
 shinyUI(ui)
 ################################################################################

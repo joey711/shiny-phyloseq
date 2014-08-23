@@ -10,6 +10,22 @@ if(compareVersion(R_version, R_min_version) < 0){
        "Go to http://cran.r-project.org/ and update your version of R.")
 }
 ################################################################################
+# Install basic required packages if not available/installed.
+################################################################################
+download_not_installed = function(x){
+  availpacks = .packages(all.available = TRUE)
+  if(any(!x %in% availpacks)){
+    source("http://bioconductor.org/biocLite.R")
+    for(i in x[!x %in% availpacks]){
+      cat("Installing", i, "package using biocLite... \n")
+      biocLite(i)
+    }
+  }
+}
+vanilla_install_pkgs = c("data.table", "d3Network", "genefilter", "ggplot2",
+                         "grid", "gridExtra", "png", "RColorBrewer", "scales")
+download_not_installed(vanilla_install_pkgs)
+################################################################################
 # Should use latest GitHub version of shiny
 ################################################################################
 shiny_okay = FALSE
@@ -24,22 +40,6 @@ if(!shiny_okay){
   install.packages("devtools")
   devtools::install_github("shiny", "rstudio")
 }
-################################################################################
-# Install basic required packages if not available/installed.
-################################################################################
-download_not_installed = function(x){
-  availpacks = .packages(all.available = TRUE)
-  source("http://bioconductor.org/biocLite.R")
-  for(i in x){
-    if(!i %in% availpacks){
-      cat("Installing", i, "package using biocLite... \n")
-      biocLite(i)
-    }
-  }
-}
-vanilla_install_pkgs = c("data.table", "d3Network", "genefilter", "ggplot2",
-                         "grid", "gridExtra", "png", "RColorBrewer", "scales")
-download_not_installed(vanilla_install_pkgs)
 ################################################################################
 # phyloseq existence/version test, and installation
 ################################################################################

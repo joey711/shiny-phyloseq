@@ -2,20 +2,20 @@
 # UI
 ################################################################################
 output$tree_uix_color <- renderUI({
-  uivar("color_tree", "Color Variable:", vars("both", TRUE, TRUE))
+  uivar("color_tree", "Color", vars("both", TRUE, TRUE))
 })
 output$tree_uix_shape <- renderUI({
-  uivar("shape_tree", "Shape Variable:", vars("both", TRUE, TRUE))
+  uivar("shape_tree", "Shape", vars("both", TRUE, TRUE))
 })
 output$tree_uix_tiplabs <- renderUI({
-  uivar("label_tip_tree", "Tip Labels", vars("taxa", TRUE, TRUE))
+  uivar("label_tip_tree", "Labels", vars("taxa", TRUE, TRUE))
 })
 output$tree_uix_point_thresh <- renderUI({
-  sliderInput("abundance_threshold_tree",
-              "Count Minimum Threshold for Points",
+  numericInputRow("abundance_threshold_tree", "Min",
               value=0.1*median(as(otu_table(physeq()), "matrix"), na.rm=TRUE),
               max=max(as(otu_table(physeq()), "matrix"), na.rm=TRUE),
-              min=min(as(otu_table(physeq()), "matrix"), na.rm=TRUE)
+              min=min(as(otu_table(physeq()), "matrix"), na.rm=TRUE),
+              class="span12"
   )
 })
 ################################################################################
@@ -78,7 +78,7 @@ finalize_tree_plot = reactive({
 output$tree <- renderPlot({
   shiny_phyloseq_print(finalize_tree_plot())
 }, width=function(){72*input$width_tree}, height=function(){72*input$height_tree})
-output$downloadTree <- downloadHandler(
+output$download_tree <- downloadHandler(
   filename = function(){paste0("Tree_", simpletime(), ".", input$downtype_tree)},
   content = function(file){
     ggsave2(filename=file,

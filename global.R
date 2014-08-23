@@ -13,6 +13,10 @@ simpletime = function(){gsub("\\D", "_", Sys.time())}
 source("core/ggsave.R", local = TRUE)
 ################################################################################
 # Function for standard-out phyloseq print summary in HTML
+#
+# http://stackoverflow.com/questions/18007440/how-to-change-font-size-in-html5
+# http://www.w3schools.com/cssref/pr_font_font-size.asp
+# http://stackoverflow.com/questions/19777515/r-shiny-mainpanel-display-style-and-font
 ################################################################################
 output_phyloseq_print_html = function(physeq){
   HTML(
@@ -49,9 +53,13 @@ numericInputRow <- function(inputId, label, value, min = NA, max = NA, step = NA
   if (!is.na(step)) 
     inputTag$attribs$step = step
   div(style="display:inline-block",
-      #class="controls controls-row",
       tags$label(label, `for` = inputId), 
       inputTag)
+}
+textInputRow <- function(inputId, label, value = "", class="input-small", ...){
+  div(style="display:inline-block",
+      tags$label(label, `for` = inputId), 
+      tags$input(id = inputId, type = "text", value = value, class=class, ...))
 }
 ################################################################################
 # Supported ggplot2 themes

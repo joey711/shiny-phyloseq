@@ -105,7 +105,7 @@ uidist = function(id, selected="bray"){
 }
 # Whether to use proportions or counts
 uicttype = function(id="uicttype"){
-  radioButtons(inputId=id, label="Count Type",
+  selectInput(inputId=id, label="Count Type",
                choices=c("Counts", "Proportions"),
                selected="Counts")
 }

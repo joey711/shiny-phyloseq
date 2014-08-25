@@ -47,7 +47,7 @@ The Filter panel supports some common aspects of user-defined data filtering.
 Shiny-phyloseq provides a separate panel
 for each each major graphic function in phyloseq, including
 alpha-diversity (`Richness`), 
-sample- or OTU-networks (`Network` and `d3Netowrk`), 
+sample- or OTU-networks (`Network` and `d3Network`), 
 bar plot (`Bar`), 
 heat map (`Heatmap`), 
 phylogenetic tree (`Tree`), 

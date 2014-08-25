@@ -58,41 +58,35 @@ default_Source = function(x){
     return(x)
   }
 }
-# The d3Network output definition.
-output$networkPlot <- renderPrint({
-  d3Network::d3ForceNetwork(
-    Links = calculate_links_data()$link, 
-    Nodes = calculate_links_data()$node,
-    Source = "Source", Target = "target",
-    Value = "Distance",
-    NodeID = "ShowLabels",
-    Group = default_Source(input$color_d3),
-    linkColour = input$d3_link_color,
-    opacity = input$d3_opacity,
-    zoom = FALSE, 
-    standAlone = FALSE, 
-    width = input$width_d3, height = input$height_d3,
-    parentElement = "#networkPlot")
-})
-# Downloadable standalone HTML file.
-content_d3 = function(file){
+# Wrapper function for Shiny-phyloseq D3 Network definition.
+sps_D3_network = function(standAlone=FALSE, parentElement="#D3Network", file=NULL){
   d3Network::d3ForceNetwork(
     Links = calculate_links_data()$link, 
     Nodes = calculate_links_data()$node,
     Source = "Source",
     Target = "target",
-    Value = "value",
+    Value = "Distance",
     NodeID = "ShowLabels",
+    height = input$height_d3,
+    width = input$width_d3,
     Group = default_Source(input$color_d3),
     linkColour = input$d3_link_color,
     opacity = input$d3_opacity,
-    zoom = FALSE, 
-    standAlone = TRUE, 
-    width = input$width_d3,
-    height = input$height_d3,
-    file = file
+    parentElement = parentElement,
+    standAlone = standAlone,
+    file=file
   )
 }
-output$downloadd3 <- downloadHandler(filename = function(){paste0("d3_", simpletime(), ".html")},
+# Send to in-panel element.
+output$D3Network <- renderPrint({
+  sps_D3_network()
+})
+# Downloadable standalone HTML file.
+content_d3 = function(file){
+  return(
+    sps_D3_network(standAlone=TRUE, parentElement="body", file=file)
+  )
+}
+output$download_D3 <- downloadHandler(filename = function(){paste0("d3_", simpletime(), ".html")},
                                      content = content_d3)
 #zoom = as.logical(input$d3_zoom),

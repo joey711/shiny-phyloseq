@@ -43,7 +43,7 @@ sbp_d3 = sidebarPanel(
     h4("Dimensions and Download"),
     div(class="span3", numericInputRow("width_d3", "Width", 600, 200, 1600, 100, class="span12")),
     div(class="span3", numericInputRow("height_d3", "Height", 600, 200, 1600, 100, class="span12")),
-    div(class='span2', div(style="display:inline-block", tags$label("DL"), downloadButton("downloadd3", " ")))
+    div(class='span2', div(style="display:inline-block", tags$label("DL"), downloadButton("download_D3", " ")))
   ))
 )
 ################################################################################
@@ -63,7 +63,7 @@ d3netpage = fluidPage(
   # Sidebar with a slider input for node opacity
   sbp_d3,
   # Show network graph
-  mainPanel(htmlOutput("networkPlot")),
+  mainPanel(htmlOutput("D3Network")),
   fluidRow(column(width = 12,
                   includeMarkdown("panels/paneldoc/d3Network.md")
   ))

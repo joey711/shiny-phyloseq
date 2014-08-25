@@ -1,8 +1,13 @@
+# Define supported download format labels
+vectorGraphicFormats = c("emf", "eps", "pdf", "tex", "svg", "wmf")
+rasterGraphicFormats = c("bmp", "jpg", "png", "tiff")
+graphicFormats = c(vectorGraphicFormats, rasterGraphicFormats)
 ggfilegen = function(prefix, graphictype="pdf"){
   return({
     function(){paste0(prefix, simpletime(), ".", graphictype)}
   })
 }
+# Define a custom `ggsave` function.
 ggsave2 <- function(filename = "ggplot2save2", plot = last_plot(),
                    device = "pdf", scale = 1,
                    width = par("din")[1], height = par("din")[2], units = c("in", "cm", "mm"),

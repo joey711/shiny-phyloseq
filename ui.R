@@ -1,7 +1,5 @@
-# Define supported download format labels
-vectorGraphicFormats = c("emf", "eps", "pdf", "tex", "svg", "wmf")
-rasterGraphicFormats = c("bmp", "jpg", "png", "tiff")
-graphicFormats = c(vectorGraphicFormats, rasterGraphicFormats)
+# Define generic graphic-type select UI.
+# `graphicFormats` is defined globally, called by global.R when it sources ggsave.R
 graphicTypeUI = function(inputId, label="Format", choices=graphicFormats, selected="pdf"){
   selectInput(inputId, label, choices, selected, multiple = FALSE, selectize = TRUE)
 }

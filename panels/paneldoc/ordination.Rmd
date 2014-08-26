@@ -39,9 +39,21 @@ and other features of R formulae, please use phyloseq/R directly.
 
 ### Aesthetic Mapping
 
-These widgets correspond to aesthetic mappings on nodes.
-`Color` and `Shape` are the same as in other panels. 
-For instance, `Color` maps point-color to a particular variable.
+- **Color** - The variable selected here is mapped to point color.
+- **Shape** - The variable selected here is mapped to point shape.
+- **Facet Row** - This is an interface to
+[ggplot2's facet_grid function](http://docs.ggplot2.org/0.9.3.1/facet_grid.html).
+Faceting is a means of splitting the data into separate panels
+according to one or more variables in the data.
+This can have many advantages, especially to alleviate overplotting,
+and to clarify key comparisons.
+In this case, the `Facet Row` widget provides available variables
+that will be mapped to panel-rows in the resulting grid of facets panels.
+You can select more than one variable.
+You should delete/unselect NULL when selecting facets.
+- **Facet Col** - This is the same as `Facet Row` above,
+but this widget controls the variables that will arrange the data
+into panel columns.
 
 ### Details
 

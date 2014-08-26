@@ -20,7 +20,9 @@ sbp_ord = sidebarPanel(
   fluidRow(column(
     width = 12,
     div(class="span6", uiOutput("ord_uix_color")),
-    div(class="span5", uiOutput("ord_uix_shape"))
+    div(class="span5", uiOutput("ord_uix_shape")),
+    div(class='span6', uiOutput("ord_uix_facetrow")),
+    div(class='span5', uiOutput("ord_uix_facetcol"))
   )),
   theme_ui_details("_ord", ptsz=TRUE, alpha=TRUE),
   dim_and_down("_ord")

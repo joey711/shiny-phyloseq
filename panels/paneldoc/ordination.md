@@ -27,15 +27,28 @@ the [plot_ordination function](http://joey711.github.io/phyloseq/plot_ordination
 Multiple non-`NULL` variables are combined in a formula.
 e.g. `~ Var1 + Var2 + Var3`.
 Not that for ordination constraints only the right-hand side is relevant.
-Generally speaking, this is less flexible than a full [formula interface]().
+Generally speaking, this is less flexible than a full
+[formula interface](http://cran.r-project.org/doc/manuals/r-release/R-intro.html#Formulae-for-statistical-models).
 For conditioning variables, explicit interaction terms,
 and other features of R formulae, please use phyloseq/R directly.
 
 ### Aesthetic Mapping
 
-These widgets correspond to aesthetic mappings on nodes.
-`Color` and `Shape` are the same as in other panels. 
-For instance, `Color` maps point-color to a particular variable.
+- **Color** - The variable selected here is mapped to point color.
+- **Shape** - The variable selected here is mapped to point shape.
+- **Facet Row** - This is an interface to
+[ggplot2's facet_grid function](http://docs.ggplot2.org/0.9.3.1/facet_grid.html).
+Faceting is a means of splitting the data into separate panels
+according to one or more variables in the data.
+This can have many advantages, especially to alleviate overplotting,
+and to clarify key comparisons.
+In this case, the `Facet Row` widget provides available variables
+that will be mapped to panel-rows in the resulting grid of facets panels.
+You can select more than one variable.
+You should delete/unselect NULL when selecting facets.
+- **Facet Col** - This is the same as `Facet Row` above,
+but this widget controls the variables that will arrange the data
+into panel columns.
 
 ### Details
 

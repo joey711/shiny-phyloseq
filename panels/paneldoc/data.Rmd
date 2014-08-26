@@ -26,11 +26,27 @@ for instance by the adding new dataset(s) to the default selection list,
 adjusting default parameters to reflect experiment-specific choices,
 or even by adding/subtracting panels with new or modified functionality.
 
+[Shiny](http://rstudio.github.io/shiny/) is a fully-compliant
+[CRAN-hosted](http://cran.r-project.org/web/packages/shiny/index.html)
+R package
+that provides an Application Program Interface (API) for building interactive web applications
+that are based on Twitter's [Bootstrap](http://getbootstrap.com/2.3.2) front-end toolkit.
+Shiny-phyloseq is almost entirely R code, 
+but, like any Shiny app, can be further customized/extended
+using HTML, CSS, and JavaScript.
+Shiny-phyloseq is fully cross-platform and will launch locally from any R environment
+(Console R, Rgui, RStudio, etc.),
+but can also be ["hosted" by a web-server](http://shiny.rstudio.com) ---
+this latter-case requiring only a web browser.
+Shiny-phyloseq leverages Shiny's reactive programming framework 
+to compartmentalize and cache expensive computational steps
+so that they are not re-computed unnecessarily during an interactive session.
+
 ### Typical Workflow
 
 The Shiny-phyloseq interface is organized into panels from left to right,
-beginning with data selection, filtering/curation, transformation, 
-graphic-specific panels, and ending with `Provenance`.
+beginning with data selection, filtering/curation, 
+graphic-specific panels, and ending with provenance-tracking.
 User input widgets are consolidated in a lefthand sidebar of each panel.
 The `Select Dataset` panel (the current panel)
 begins each session.

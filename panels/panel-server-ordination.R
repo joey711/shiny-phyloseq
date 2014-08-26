@@ -10,6 +10,12 @@ output$ord_uix_shape <- renderUI({
 output$ord_uix_constraint <- renderUI({
   selectInput("constraint_ord", "Constraint", vars(input$type_ord), "NULL", multiple = TRUE)
 })
+output$ord_uix_facetrow <- renderUI({
+  selectInput("facetrow_ord", "Facet Row", vars(input$type_ord), multiple = TRUE)
+})
+output$ord_uix_facetcol <- renderUI({
+  selectInput("facetcol_ord", "Facet Col", vars(input$type_ord), multiple = TRUE)
+})
 ################################################################################
 # Ordination functions
 ################################################################################
@@ -62,8 +68,14 @@ finalize_ordination_plot = reactive({
       p1$mapping$shape  <- as.symbol(av(input$shape_ord))
       p1 <- update_labels(p1, list(shape = input$shape_ord))
     }
+    p1ord_facet_form = get_facet_grid(input$facetrow_ord, input$facetcol_ord)
+    if(!is.null(p1ord_facet_form)){
+      # Add facet_grid layer if user-provided one
+      # # Maybe add a user-toggle for free_x and free_y panels.
+      p1 <- p1 + facet_grid(p1ord_facet_form)
+    }
+    p1 <- p1 + shiny_phyloseq_ggtheme_list[[input$theme_ord]]
   }
-  p1 <- p1 + shiny_phyloseq_ggtheme_list[[input$theme_ord]]
   return(p1)
 })
 # Render plot in panel and in downloadable file with format specified by user selection

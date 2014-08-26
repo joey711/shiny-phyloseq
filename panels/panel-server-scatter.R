@@ -8,24 +8,29 @@ scatdf = reactive({
   return(psmelt(physeq_scat()))
 })
 output$scat_uix_x <- renderUI({
-  selectInput(inputId="x_scat", label="Horizontal ('x') Variable:", 
-              #choices=c(list(Abundance="Abundance"), vars()),
+  selectInput(inputId="x_scat", label="X", 
               choices = as.list(c("NULL", names(scatdf()))),
               selected="Sample")
 })
 output$scat_uix_y <- renderUI({
-  selectInput(inputId="y_scat", label="Vertical ('y') Variable:", 
+  selectInput(inputId="y_scat", label="Y", 
               #choices=c(list(Abundance="Abundance"), vars()),
               choices = as.list(c("NULL", names(scatdf()))),
               selected="Abundance")
 })
 output$scat_uix_color <- renderUI({
-  selectInput("color_scat", "Color Variable:",
+  selectInput("color_scat", "Color",
               choices = as.list(c("NULL", names(scatdf()))))
 })
 output$scat_uix_shape <- renderUI({
-  selectInput("shape_scat", "Shape Variable:",
+  selectInput("shape_scat", "Shape",
               choices = as.list(c("NULL", names(scatdf()))))
+})
+output$scat_uix_facetrow <- renderUI({
+  selectInput("facetrow_scat", "Facet Row", vars("both"), multiple = TRUE)
+})
+output$scat_uix_facetcol <- renderUI({
+  selectInput("facetcol_scat", "Facet Col", vars("both"), multiple = TRUE)
 })
 ################################################################################
 # Flexible Scatter plot
@@ -37,10 +42,11 @@ make_scatter_plot = reactive({
                          color=av(input$color_scat), shape=av(input$shape_scat))
     pscat = ggplot(data=scatdf(), mapping=scatmap) + geom_point()
     pscat = pscat + theme(axis.text.x=element_text(angle=-90, vjust=0.5, hjust=0)) 
-    if(!is.null(av(input$facform_scat))){
+    pscat_facet_form = get_facet_grid(input$facetrow_scat, input$facetcol_scat)
+    if(!is.null(pscat_facet_form)){
       # Add facet_grid layer if user-provided one
-      # # Need to add a user-toggle for free_x and free_y panels.
-      pscat <- pscat + facet_grid(facets=as.formula(av(input$facform_scat)))
+      # # Maybe add a user-toggle for free_x and free_y panels.
+      pscat <- pscat + facet_grid(pscat_facet_form)
     }
   }, silent=TRUE)
   return(pscat)

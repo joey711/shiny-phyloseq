@@ -152,6 +152,24 @@ av = function(x){
   }
   return(x)
 }
+# Generic variable-to-facet-formula conversion function
+# for facet_grid.
+# Could easily make a facet_row equivalent, if needed.
+get_facet_grid = function(facetrow=NULL, facetcol=NULL){
+  if(is.null(av(facetrow)) & is.null(av(facetcol))){
+    return(NULL)
+  } else if(is.null(av(facetcol))){
+    # If no column value, add a "."
+    formstring = paste(paste(facetrow, collapse = "+"), "~", ".")
+  } else {
+    formstring = paste(
+      paste(facetrow, collapse = "+"),
+      "~",
+      paste(facetcol, collapse = "+")
+    )
+  }
+  return(as.formula(formstring))
+}
 ################################################################################
 # Component table rendering functions.
 ################################################################################

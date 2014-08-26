@@ -103,7 +103,7 @@ uidist = function(id, selected="bray"){
 }
 # Whether to use proportions or counts
 uicttype = function(id="uicttype"){
-  selectInput(inputId=id, label="Count Type",
+  selectInput(inputId=id, label="Data",
                choices=c("Counts", "Proportions"),
                selected="Counts")
 }

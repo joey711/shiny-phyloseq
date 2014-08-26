@@ -20,21 +20,6 @@ output$bar_uix_facetcol <- renderUI({
 physeq_bar = reactive({
   return(switch({input$uicttype_bar}, Counts=physeq(), Proportions=physeqProp()))
 })
-get_facet <- reactive({
-  if(is.null(av(input$facetrow_bar)) & is.null(av(input$facetcol_bar))){
-    return(NULL)
-  } else if(is.null(av(input$facetcol_bar))){
-    # If no column value, add a "."
-    formstring = paste(paste(input$facetrow_bar, collapse = "+"), "~", ".")
-  } else {
-    formstring = paste(
-      paste(input$facetrow_bar, collapse = "+"),
-      "~",
-      paste(input$facetcol_bar, collapse = "+")
-    )
-  }
-  return(as.formula(formstring))
-})
 make_bar_plot = reactive({
   p0 = NULL
   # Try with facet argument included first. If fails, retry without it.
@@ -42,7 +27,7 @@ make_bar_plot = reactive({
                      x=input$x_bar,
                      y="Abundance",
                      fill=av(input$color_bar), 
-                     facet_grid=get_facet()),
+                     facet_grid=get_facet_grid(input$facetrow_bar, input$facetcol_bar)),
       silent=TRUE)
   if(!inherits(p0, "ggplot")){
     warning("Could not render bar plot, attempting without faceting...")

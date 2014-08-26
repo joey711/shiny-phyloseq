@@ -58,6 +58,30 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <p>This panel is based on phyloseq’s <a href="http://joey711.github.io/phyloseq/plot_richness-examples.html">plot_richness function</a>.</p>
 <p>Although the function name includes the word <em>richness</em>, which usually refers to the total number of species/OTUs in a sample or environment – either observed or estimated – this panel and its underlying function are intended for estimating and plotting alpha diversity in general.</p>
+<div id="sidebar-widget-details" class="section level2">
+<h2>Sidebar Widget Details</h2>
+<div id="aesthetic-mapping" class="section level3">
+<h3>Aesthetic Mapping</h3>
+<p>The aesthetic mapping is intended to help annotate and organize the alpha-diversity results for easier comprehension.</p>
+<ul>
+<li><strong>X-Axis</strong> - The variable selected here is mapped to the horizontal (“X”) axis. The default selection is <code>&quot;Sample&quot;</code>, which means every sample gets a separate discrete position on the horizontal axis. The “Y” axis is always mapped to the respective alpha-diversity value.</li>
+<li><strong>Color</strong> - The variable selected here is mapped to the color shade of points. Take care that selected discrete variables do not surpass the number of available aesthetic categories (e.g. more categories in data than you have color shades).</li>
+</ul>
+</div>
+<div id="details" class="section level3">
+<h3>Details</h3>
+<p><code>Palette</code>, <code>Theme</code>, <code>Size</code>, and <code>Opacity</code> - refer to the way points are drawn.</p>
+<ul>
+<li><strong>Palette</strong> - Refers to color palette. Only applicable if you have selected a <code>Color</code> variable in the Aesthetic Mapping section. Explore the <code>Palette</code> panel within Shiny-phyloseq, or more details about color palettes at <a href="http://colorbrewer2.org/">ColorBrewer</a>.</li>
+<li><strong>Theme</strong> - For the most part these refer to <a href="http://docs.ggplot2.org/0.9.2.1/theme.html">ggplot2 themes</a>, which generally encompass stylistic graphical features, such as axis line types, axis label fonts and spacing, background color, etc.</li>
+<li><strong>Angle</strong> - This refers to the label angle for the horizontal (“X”) axis.</li>
+</ul>
+</div>
+<div id="dimensions-and-downloads" class="section level3">
+<h3>Dimensions and Downloads</h3>
+<p>Figure dimensions (in inches), file format, and download button (<code>DL</code>).</p>
+</div>
+</div>
 
 
 </div>

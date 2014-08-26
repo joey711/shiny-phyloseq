@@ -88,12 +88,49 @@ get_biom_data = reactive({
   }
   return(NULL)
 })  
+process_uploaded_tree = reactive({
+  if(!is.null(av(input$treefile$name))){
+    if(!is.null(isolate(input$physeqSelect))){
+      # This is what you'll merge with.
+      b4treeMerge = datalist[[isolate(input$physeqSelect)]]
+      treeResult = read_tree(input$treefile$datapath)
+      if(is.null(treeResult)){
+        # Initial tree result failed, attempt read_tree_greengenes
+        treeResult <- read_tree_greengenes(input$treefile$datapath)
+      }
+      if(is.null(treeResult)){
+        warning("Tree import failed. Please check tree file and try again.")
+      }
+      if(inherits(b4treeMerge, "phyloseq") & inherits(treeResult, "phylo")){
+        # Make sure both are expected class
+        if(length(intersect(
+          taxa_names(b4treeMerge),
+          taxa_names(treeResult))) > 0){
+          # Only attempt merge if there are OTUs in common.
+          # Remove original tree component.
+          b4treeMerge@phy_tree <- NULL
+          aftreeMerge = merge_phyloseq(b4treeMerge, treeResult)
+          # Finally, if the result is a phyloseq object, replace in the current datalist
+          if(inherits(aftreeMerge, "phyloseq")){
+            #datalist[[isolate(input$physeqSelect)]] <- aftreeMerge
+            aftreeMergeL = list(aftreeMerge)
+            names(aftreeMergeL) <- paste0(isolate(input$physeqSelect), "_AddTree")
+            datalist <<- c(aftreeMergeL, datalist)
+          }
+        }
+      }
+    }
+  }
+  return(NULL)
+})
 output$phyloseqDataset <- renderUI({
   # Expect the side-effect of these functions to be to add
   # elements to the datalist, if appropriate
   get_loaded_data()
   get_biom_data()
   get_qiime_data()
+  # Process tree (and in principle, other components) last
+  process_uploaded_tree()
   return(
     selectInput("physeqSelect", "Select Dataset", names(datalist))
   )

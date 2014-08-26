@@ -9,6 +9,8 @@ sbp_data = sidebarPanel(
      a(".RData", href="http://joey711.github.io/phyloseq/import-data.html"),
      "File"),
   fileInput('file1', ""),
+  h5("Upload", a("Tree", href="http://rgm.ogalab.net/RGM/R_rdfile?f=phyloseq/man/read_tree.Rd&d=R_BC"), "File"),
+  fileInput('treefile', "", multiple = FALSE),
   h5("Load", a("QIIME-DB", href="http://www.microbio.me/qiime/"), "Data"),
   fluidRow(column(width = 12,
                   div(class="span3", 

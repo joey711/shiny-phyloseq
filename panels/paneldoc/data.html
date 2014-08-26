@@ -146,6 +146,11 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li>You want to “batch” upload many datasets at once</li>
 </ul>
 </div>
+<div id="upload-tree-file" class="section level3">
+<h3>Upload Tree File</h3>
+<p>This is a special file-upload option that will attempt to read/process a Newick or Nexus format phylogenetic tree. If successful, it will attempt to add (if missing) or replace (if present) the phylogenetic tree component of the currently-selected dataset. It is essential that the tip labels encoded in the tree file match exactly their respective OTUs in the currently-selected dataset. Tree file processing will be conducted using phyloseq’s <code>read_tree</code> function, and then merged with the currently-selected dataset using <code>merge_phyloseq</code>. See phyloseq’s <a href="http://joey711.github.io/phyloseq/import-data.html">import_data</a> page for further details.</p>
+<p>Note that the other upload/load widgets in this data selection panel add new whole datasets for selection, whereas this upload will result in adding/replacing the tree, provided that the initial tree file processing is successful.</p>
+</div>
 <div id="load-qiime-db-data" class="section level3">
 <h3>Load QIIME-DB Data</h3>
 <p>This section has the following three components</p>

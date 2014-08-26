@@ -33,4 +33,4 @@ sbp_heat = sidebarPanel(
   dim_and_down("_heat")
 )
 ################################################################################
-heatpage = make_fluidpage("", sbp_heat, "heatmap", "heatmap.md")
+heatpage = make_fluidpage("Microbiome Heatmap", sbp_heat, "heatmap", "heatmap.md")

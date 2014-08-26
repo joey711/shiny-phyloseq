@@ -26,7 +26,7 @@ sbp_rich = sidebarPanel(
                   numericInputRow(inputId = "label_max_rich", 
                                   label = "Max. Labels",
                                   value = 30L, min = 0L, step = 1L, class="input-mini"),
-                  numericInputRow("x_axis_angle_rich", label = "x-label angle",
+                  numericInputRow("x_axis_angle_rich", label = "Angle",
                                   value = 90, min = 0, max = 360, step = 45, class="input-mini"),
                   radioButtons(inputId="uicttype_rich",
                                label="Source Data",

@@ -287,6 +287,29 @@ either because you already use phyloseq
 or because you needed to make some subtle modifications prior to Shiny-phyloseq
 - You want to "batch" upload many datasets at once
 
+### Upload Tree File
+
+This is a special file-upload option
+that will attempt to read/process a Newick or Nexus format
+phylogenetic tree.
+If successful, it will attempt
+to add (if missing) or replace (if present)
+the phylogenetic tree component of the currently-selected dataset.
+It is essential that the tip labels encoded in the tree file
+match exactly their respective OTUs
+in the currently-selected dataset.
+Tree file processing will be conducted
+using phyloseq's `read_tree` function,
+and then merged with the currently-selected dataset
+using `merge_phyloseq`.
+See phyloseq's [import_data](http://joey711.github.io/phyloseq/import-data.html)
+page for further details.
+
+Note that the other upload/load widgets in this data selection panel
+add new whole datasets for selection,
+whereas this upload will result in adding/replacing the tree,
+provided that the initial tree file processing is successful.
+
 ### Load QIIME-DB Data
 
 This section has the following three components

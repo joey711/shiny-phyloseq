@@ -179,7 +179,6 @@ p_net_label = reactive({
     return(p_net())
   }
   NodeData$ShowLabels <- apply(NodeData[, input$label_net, with=FALSE], 1, paste0, collapse="; ")
-  NodeData
   return(p_net() + geom_text(aes(x, y, label=ShowLabels),
                              data = NodeData,
                              size = input$text_size_net,

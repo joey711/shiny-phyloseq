@@ -16,6 +16,9 @@ output$ord_uix_facetrow <- renderUI({
 output$ord_uix_facetcol <- renderUI({
   selectInput("facetcol_ord", "Facet Col", vars(input$type_ord), multiple = TRUE)
 })
+output$ord_uix_label <- renderUI({
+  selectInput("label_ord", "Label", vars(input$type_ord))
+})
 ################################################################################
 # Ordination functions
 ################################################################################
@@ -67,6 +70,11 @@ finalize_ordination_plot = reactive({
     if(!is.null(av(input$shape_ord))){
       p1$mapping$shape  <- as.symbol(av(input$shape_ord))
       p1 <- update_labels(p1, list(shape = input$shape_ord))
+    }
+    if(!is.null(av(input$label_ord))){
+      p1 <- p1 + geom_text(aes_string(label=input$label_ord), 
+                           size = input$label_size_ord,
+                           vjust = input$label_vjust_ord)
     }
     p1ord_facet_form = get_facet_grid(input$facetrow_ord, input$facetcol_ord)
     if(!is.null(p1ord_facet_form)){

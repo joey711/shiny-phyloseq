@@ -3,19 +3,19 @@
 ################################################################################
 output$richness_uix_x <- renderUI({
   selectInput("x_rich", 
-        label = "X:",
+        label = "X",
         choices = c(list("samples"), vars("samples")),
         selected = "samples")
 })
 output$richness_uix_color <- renderUI({
   selectInput("color_rich",
-              label = "Color:",
+              label = "Color",
               choices = c(list("samples"), vars("samples")),
               selected = "NULL")
 })
 output$richness_uix_shape <- renderUI({
   selectInput("shape_rich", 
-              label = "Shape:",
+              label = "Shape",
               choices = c(list("samples"), vars("samples")),
               selected = "NULL")
 })

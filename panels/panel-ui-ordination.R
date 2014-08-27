@@ -22,7 +22,12 @@ sbp_ord = sidebarPanel(
     div(class="span6", uiOutput("ord_uix_color")),
     div(class="span5", uiOutput("ord_uix_shape")),
     div(class='span6', uiOutput("ord_uix_facetrow")),
-    div(class='span5', uiOutput("ord_uix_facetcol"))
+    div(class='span5', uiOutput("ord_uix_facetcol")),
+    div(class='span7', uiOutput("ord_uix_label")),
+    div(class='span2', 
+        numericInputRow("label_size_ord", "Lab Sz", 3, 0.5, step=0.5, class = "span12")),
+    div(class='span2',
+        numericInputRow("label_vjust_ord", "V-Just", 2, 0, class = "span12"))
   )),
   theme_ui_details("_ord", ptsz=TRUE, alpha=TRUE),
   dim_and_down("_ord")

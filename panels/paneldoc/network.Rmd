@@ -34,9 +34,11 @@ In some cases you may want to modify `Max D` after reviewing this animation
 
 ### Aesthetic Mapping
 
-These widgets correspond to aesthetic mappings on nodes.
-`Color` and `Shape` are the same as in other panels. 
-`Label` allows labeling of nodes with text,
+These widgets correspond to aesthetic mappings on nodes (points).
+
+- **Color** - The variable selected here is mapped to point/node color.
+- **Shape** - The variable selected here is mapped to point/node shape.
+- **Label** - allows labeling of nodes with text,
 according to one or more selected variables.
 If multiple non-`NULL` variables selected,
 their values are concatenated together
@@ -54,6 +56,6 @@ that modify the node text labels, if any.
 
 ### Dimensions and Downloads
 
-Figure dimensions, file format, and download button (`DL`).
+Figure dimensions (inches), file format, and download button (`DL`).
 
 

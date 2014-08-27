@@ -66,15 +66,21 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <ul>
 <li><strong>X-Axis</strong> - The variable selected here is mapped to the horizontal (“X”) axis. The default selection is <code>&quot;Sample&quot;</code>, which means every sample gets a separate discrete position on the horizontal axis. The “Y” axis is always mapped to the respective alpha-diversity value.</li>
 <li><strong>Color</strong> - The variable selected here is mapped to the color shade of points. Take care that selected discrete variables do not surpass the number of available aesthetic categories (e.g. more categories in data than you have color shades).</li>
+<li><strong>Shape</strong> - The variable selected here is mapped to point shape. Use the same care as for <code>Color</code>, but note that there are only 6 different shapes.</li>
+<li><strong>Alpha Measures</strong> - Select one or more alpha-diversity measures. They will be plotted as separate panels side-by-side.</li>
 </ul>
 </div>
 <div id="details" class="section level3">
 <h3>Details</h3>
-<p><code>Palette</code>, <code>Theme</code>, <code>Size</code>, and <code>Opacity</code> - refer to the way points are drawn.</p>
+<p><code>Palette</code>, <code>Size</code>, and <code>Opacity</code> - refer to the way points are drawn.</p>
 <ul>
 <li><strong>Palette</strong> - Refers to color palette. Only applicable if you have selected a <code>Color</code> variable in the Aesthetic Mapping section. Explore the <code>Palette</code> panel within Shiny-phyloseq, or more details about color palettes at <a href="http://colorbrewer2.org/">ColorBrewer</a>.</li>
 <li><strong>Theme</strong> - For the most part these refer to <a href="http://docs.ggplot2.org/0.9.2.1/theme.html">ggplot2 themes</a>, which generally encompass stylistic graphical features, such as axis line types, axis label fonts and spacing, background color, etc.</li>
-<li><strong>Angle</strong> - This refers to the label angle for the horizontal (“X”) axis.</li>
+<li><strong>Size</strong> - This refers to point size.</li>
+<li><strong>Opacity</strong> - The transparency of points in the graphic, on a <code>[0, 1]</code> scale; with zero meaning so transparent points are invisible, and one meaning points are perfectly opaque (the default).</li>
+<li><strong>Max. Labels</strong> - Maximum number of X-axis labels. Discrete-variable only. If number of X-axis discrete categories exceeds this value, then no axis labels are shown.</li>
+<li><strong>Angle</strong> - This refers to the label angle for the horizontal X-axis.</li>
+<li><strong>Source Data</strong> - What stage of data to include. Original unfiltered counts are recommended.</li>
 </ul>
 </div>
 <div id="dimensions-and-downloads" class="section level3">

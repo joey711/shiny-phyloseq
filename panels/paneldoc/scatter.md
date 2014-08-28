@@ -37,8 +37,13 @@ You should delete/unselect NULL when selecting facets.
 - **Facet Col** - This is the same as `Facet Row` above,
 but this widget controls the variables that will arrange the data
 into panel columns.
+- **Label** - A variable to map to point label.
+The text at each point will reflect the value of the chosen variable.
+The small numeric widgets to the right adjust
+label size (`Lab Sz`) and vertical justification (`V-Just`).
 - **Data** - Whether to use filtered `Counts` or a transformation.
 `Proportion` is a simple, provided transformation.
+
 
 ### Details
 

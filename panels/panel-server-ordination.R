@@ -17,7 +17,7 @@ output$ord_uix_facetcol <- renderUI({
   selectInput("facetcol_ord", "Facet Col", vars(input$type_ord), multiple = TRUE)
 })
 output$ord_uix_label <- renderUI({
-  selectInput("label_ord", "Label", vars(input$type_ord))
+  selectInput("label_ord", "Label", vars(input$type_ord), "NULL")
 })
 ################################################################################
 # Ordination functions

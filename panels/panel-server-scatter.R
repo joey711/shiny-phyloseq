@@ -32,6 +32,9 @@ output$scat_uix_facetrow <- renderUI({
 output$scat_uix_facetcol <- renderUI({
   selectInput("facetcol_scat", "Facet Col", vars("both"), multiple = TRUE)
 })
+output$scat_uix_label <- renderUI({
+  selectInput("label_scat", "Label", vars("both"), "NULL")
+})
 ################################################################################
 # Flexible Scatter plot
 ################################################################################
@@ -54,6 +57,12 @@ make_scatter_plot = reactive({
 finalize_scatter_plot = reactive({
   pscat = make_scatter_plot()
   if(inherits(pscat, "ggplot")){
+    # Add labels if non-NULL
+    if(!is.null(av(input$label_scat))){
+      pscat <- pscat + geom_text(aes_string(label=input$label_scat), 
+                           size = input$label_size_scat,
+                           vjust = input$label_vjust_scat)
+    }
     # Adjust size/alpha of points, but not error bars
     pscat$layers[[1]]$geom_params$size <- input$size_scat
     pscat$layers[[1]]$geom_params$alpha <- input$alpha_scat

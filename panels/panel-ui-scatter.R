@@ -11,7 +11,12 @@ sbp_scat = sidebarPanel(#actionButton("actionb_scat", "Re-Build Plot", icon("ref
     div(class="span5", uiOutput("scat_uix_shape")),
     div(class='span6', uiOutput("scat_uix_facetrow")),
     div(class='span5', uiOutput("scat_uix_facetcol")),
-    div(class="span5", uicttype("uicttype_scat"))
+    div(class="span5", uicttype("uicttype_scat")),
+    div(class='span7', uiOutput("scat_uix_label")),
+    div(class='span2', 
+        numericInputRow("label_size_scat", "Lab Sz", 3, 0.5, step=0.5, class = "span12")),
+    div(class='span2',
+        numericInputRow("label_vjust_scat", "V-Just", 2, 0, class = "span12"))
   )),
   theme_ui_details("_scat", ptsz=TRUE, alpha=TRUE),
   dim_and_down("_scat")

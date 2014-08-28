@@ -16,24 +16,22 @@ available_layouts_net = list(
   graphopt = igraph::layout.graphopt,
   svd = igraph::layout.svd
 )
-output$network_uix_layout <- renderUI({
+output$net_uix_layout <- renderUI({
   selectInput("layout_net", "Layout",
               choices = names(available_layouts_net),
               selected = "fruchterman.reingold")
 })
-output$network_uix_color <- renderUI({
+output$net_uix_color <- renderUI({
   uivar("color_net", "Color", vars(input$type_net))
 })
-output$network_uix_shape <- renderUI({
+output$net_uix_shape <- renderUI({
   uivar("shape_net", "Shape", vars(input$type_net))
 })
-output$network_uix_label <- renderUI({
-  selectInput("label_net", "Label",
-              choices = vars(input$type_net, TRUE, TRUE),
-              selected = default_netLabel,
-              multiple = TRUE)
+output$net_uix_label <- renderUI({
+  selectInput("label_net", "Label", vars(input$type_net, TRUE, TRUE),
+              selected = default_netLabel, multiple = TRUE)
 })
-output$network_uix_edgeSlider <- renderUI({
+output$net_uix_edgeSlider <- renderUI({
   # ui for distance to display
   uinetdispdist = sliderInput("uinetdispdist", "Draw Max.",
                               min = 0.0,
@@ -181,8 +179,8 @@ p_net_label = reactive({
   NodeData$ShowLabels <- apply(NodeData[, input$label_net, with=FALSE], 1, paste0, collapse="; ")
   return(p_net() + geom_text(aes(x, y, label=ShowLabels),
                              data = NodeData,
-                             size = input$text_size_net,
-                             hjust = input$text_hjust_net,
+                             size = input$label_size_net,
+                             vjust = input$label_vjust_net,
                              na.rm = TRUE))
 })
 # 6.

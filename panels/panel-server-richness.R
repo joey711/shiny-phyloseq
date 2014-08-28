@@ -1,23 +1,26 @@
 ################################################################################
 # UI
 ################################################################################
-output$richness_uix_x <- renderUI({
+output$rich_uix_x <- renderUI({
   selectInput("x_rich", 
         label = "X",
         choices = c(list("samples"), vars("samples")),
         selected = "samples")
 })
-output$richness_uix_color <- renderUI({
+output$rich_uix_color <- renderUI({
   selectInput("color_rich",
               label = "Color",
               choices = c(list("samples"), vars("samples")),
               selected = "NULL")
 })
-output$richness_uix_shape <- renderUI({
+output$rich_uix_shape <- renderUI({
   selectInput("shape_rich", 
               label = "Shape",
               choices = c(list("samples"), vars("samples")),
               selected = "NULL")
+})
+output$rich_uix_label <- renderUI({
+  selectInput("label_rich", "Label", vars("samples"), "NULL")
 })
 ################################################################################
 # Alpha Diversity plot definition
@@ -63,12 +66,20 @@ finalize_richness_plot = reactive({
         p4 <- p4 + scale_colour_distiller(palette=input$pal_rich) 
       }    
     }
+    # Point-label mapping
+    if(!is.null(av(input$label_rich))){
+      p4 <- p4 + geom_text(aes_string(label=input$label_rich), 
+                           size = input$label_size_rich,
+                           vjust = input$label_vjust_rich)
+    }
     p4 <- p4 + shiny_phyloseq_ggtheme_list[[input$theme_rich]]
     # Add the x-axis label rotation as specified by user
     p4 <- p4 + theme(axis.text.x = element_text(
       angle = input$x_axis_angle_rich,
       vjust = 0.5)
     )
+    # Protect against too-many x-axis labels
+    # Should be based on the aesthetic in p4 (more general)
     if(!is.null(av(input$x_rich))){
       if(plyr::is.discrete(p4$data[[input$x_rich]])){
         # Check the number of discrete classes (e.g. factor levels)

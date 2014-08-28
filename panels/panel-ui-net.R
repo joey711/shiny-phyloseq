@@ -17,29 +17,27 @@ sbp_net = sidebarPanel(
                   div(class='span4', selectInput(inputId="type_net", label="Type", selected="samples",
                                                  choices=list("Taxa"="taxa", "Samples"="samples"))),
                   div(class='span3', uinetdistmax),
-                  div(class='span5', uiOutput("network_uix_layout"))
+                  div(class='span5', uiOutput("net_uix_layout"))
   )),
   fluidRow(column(width = 12,
                   div(class='span5', uidist("dist_net")),
-                  div(class='span7', uiOutput("network_uix_edgeSlider"))
+                  div(class='span7', uiOutput("net_uix_edgeSlider"))
   )),
   h4('Aesthetic Mapping'),
   fluidRow(column(width = 12,
-                  div(class='span6', uiOutput("network_uix_color")),
-                  div(class='span6', uiOutput("network_uix_shape")),
-                  div(class='span12', uiOutput("network_uix_label"))
+                  div(class='span6', uiOutput("net_uix_color")),
+                  div(class='span6', uiOutput("net_uix_shape")),
+                  div(class='span7', uiOutput("net_uix_label")),
+                  div(class='span2', 
+                      numericInputRow("label_size_net", "Lab Sz", 3, 0.5, step=0.5, class = "span12")),
+                  div(class='span2',
+                      numericInputRow("label_vjust_net", "V-Just", 2, 0, class = "span12"))
   )),
   theme_ui_details("_net", them = FALSE, ptsz = TRUE, alpha = TRUE,
     addList = list(
       div(class="span3",
-          numericInputRow("RNGseed_net", "RNG Seed", value = 711L,
-                          min = 1L, step = 1L, class="span12")),
-      div(class="span3", 
-          numericInputRow("text_size_net", label="Label Sz",
-                          min=1, max=NA, value=8, step=2, class="span12")),
-      div(class="span3",
-          numericInputRow("text_hjust_net", label="H-just",
-                          min=1, max=NA, value=1, step=0.1, class="span12"))
+          numericInputRow("RNGseed_net", "R-Seed", value = 711L,
+                          min = 1L, step = 1L, class="span12"))
   )),
   dim_and_down("_net")
 )

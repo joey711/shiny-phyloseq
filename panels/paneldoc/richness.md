@@ -27,7 +27,11 @@ do not surpass the number of available aesthetic categories
 - **Shape** - The variable selected here is mapped to point shape.
 Use the same care as for `Color`, but note that there are only 6 different shapes.
 - **Alpha Measures** - Select one or more alpha-diversity measures.
-They will be plotted as separate panels side-by-side. 
+They will be plotted as separate panels side-by-side.
+- **Label** - A variable to map to point label.
+The text at each point will reflect the value of the chosen variable.
+The small numeric widgets to the right adjust
+label size (`Lab Sz`) and vertical justification (`V-Just`).
 
 ### Details
 

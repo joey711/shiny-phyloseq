@@ -151,7 +151,10 @@ source("panels/panel-ui-provenance.R", local = TRUE)
 # Define general header tag list 
 # List of tags to display as a common header above all tabPanels.
 ################################################################################
-headerTagList = list(tags$style(type="text/css", ".phyloseq-print { font-size: 10px; }"))
+headerTagList = list(
+  tags$style(type="text/css", ".phyloseq-print { font-size: 10px; }"),
+  tags$base(target="_blank")
+)
 ################################################################################
 # Define the full user-interface, `ui`
 ################################################################################

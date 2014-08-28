@@ -1,27 +1,47 @@
 ################################################################################
 # UI ordination
 ################################################################################
+# Define the variables category that should be shown in uix
+get_type_vars = reactive({
+  switch({input$ord_plot_type},
+         sites = "samples",
+         species = "taxa",
+         biplot = "both",
+         split = "both",
+         "samples") 
+})
 output$ord_uix_color <- renderUI({
-  selectInput("color_ord", "Color", vars(input$type_ord), "NULL")
+  selectInput("color_ord", "Color", vars(get_type_vars()), "NULL")
 })
 output$ord_uix_shape <- renderUI({
-  selectInput("shape_ord", "Shape", vars(input$type_ord), "NULL")
+  selectInput("shape_ord", "Shape", vars(get_type_vars()), "NULL")
 })
 output$ord_uix_constraint <- renderUI({
-  selectInput("constraint_ord", "Constraint", vars(input$type_ord), "NULL", multiple = TRUE)
+  selectInput("constraint_ord", "Constraint", vars(get_type_vars()), "NULL", multiple = TRUE)
 })
 output$ord_uix_facetrow <- renderUI({
-  selectInput("facetrow_ord", "Facet Row", vars(input$type_ord), multiple = TRUE)
+  selectInput("facetrow_ord", "Facet Row", vars(get_type_vars()), multiple = TRUE)
 })
 output$ord_uix_facetcol <- renderUI({
-  selectInput("facetcol_ord", "Facet Col", vars(input$type_ord), multiple = TRUE)
+  selectInput("facetcol_ord", "Facet Col", vars(get_type_vars()), multiple = TRUE)
 })
 output$ord_uix_label <- renderUI({
-  selectInput("label_ord", "Label", vars(input$type_ord), "NULL")
+  selectInput("label_ord", "Label", vars(get_type_vars()), "NULL")
 })
 ################################################################################
-# Ordination functions
+# Ordination Server
 ################################################################################
+physeq_ord = reactive({
+  return(
+    switch({input$transform_ord},
+           Counts = physeq(),
+           Prop = physeqProp(),
+           RLog = physeqRLog(),
+           CLR = physeqCLR(),
+           physeq()
+    )
+  )
+})
 get_formula_ord <- reactive({
   if(is.null(av(input$constraint_ord))){
     return(NULL)
@@ -30,24 +50,40 @@ get_formula_ord <- reactive({
     return(as.formula(formstring))
   }
 })
-# Define global reactive distance matrix. Will re-calc if method or plot-type change.
-gdist <- reactive({
-  if(input$dist_ord %in% distance("list")$vegdist){
-    return(input$dist_ord)
-  } else {
-    idist = NULL
-    try({idist <- distance(physeq(), method=input$dist_ord, type=input$type_ord)}, silent=TRUE)
-    if(is.null(idist)){warning("gdist: Could not calculate distance matrix with these settings.")}
-    return(idist)
-  }
+# Define the `type` argument passed to ordinate function, then to distance function, if applicable
+get_type_ord = reactive({
+  # Pass "samples" unless explicitly species-only plot.
+  switch(input$ord_plot_type, species = "taxa", "samples")
 })
-# Define reactive ordination access
 get_ord = reactive({
-  ordinate(physeq(), method=input$ord_method, distance=gdist(), formula=get_formula_ord())
+  # Attempt ordination. If fails because `type` unused argument, try again without it
+  ord = try(ordinate(physeq_ord(),
+                      method = input$ord_method, 
+                      distance = input$dist_ord, 
+                      formula = get_formula_ord(), 
+                      type = get_type_ord()), silent=TRUE)
+  if(inherits(ord, "try-error")){
+    # Try again, without type specified
+    ord = try(ordinate(physeq_ord(),
+                       method = input$ord_method, 
+                       distance = input$dist_ord, 
+                       formula = get_formula_ord()), silent=TRUE)
+  }
+  if(inherits(ord, "try-error")){
+    # Try again, without formula
+    ord = try(ordinate(physeq_ord(),
+                       method = input$ord_method, 
+                       distance = input$dist_ord), silent=TRUE)
+  }  
+  if(inherits(ord, "try-error")){
+    warning(ord)
+    ord = NULL
+  }
+  return(ord)
 })
 make_ord_plot = reactive({
   p1 = NULL
-  try(p1 <- plot_ordination(physeq(), get_ord(), type=input$ord_plot_type), silent=TRUE)
+  try(p1 <- plot_ordination(physeq_ord(), get_ord(), type=input$ord_plot_type), silent=TRUE)
   return(p1)
 })
 # Finalize Ordination Plot (for download and panel)
@@ -102,6 +138,6 @@ output$download_ord <- downloadHandler(
 # Always add a 'supplemental' scree plot, if supported, below the ordination plot itself
 output$scree_ord <- renderPlot({
   pscree = NULL
-  try(pscree <- plot_ordination(physeq(), get_ord(), type="scree", title = "Scree Plot"), silent=TRUE)
+  try(pscree <- plot_ordination(physeq_ord(), get_ord(), type="scree", title = "Scree Plot"), silent=TRUE)
   return(shiny_phyloseq_print(pscree))
 }, width=400, height=250)

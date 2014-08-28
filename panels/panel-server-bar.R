@@ -18,7 +18,7 @@ output$bar_uix_facetcol <- renderUI({
 # bar plot definition
 ################################################################################
 physeq_bar = reactive({
-  return(switch({input$uicttype_bar}, Counts=physeq(), Proportions=physeqProp()))
+  return(switch({input$uicttype_bar}, Counts=physeq(), Prop=physeqProp()))
 })
 make_bar_plot = reactive({
   p0 = NULL

@@ -7,13 +7,14 @@ sbp_ord = sidebarPanel(
   h4("Structure"),
   fluidRow(column(
     width = 12,
-    div(class="span4", uitype("type_ord", "samples")),
+    div(class="span4", selectInput("ord_plot_type", "Display", ordtypelist)), 
     div(class="span4", selectInput("ord_method", "Method", ordlist, selected="DCA")),
     div(class="span4", uidist("dist_ord"))
   )),
   fluidRow(column(
     width = 12,
-    div(class="span4", selectInput("ord_plot_type", "Display", ordtypelist)), 
+    div(class="span4", selectInput("transform_ord", "Transform",
+                                   c("Counts", "Prop", "RLog", "CLR"))),
     div(class="span7", uiOutput("ord_uix_constraint"))
   )),
   h4("Aesthetic Mapping"),

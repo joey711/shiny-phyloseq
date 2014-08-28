@@ -58,6 +58,8 @@ output$filter_uix_subset_sample_select <- renderUI({
 })
 ################################################################################
 # The main reactive data object. Returns a phyloseq-class instance.
+# This is considered the "filtered" data, used by all downstream panels,
+# And generally the input to any transformation options as well
 ################################################################################
 physeq = reactive({
   ps0 = get_phyloseq_data()
@@ -134,13 +136,61 @@ physeq = reactive({
     }
   })
 })
-# Define a proportions-only version of input phyloseq object
+################################################################################
+################################################################################
+# TRANSFORMATIONS
+################################################################################
+################################################################################
+# Proportional transformation
+################################################################################
 physeqProp = reactive({
   if(is.null(physeq())){
     return(NULL)
   }
-  return(transform_sample_counts(physeq(), function(x){x / sum(x)}))
+  return(
+    transform_sample_counts(physeq(), function(x){x / sum(x)})
+  )
 })
+################################################################################
+# Regularized Log Transformation (blind, fast)
+################################################################################
+physeqRLog = reactive({
+  if(is.null(physeq())){
+    return(NULL)
+  }
+  ps0RLog = physeq()
+  # Demo a "blind" transformation, with design formula 
+  # only containing an intercept term.
+  # This will often throw a warning. DESeq2 usually handles the condition fine
+  dds = phyloseq_to_deseq2(ps0RLog, ~ 1)
+  rld <- DESeq2::rlog(dds, blind = TRUE, fast = TRUE)
+  rlogMat <- GenomicRanges::assay(rld)
+  otu_table(ps0RLog) <- otu_table(rlogMat, taxa_are_rows = TRUE)
+  return(ps0RLog)
+})
+################################################################################
+# Centered Log-Ratio (CLR) Transformation
+################################################################################
+gm_mean = function(x, na.rm=TRUE){
+  # The geometric mean, with some error-protection bits.
+  exp(sum(log(x[x > 0 & !is.na(x)]), na.rm=na.rm) / length(x))
+}
+clr = function(x, base=2){
+  x <- log((x / gm_mean(x)), base)
+  x[!is.finite(x) | is.na(x)] <- 0.0
+  return(x)
+}
+physeqCLR = reactive({
+  if(is.null(physeq())){
+    return(NULL)
+  }
+  return(
+    transform_sample_counts(physeq(), fun = clr)
+  )
+})
+################################################################################
+# Misc Filter-tab server code
+################################################################################
 # kOverA `k` Filter UI
 maxSamples = reactive({
   # Create logical indicated the samples to keep, or dummy logical if nonsense input

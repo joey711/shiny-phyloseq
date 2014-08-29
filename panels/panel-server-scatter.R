@@ -2,7 +2,15 @@
 # UI
 ################################################################################
 physeq_scat = reactive({
-  return(switch(input$uicttype_scat, Counts=physeq(), Proportions=physeqProp()))
+  return(
+    switch({input$transform_scat},
+           Counts = physeq(),
+           Prop = physeqProp(),
+           RLog = physeqRLog(),
+           CLR = physeqCLR(),
+           physeq()
+    )
+  )
 })
 scatdf = reactive({
   return(psmelt(physeq_scat()))
@@ -14,7 +22,6 @@ output$scat_uix_x <- renderUI({
 })
 output$scat_uix_y <- renderUI({
   selectInput(inputId="y_scat", label="Y", 
-              #choices=c(list(Abundance="Abundance"), vars()),
               choices = as.list(c("NULL", names(scatdf()))),
               selected="Abundance")
 })

@@ -16,11 +16,23 @@ output$d3_uix_node_label <- renderUI({
 ################################################################################
 # d3 interactive network graphic 
 ################################################################################
+# Get data.
+physeq_d3 = reactive({
+  return(
+    switch({input$transform_d3},
+           Counts = physeq(),
+           Prop = physeqProp(),
+           RLog = physeqRLog(),
+           CLR = physeqCLR(),
+           physeq()
+    )
+  )
+})
 # Define global reactive distance matrix. 
 # Re-calc only if method or plot-type change.
 d3distReact <- reactive({
   idist = NULL
-  try({idist <- distance(physeq(), method=input$dist_d3, type=input$type_d3)}, silent=TRUE)
+  try({idist <- scaled_distance(physeq_d3(), method=input$dist_d3, type=input$type_d3, rescaled = TRUE)}, silent=TRUE)
   if(is.null(idist)){warning("d3dist: Could not calculate distance matrix with these settings.")}
   return(idist)
 })  
@@ -40,9 +52,9 @@ calculate_links_data = reactive({
   setkey(LinksData, Source)
   # Create covariates table (taxa in this case)
   if(input$type_d3 == "taxa"){
-    NodeData = data.frame(OTU=nodeUnion, tax_table(physeq())[nodeUnion, ], stringsAsFactors = FALSE)
+    NodeData = data.frame(OTU=nodeUnion, tax_table(physeq_d3())[nodeUnion, ], stringsAsFactors = FALSE)
   } else {
-    NodeData = data.frame(Sample=nodeUnion, sample_data(physeq())[nodeUnion, ], stringsAsFactors = FALSE)      
+    NodeData = data.frame(Sample=nodeUnion, sample_data(physeq_d3())[nodeUnion, ], stringsAsFactors = FALSE)      
   }
   NodeData$ShowLabels <- apply(NodeData[, input$d3_node_label, drop=FALSE], 1, paste0, collapse="; ")
   return(list(link=data.frame(LinksData), node=NodeData))

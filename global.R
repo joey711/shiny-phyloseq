@@ -215,3 +215,15 @@ component_options = function(physeq){
   return(c(component_option_list, as.list(compFuncString)))
 }
 ################################################################################
+# Rescaled extension of `distance` function
+################################################################################
+scaled_distance = function(physeq, method, type, rescaled=TRUE){
+  Dist = phyloseq::distance(physeq, method, type)
+  if(rescaled){
+    # rescale the distance matrix to be [0, 1]
+    Dist <- Dist / max(Dist, na.rm=TRUE)
+    Dist <- Dist - min(Dist, na.rm=TRUE)
+  }
+  return(Dist)
+}
+################################################################################

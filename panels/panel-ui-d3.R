@@ -3,18 +3,21 @@
 ################################################################################
 sbp_d3 = sidebarPanel(
   h4('Network Structure'),
-  fluidRow(column(
-    width = 12,
-    div(class='span4',
+  fluidRow(column(width = 12,
+    div(class='span6',
         selectInput(inputId = "type_d3",
                     label="Type",
                     choices=list("Taxa"="taxa", "Samples"="samples"),
                     selected="taxa")
     ),
-    div(class='span5',
+    div(class="span6", selectInput("transform_d3", "Transform",
+                                   c("Counts", "Prop", "RLog", "CLR")))
+  )),
+  fluidRow(column(width = 12,
+    div(class='span7',
         selectInput("dist_d3", "Distance", distlist, d3DefaultDistance)
     ),
-    div(class='span3',
+    div(class='span5',
         numericInputRow(inputId = "dist_d3_threshold",
                         label = "Max D",
                         value = LinkDistThreshold,

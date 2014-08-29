@@ -62,15 +62,6 @@ physeq_net = reactive({
 })
 # 1. 
 # Calculate Distance
-scaled_distance = function(physeq, method, type, rescaled=TRUE){
-  Dist = phyloseq::distance(physeq, method, type)
-  if(rescaled){
-    # rescale the distance matrix to be [0, 1]
-    Dist <- Dist / max(Dist, na.rm=TRUE)
-    Dist <- Dist - min(Dist, na.rm=TRUE)
-  }
-  return(Dist)
-}
 # Only returns distance matrix, regardless of distance-method argument
 Distance_net <- reactive({
   idist = NULL

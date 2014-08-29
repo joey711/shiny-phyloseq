@@ -16,13 +16,16 @@ sbp_net = sidebarPanel(
   fluidRow(column(width = 12,
                   div(class='span4', selectInput(inputId="type_net", label="Type", selected="samples",
                                                  choices=list("Taxa"="taxa", "Samples"="samples"))),
-                  div(class='span3', uinetdistmax),
-                  div(class='span5', uiOutput("net_uix_layout"))
+                  div(class='span8', uiOutput("net_uix_layout"))
   )),
   fluidRow(column(width = 12,
+                  div(class="span4", selectInput("transform_net", "Transform",
+                                                 c("Counts", "Prop", "RLog", "CLR"))),
                   div(class='span5', uidist("dist_net")),
-                  div(class='span7', uiOutput("net_uix_edgeSlider"))
+                  div(class='span3', uinetdistmax)
   )),
+  fluidRow(column(width = 12,
+                  div(class='span8', uiOutput("net_uix_edgeSlider")))),
   h4('Aesthetic Mapping'),
   fluidRow(column(width = 12,
                   div(class='span6', uiOutput("net_uix_color")),

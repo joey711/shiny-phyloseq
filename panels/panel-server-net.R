@@ -48,6 +48,18 @@ output$net_uix_edgeSlider <- renderUI({
 ################################################################################
 # Static Network Plot using ggplot2 
 ################################################################################
+# 0. Get data-type. Might be tansformed.
+physeq_net = reactive({
+  return(
+    switch({input$transform_net},
+           Counts = physeq(),
+           Prop = physeqProp(),
+           RLog = physeqRLog(),
+           CLR = physeqCLR(),
+           physeq()
+    )
+  )
+})
 # 1. 
 # Calculate Distance
 scaled_distance = function(physeq, method, type, rescaled=TRUE){
@@ -62,7 +74,7 @@ scaled_distance = function(physeq, method, type, rescaled=TRUE){
 # Only returns distance matrix, regardless of distance-method argument
 Distance_net <- reactive({
   idist = NULL
-  try({idist <- scaled_distance(physeq(), 
+  try({idist <- scaled_distance(physeq_net(), 
                                 method=input$dist_net,
                                 type=input$type_net,
                                 rescaled = TRUE)},
@@ -121,10 +133,10 @@ vertex_layout = function(LinksData, physeq=NULL, type="samples",
 vertexDT = reactive({
   if(is.null(av(input$layout_net))){
     # If layout method unavailable, use default
-    return(vertex_layout(LinksData0(), physeq(), type = input$type_net))
+    return(vertex_layout(LinksData0(), physeq_net(), type = input$type_net))
   }
   return(
-    vertex_layout(LinksData0(), physeq(),
+    vertex_layout(LinksData0(), physeq_net(),
                   type = input$type_net,
                   laymeth = available_layouts_net[[input$layout_net]])
   )

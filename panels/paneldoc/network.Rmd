@@ -31,6 +31,10 @@ The `Play` button result in a network animation that scans across values for `Dr
 allowing you to quickly inspect the global connectivity as a function of threshold choice.
 In some cases you may want to modify `Max D` after reviewing this animation
 (or manually changing the slider yourself)
+- **Transform** - This option is very important.
+It determines whether to use filtered-counts, 
+or some transformation of the filtered count values.
+See the `Transform` panel for the definition of each available option.
 
 ### Aesthetic Mapping
 

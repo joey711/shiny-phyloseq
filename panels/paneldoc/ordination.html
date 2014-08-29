@@ -68,6 +68,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><strong>Distance</strong> - The distance method. This is a direct interface to phyloseq’s <a href="http://joey711.github.io/phyloseq/distance">distance function</a>.</li>
 <li><strong>Display</strong> - The ordination display type. This is equivalent to the <code>type</code> argument in the <a href="http://joey711.github.io/phyloseq/plot_ordination-examples.html">plot_ordination function</a>.</li>
 <li><strong>Constraint</strong> - The variables to include for constrained ordination. Multiple non-<code>NULL</code> variables are combined in a formula. e.g. <code>~ Var1 + Var2 + Var3</code>. Not that for ordination constraints only the right-hand side is relevant. Generally speaking, this is less flexible than a full <a href="http://cran.r-project.org/doc/manuals/r-release/R-intro.html#Formulae-for-statistical-models">formula interface</a>. For conditioning variables, explicit interaction terms, and other features of R formulae, please use phyloseq/R directly.</li>
+<li><strong>Transform</strong> - This option is very important. It determines whether to use filtered-counts, or some transformation of the filtered count values. See the <code>Transform</code> panel for the definition of each available option.</li>
 </ul>
 </div>
 <div id="aesthetic-mapping" class="section level3">

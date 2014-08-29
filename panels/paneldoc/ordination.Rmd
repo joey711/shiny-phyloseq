@@ -36,6 +36,10 @@ Generally speaking, this is less flexible than a full
 [formula interface](http://cran.r-project.org/doc/manuals/r-release/R-intro.html#Formulae-for-statistical-models).
 For conditioning variables, explicit interaction terms,
 and other features of R formulae, please use phyloseq/R directly.
+- **Transform** - This option is very important.
+It determines whether to use filtered-counts, 
+or some transformation of the filtered count values.
+See the `Transform` panel for the definition of each available option.
 
 ### Aesthetic Mapping
 

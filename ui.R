@@ -171,6 +171,7 @@ ui = navbarPage(
   tabPanel("Scatter", scatpage),
   tabPanel("Bar", barpage),
   tabPanel("Palette", palpage),
+  tabPanel("Transform", includeMarkdown(path = "panels/paneldoc/Transform.html")),
   tabPanel("Provenance", provpage),
   header = headerTagList,
   collapsable = TRUE,

@@ -24,6 +24,10 @@ This top section defines key aspects of the network structure.
 - **Max D** - Maximum Distance.
 The graphic includes an edge if two nodes have a smaller distance than this value.
 This is exactly the same as the `Max D` variable in the static Network panel.
+- **Transform** - This option is very important.
+It determines whether to use filtered-counts, 
+or some transformation of the filtered count values.
+See the `Transform` panel for the definition of each available option.
 
 ### Aesthetic Mapping
 

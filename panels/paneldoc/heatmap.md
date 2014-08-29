@@ -15,8 +15,11 @@ and the method used to decompose that distance into axes.
 phyloseq's [ordinate function](http://joey711.github.io/phyloseq/ordinate).
 - **Distance** - The distance method. This is a direct interface to phyloseq's
 [distance function](http://joey711.github.io/phyloseq/distance).
-- **Count Type** - This determines what form of count data is used
+- **Transform** - This option is very important.
+It determines whether to use filtered-counts, 
+or some transformation of the filtered count values
 in both the ordination and in the color-scale transformation shown in the graphic.
+See the `Transform` panel for the definition of each available option.
 
 ### Labels
 

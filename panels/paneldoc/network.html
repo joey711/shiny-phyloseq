@@ -68,6 +68,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><strong>Layout</strong> - The network layout method. Many are supported. See <a href="http://www.inside-r.org/packages/cran/igraph/docs/layout">igraph layout doc</a> for details. Many of these include a randomness component, and the RNG Seed is a separate</li>
 <li><strong>Distance</strong> - The distance method. This is a direct interface to phyloseq’s <a href="http://joey711.github.io/phyloseq/distance">distance function</a></li>
 <li><strong>Draw Max.</strong> - Maximum Render Distance. Distances larger than this (but less than <code>Max D</code>) affect the network layout structure, but are not drawn in the graphic. This widget is a slider in which the right-hand side should always match <code>Max D</code>. The <code>Play</code> button result in a network animation that scans across values for <code>Draw Max.</code>, allowing you to quickly inspect the global connectivity as a function of threshold choice. In some cases you may want to modify <code>Max D</code> after reviewing this animation (or manually changing the slider yourself)</li>
+<li><strong>Transform</strong> - This option is very important. It determines whether to use filtered-counts, or some transformation of the filtered count values. See the <code>Transform</code> panel for the definition of each available option.</li>
 </ul>
 </div>
 <div id="aesthetic-mapping" class="section level3">

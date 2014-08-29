@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="generator" content="pandoc" />
+
+
+
+<title>Transformation Details</title>
+
+<script src="Transform_files/jquery-1.11.0/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link href="Transform_files/bootstrap-2.3.2/css/bootstrap.min.css" rel="stylesheet" />
+<link href="Transform_files/bootstrap-2.3.2/css/bootstrap-responsive.min.css" rel="stylesheet" />
+<script src="Transform_files/bootstrap-2.3.2/js/bootstrap.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<link rel="stylesheet"
+      href="Transform_files/highlight/default.css"
+      type="text/css" />
+<script src="Transform_files/highlight/highlight.js"></script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<div class="container-fluid main-container">
+
+
+<div id="header">
+<h1 class="title">Transformation Details</h1>
+</div>
+
+
+<p>The following subsections explain the different options available in one or more of the <code>Transform</code> widgets in Shiny-phyloseq.</p>
+<div id="counts" class="section level2">
+<h2>Counts</h2>
+<p>The <code>Counts</code> option is the default, and simply means that the filtered count values are used in the respective analysis of the currently active panel. No calculation is performed or required. If you skipped the <code>Filter</code> panel, then this option implies that the original unfiltered counts values are being used.</p>
+</div>
+<div id="prop" class="section level2">
+<h2>Prop</h2>
+<p>This option means that the simple proportion values are being used. All entries in the OTU table are divided by their respective library size. In an OTU-by-Sample table, this means dividing every value by its column’s sum. This is equivalent in phyloseq to the following</p>
+<pre class="r"><code>transform_sample_counts(physeq, function(x) x/sum(x))</code></pre>
+</div>
+<div id="rlog---regularized-log" class="section level2">
+<h2>RLog - Regularized Log</h2>
+<p>The <a href="http://www.bioconductor.org/packages/release/bioc/html/DESeq2.html">the DESeq2 package</a> provides two forms of variance-stabilizing transformations. Both <a href="http://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/beginner.pdf">the DESeq2 beginner’s vignette</a> and <a href="http://www.bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.pdf">the DESeq2 main vignette, Data transformations and visualization section</a>, provide helpful theoretical information about these transformations, and why they might be useful for sample-wise exploratory data analysis.</p>
+<p>The <code>RLog</code> option is one of our favorites, and implies the results of a Regularized Transformation. Because this is an interactive tool and these dispersion estimates can sometimes take a long time to calculate, we have implemented this option with the <code>fast = TRUE</code> option. This helps tremendously in wait-time, at some potential cost to accuracy that you might want to be aware of. See the <code>rlog</code> documentation of DESeq2 for more details. The <code>blind=TRUE</code> option is also used, meaning that the entire dataset is used for dispersion estimation, rather than separating the samples by their experimental design class. In some instances this might imply an overestimate of dispersion, but is a conservative choice in the context of Shiny-phyloseq, because there is a potentially wide-range of experimental designs. For more complicated designs, or if dispersion is being wildly overestimated as a result of this choice, you may want to transform your data ahead of time, in batch.</p>
+<p>To that end, and for your own guidance using Shiny-phyloseq, the following is an example of the regularized log transformation implemented in Shiny-phyloseq.</p>
+<pre class="r"><code>dds = phyloseq_to_deseq2(physeq, ~ 1)
+rld &lt;- DESeq2::rlog(dds, blind = TRUE, fast = TRUE)
+rlogMat &lt;- GenomicRanges::assay(rld)
+physeq1 = physeq
+otu_table(physeq1) &lt;- otu_table(rlogMat, taxa_are_rows = TRUE)</code></pre>
+<p>where <code>physeq</code> is an object containing the imported experimental data, represented in phyloseq format.</p>
+</div>
+<div id="clr-centered-log-ratio-transformation" class="section level2">
+<h2>CLR Centered Log-Ratio transformation</h2>
+<p>CLR transformation is championed in an <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4030730/">article describing ALDEx2</a> for analyzing HTSeq count data.</p>
+<p>Defined in 1986 by Aitchison, a more-recent article (<a href="http://link.springer.com/article/10.1023%2FA%3A1023818214614">Egozcue 2003</a>) defines and explains some details surrounding CLR.</p>
+<p>CLR can be defined as</p>
+<p><code>x / g(x)</code></p>
+<p>Where <code>x</code> is our original vector of compositional values, and <code>g(x)</code> is the geometric mean of <code>x</code>.</p>
+<p>So, to define a zero- and NA-tolerant function for calculating CLR:</p>
+<pre class="r"><code>x = c(0, 0, 15, 3, 1, 0, 9)
+gm_mean = function(x, na.rm=TRUE){
+  # The geometric mean, with some error-protection bits.
+  exp(sum(log(x[x &gt; 0 &amp; !is.na(x)]), na.rm=na.rm) / length(x))
+}
+clr = function(x, base=2){
+  x &lt;- log((x / gm_mean(x)), base)
+  x[!is.finite(x) | is.na(x)] &lt;- 0.0
+  return(x)
+}
+clr(x, 2)</code></pre>
+<pre><code>## [1]  0.0000  0.0000  2.6695  0.3476 -1.2374  0.0000  1.9325</code></pre>
+<pre class="r"><code>clr(x, exp(1))</code></pre>
+<pre><code>## [1]  0.0000  0.0000  1.8504  0.2409 -0.8577  0.0000  1.3395</code></pre>
+<p>Example from aldex2 paper:</p>
+<pre class="r"><code>x = c(10, 35, 50, 500)
+clr(x, 2)</code></pre>
+<pre><code>## [1] -2.4433 -0.6359 -0.1214  3.2006</code></pre>
+<p>The values reported in the ALDex2 article for their example were -2.44, -0.64, -0.12, 3.2. Which matches the rounded versions exactly,</p>
+<pre class="r"><code>c(-2.44, -0.64, -0.12, 3.20) - round(clr(x, 2), 2)</code></pre>
+<pre><code>## [1] 0 0 0 0</code></pre>
+<p>Note that they use a Bayesian method for handling zeroes in the ALDex2 artice. This approach assumes that the reason no reads were detected in some features was because of sampling variance. This is of course wrong in the microbial case. It is possible for microbes to be present in some samples, and truly absent in others.</p>
+<p>Here is what the example values look like if there was one or two zeroes present, in my formulation of the transformation.</p>
+<pre class="r"><code>x = c(10, 35, 50, 500)
+clr(x, 2)</code></pre>
+<pre><code>## [1] -2.4433 -0.6359 -0.1214  3.2006</code></pre>
+<pre class="r"><code>x = c(10, 35, 50, 500, 0)
+clr(x, 2)</code></pre>
+<pre><code>## [1] -1.2902  0.5171  1.0317  4.3536  0.0000</code></pre>
+<pre class="r"><code>x = c(10, 35, 50, 500, 0, 0)
+clr(x, 2)</code></pre>
+<pre><code>## [1] -0.5215  1.2858  1.8004  5.1223  0.0000  0.0000</code></pre>
+<p>The presence of zeroes clearly makes a difference in the CLR result, as expected by how they are (somewhat crudely) managed in this approach. It does not change the ranking of features, but shifts them more positive (it is equivalent to replacing values <code>&lt;=0</code> with a <code>1</code>).</p>
+</div>
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+$(document).ready(function () {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+});
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with --self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

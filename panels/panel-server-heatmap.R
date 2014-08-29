@@ -17,8 +17,16 @@ output$heat_taxa_order <- renderUI({
 # heatmap plot definition
 ################################################################################
 physeq_heat = reactive({
-  return(switch(input$uicttype_heat, Counts=physeq(), Proportions=physeqProp()))
-})
+  return(
+    switch({input$transform_heat},
+           Counts = physeq(),
+           Prop = physeqProp(),
+           RLog = physeqRLog(),
+           CLR = physeqCLR(),
+           physeq()
+    )
+  )
+}) 
 make_heatmap = reactive({
   if(input$actionb_heat < 1){
     return(NULL)

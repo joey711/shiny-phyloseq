@@ -2,14 +2,15 @@
 # sbp for plot_heatmap()
 ################################################################################
 sbp_heat = sidebarPanel(
-  actionButton("actionb_heat", "Re-Build Graphic", icon("qrcode")),
+  actionButton("actionb_heat", "(Re)Build Graphic", icon("qrcode")),
   h4("Structure"),
   fluidRow(column(width = 12,
                   div(class="span4",
                       selectInput("ord_method_heat", "Method", 
                                   ordlist, selected="NMDS")),
                   div(class="span4", uidist("dist_heat")),
-                  div(class="span4", uicttype("uicttype_heat"))
+                  div(class="span4", selectInput("transform_heat", "Transform",
+                                                 c("Counts", "Prop", "RLog", "CLR")))
   )),
   h4("Labels"),
   fluidRow(column(width = 12,

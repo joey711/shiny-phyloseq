@@ -44,8 +44,28 @@ so that they are not re-computed unnecessarily during an interactive session.
 
 ### Typical Workflow
 
+A typical workflow in Shiny-phyloseq begins 
+with data upload and selection,
+followed by optional filtering of OTUs or samples.
+A number of exploratory data analysis methods
+are available in separate panels,
+including alpha diversity estimates,
+multivariate ordination methods,
+and network and heatmap plots.
+Some of these methods depend on provided
+data transformations (e.g. regularized-log) or
+ecological distances (e.g. weighted-UniFrac, Bray-Curtis),
+which can be selected from a sidebar panel of parameter-input widgets
+placed next to each graphic on each panel.
+Graphics can be downloaded in user-specified format
+by clicking the download button
+at the bottom of each sidebar panel.
+Lastly, a user can download a compressed file containing
+the complete code and data necessary
+to completely reproduce the steps that led to their graphical result.
+
 The Shiny-phyloseq interface is organized into panels from left to right,
-beginning with data selection, filtering/curation, 
+beginning with data selection (the first to appear), filtering/curation, 
 graphic-specific panels, and ending with provenance-tracking.
 User input widgets are consolidated in a lefthand sidebar of each panel.
 The `Select Dataset` panel (the current panel)

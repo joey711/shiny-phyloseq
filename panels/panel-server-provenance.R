@@ -59,10 +59,14 @@ input_all_to_Rcode = function(x){
   # Add back space for legibility
   x <- gsub("<-", " <- ", x, fixed = TRUE)
 }
+# Define initial reactive value for event_code counter
+# that prevents code rendering until download-button click,
+# and will intiate a re-render when DL-button is clicked
+actionb_prov = reactiveValues(count=0)
 # Reactive function that processes the event log and renders
 # code to reproduce it as text on screen.
 event_code = reactive({
-  if (input$actionb_prov < 1){
+  if(actionb_prov$count < 1 & input$actionb_prov < 1){
     return(NULL)
   }
   ########################################
@@ -130,13 +134,16 @@ event_code = reactive({
   return(eventCode)
 })
 output$provenance <- renderUI({
+  if(actionb_prov$count < 1 & input$actionb_prov < 1){
+    return("Click button to see code, download session archive...")
+  }
   # Write a small subset of the most-recent code to the main panel, as HTML
   # Use the google prettify engine
   # https://code.google.com/p/google-code-prettify/
   x <- knitr::knit2html(fragment.only=TRUE,
                        text = c(
                          '<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=r&skin=sunburst"></script>',
-                         paste("### Last", input$number_events_prov, "Events"),
+                         paste("### Preview Last", input$number_events_prov, "Events"),
                          "```{r last-3-chunks, echo=TRUE, eval=FALSE}",
                          tail(event_code(), input$number_events_prov),
                          "```")
@@ -145,6 +152,8 @@ output$provenance <- renderUI({
   return(HTML(x))
 })
 write_temp_record_files = reactive({
+  # Add 1 to the provenance action counter, should trigger code re-render
+  actionb_prov$count <- 1 + actionb_prov$count
   # Create temp directory for files
   DIR = "provenance-staging" 
   DIR <- file.path(DIR, paste0("shiny-phyloseq-provenance-", simpletime()))

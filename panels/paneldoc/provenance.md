@@ -8,14 +8,21 @@ during your session.
 After successful download/transmission,
 this stored code and data is deleted from the server-side file system.
 
-## Panel Widgets
+### Archive
+
+- **Compression Type** - The compression format that will be used to store
+your provenance archive's code and data.
+- **D.L.** - The download button. Press this and you will download the provenance archive.
+
+### Code Preview
 
 - **# Events** - This determines the amount of code (in number of Shiny *events*) 
 that are shown for convenience in the main panel area on the right. 
 This does not affect the contents of the provenance archive that you will download.
-- **Compression Type** - The compression format that will be used to store
-your provenance archive's code and data.
-- **D.L.** - The download button. Press this and you will download the provenance archive.
+- **Preview Code** - This tells Shiny-phyloseq to show/update the code
+shown on the right-hand side.
+
+### Details
 
 The R code shown on the right-hand side of this panel
 is simply the last few events logged by Shiny-phyloseq

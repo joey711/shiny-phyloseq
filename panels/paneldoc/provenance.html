@@ -57,13 +57,22 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 
 <p>You can download a compressed file containing the complete code and data necessary to completely reproduce the steps that led to your graphical results during your session. After successful download/transmission, this stored code and data is deleted from the server-side file system.</p>
-<div id="panel-widgets" class="section level2">
-<h2>Panel Widgets</h2>
+<div id="archive" class="section level3">
+<h3>Archive</h3>
 <ul>
-<li><strong># Events</strong> - This determines the amount of code (in number of Shiny <em>events</em>) that are shown for convenience in the main panel area on the right. This does not affect the contents of the provenance archive that you will download.</li>
 <li><strong>Compression Type</strong> - The compression format that will be used to store your provenance archive’s code and data.</li>
 <li><strong>D.L.</strong> - The download button. Press this and you will download the provenance archive.</li>
 </ul>
+</div>
+<div id="code-preview" class="section level3">
+<h3>Code Preview</h3>
+<ul>
+<li><strong># Events</strong> - This determines the amount of code (in number of Shiny <em>events</em>) that are shown for convenience in the main panel area on the right. This does not affect the contents of the provenance archive that you will download.</li>
+<li><strong>Preview Code</strong> - This tells Shiny-phyloseq to show/update the code shown on the right-hand side.</li>
+</ul>
+</div>
+<div id="details" class="section level3">
+<h3>Details</h3>
 <p>The R code shown on the right-hand side of this panel is simply the last few events logged by Shiny-phyloseq and shown for convenient inspection only. The complete code and data are contained within the zipped archive file that is downloaded when you click the button.</p>
 <p>If you click the button additional times, the code and data is re-processed, and a new archive is produced that is <em>caught up</em> to your last activities. This means that you can “archive as you go”.</p>
 </div>

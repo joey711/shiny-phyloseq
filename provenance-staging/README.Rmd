@@ -1,0 +1,4 @@
+
+# Shiny + phyloseq provenance-staging
+
+This directory is for server-side functions. Its availability shortens directory paths and frees the server from relying on a properly/reliably functioning `tempdir` system. The expectiation should be that code "cleans up after itself" by deleting whatever it writes to this directory, at the very latest `on.exit`. Also it will be good practice to first create a subdirectory within `provenance-staging/` -- `dir.create("provenance-staging/savestuff-timestamp")` -- and then simply delete the whole directory when done, to avoid collisions, e.g. `unlink("provenance-staging/savestuff-timestamp", recursive=TRUE)`.

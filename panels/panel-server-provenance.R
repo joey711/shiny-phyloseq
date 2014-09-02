@@ -136,9 +136,9 @@ output$provenance <- renderUI({
   x <- knitr::knit2html(fragment.only=TRUE,
                        text = c(
                          '<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?lang=r&skin=sunburst"></script>',
-                         "### Last 10 Events",
+                         paste("### Last", input$number_events_prov, "Events"),
                          "```{r last-3-chunks, echo=TRUE, eval=FALSE}",
-                         tail(event_code(), 10),
+                         tail(event_code(), input$number_events_prov),
                          "```")
   )
   x <- gsub("<pre>", '<pre class="prettyprint">', x, fixed = TRUE)
@@ -146,7 +146,7 @@ output$provenance <- renderUI({
 })
 write_temp_record_files = reactive({
   # Create temp directory for files
-  DIR = "sandbox" 
+  DIR = "provenance-staging" 
   DIR <- file.path(DIR, paste0("shiny-phyloseq-provenance-", simpletime()))
   # Create
   dir.create(DIR)

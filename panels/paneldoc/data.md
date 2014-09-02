@@ -178,7 +178,7 @@ for Shiny-phyloseq, but also [the Shiny package](https://github.com/rstudio/shin
 For example, you can borrow one or more panel modules
 of the Shiny-phyloseq codebase
 and embed them as a Shiny widget within an HTML slideshow 
-generated from the new R markdown specification~REF-Rmarkdown.
+generated from the [R markdown](http://rmarkdown.rstudio.com/authoring_shiny.html).
 
 ### Posting Issues
 

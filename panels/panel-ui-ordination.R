@@ -36,13 +36,14 @@ sbp_ord = sidebarPanel(
 ################################################################################
 ordpage = fluidPage(
   headerPanel("Ordination Plot"),
-  fluidRow(
-    sbp_ord,
-    column(width=6, 
-           plotOutput("ordination")
-    ),
-    column(width = 2, plotOutput("scree_ord"))
-  ),
+  fluidRow(sbp_ord,
+    column(width = 8,
+           div(class="span8", plotOutput("ordination")),
+           div(class="span8", br()),
+           div(class="span8", br()),
+           div(class="span8", h5("Scree Plot", icon("bar"))),
+           div(class="span8", plotOutput("scree_ord"))
+  )),
   fluidRow(column(width = 12,
                   includeMarkdown("panels/paneldoc/ordination.md")
   ))

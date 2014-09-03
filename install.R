@@ -23,7 +23,8 @@ download_not_installed = function(x){
   }
 }
 vanilla_install_pkgs = c("data.table", "d3Network", "genefilter", "ggplot2",
-                         "grid", "gridExtra", "png", "RColorBrewer", "scales")
+                         "grid", "gridExtra", "markdown", "png", 
+                         "rmarkdown", "RColorBrewer", "scales")
 download_not_installed(vanilla_install_pkgs)
 ################################################################################
 # Should use latest GitHub version of shiny

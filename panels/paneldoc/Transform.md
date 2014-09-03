@@ -1,9 +1,29 @@
-# Transformation Details
+# 
 
-The following subsections explain
-the different options available
+**NOTE:** This is merely a documentation panel.
+
+The following subsections define
+different options available
 in one or more of the `Transform` widgets
+that are **located on other panels**
 in Shiny-phyloseq.
+
+- **Implication** - When one of the following options is selected,
+it implies that the transformed values
+are being used for the analysis/graphics
+of the currently-active panel
+that you are looking at.
+- **Efficiency** - The choice of transformation in one widget
+does not affect the `Transform` widget selection in other panels --
+so you can freely try different transformations in one panel
+without worrying that you are inadvertantly changing
+the result you've already seen in some other panel.
+However, the transform computation for a given transformation option
+is always the same
+so Shiny-phyloseq will only need to compute the transformation
+the first time that you select it *in any panel*.
+This notion is reset if you change the dataset selection on the `Data` panel,
+or if you change the filtering options in the `Filter` panel.
 
 ## Counts
 

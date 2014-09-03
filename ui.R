@@ -148,6 +148,15 @@ source("panels/panel-ui-filter.R", local = TRUE)
 source("panels/panel-ui-palette.R", local = TRUE)
 source("panels/panel-ui-provenance.R", local = TRUE)
 ################################################################################
+# Transform panel is only documentation. Define differently.
+################################################################################
+transpage = fluidPage(
+  headerPanel("Transform Widget Documentation"),
+  fluidRow(column(width = 12, 
+                  includeMarkdown("panels/paneldoc/transform.md")
+  ))
+)
+################################################################################
 # Define general header tag list 
 # List of tags to display as a common header above all tabPanels.
 ################################################################################
@@ -171,7 +180,7 @@ ui = navbarPage(
   tabPanel("Scatter", scatpage),
   tabPanel("Bar", barpage),
   tabPanel("Palette", palpage),
-  tabPanel("Transform", includeMarkdown(path = "panels/paneldoc/Transform.html")),
+  tabPanel("Transform", transpage),
   tabPanel("Provenance", provpage),
   header = headerTagList,
   collapsable = TRUE,

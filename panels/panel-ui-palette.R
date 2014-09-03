@@ -14,12 +14,15 @@ sbp_pal = sidebarPanel(
   uitheme("theme_pal")
 )
 palpage = fluidPage(
-  titlePanel(""),
+  headerPanel("Palette and Theme Documentation Only"),
   sidebarLayout(
     sidebarPanel=sbp_pal,
     mainPanel=mainPanel(
       h4("Explore Different Palettes"),
       plotOutput("paletteExample"),
+      fluidRow(column(width = 12, 
+                      includeMarkdown("panels/paneldoc/palette.md")
+      )),
       tags$hr(),
       plotOutput("paletteOptions"),
       h4("Palette Details:"),

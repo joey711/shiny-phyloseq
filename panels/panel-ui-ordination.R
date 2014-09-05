@@ -4,7 +4,11 @@
 ordtypelist = as.list(phyloseq::plot_ordination("list"))
 names(ordtypelist) <- c("Samples", "Species", "Biplot", "Split Plot", "Scree Plot")
 sbp_ord = sidebarPanel(
-  h4("Structure"),
+  fluidRow(column(width = 12,
+                  div(class="span6", h4("Structure")),
+                  div(class="span3", numericInputRow("axes1_ord", "Axis-1", 1L, 1L, step = 1L, class = "span12")),
+                  div(class="span3", numericInputRow("axes2_ord", "Axis-2", 2L, 1L, step = 1L, class = "span12"))
+  )),
   fluidRow(column(
     width = 12,
     div(class="span4", selectInput("ord_plot_type", "Display", ordtypelist)), 

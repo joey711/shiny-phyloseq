@@ -83,7 +83,14 @@ get_ord = reactive({
 })
 make_ord_plot = reactive({
   p1 = NULL
-  try(p1 <- plot_ordination(physeq_ord(), get_ord(), type=input$ord_plot_type), silent=TRUE)
+  try(p1 <- plot_ordination(physeq = physeq_ord(), 
+                            ordination = get_ord(),
+                            type=input$ord_plot_type,
+                            axes = c(as.integer(input$axes1_ord), as.integer(input$axes2_ord)),
+                            color = av(input$color_ord),
+                            shape = av(input$shape_ord)
+                            ),
+      silent=TRUE)
   return(p1)
 })
 # Finalize Ordination Plot (for download and panel)
@@ -93,8 +100,6 @@ finalize_ordination_plot = reactive({
     p1$layers[[1]]$geom_params$size <- av(input$size_ord)
     p1$layers[[1]]$geom_params$alpha <- av(input$alpha_ord)
     if(!is.null(av(input$color_ord))){
-      p1$mapping$colour <- as.symbol(input$color_ord)
-      p1 <- update_labels(p1, list(colour = input$color_ord))
       if(plyr::is.discrete(p1$data[[input$color_ord]])){
         # Discrete brewer palette mapping
         p1 <- p1 + scale_colour_brewer(palette=input$pal_ord)
@@ -102,10 +107,6 @@ finalize_ordination_plot = reactive({
         # Continuous brewer palette mapping
         p1 <- p1 + scale_colour_distiller(palette=input$pal_ord) 
       }    
-    }
-    if(!is.null(av(input$shape_ord))){
-      p1$mapping$shape  <- as.symbol(av(input$shape_ord))
-      p1 <- update_labels(p1, list(shape = input$shape_ord))
     }
     if(!is.null(av(input$label_ord))){
       p1 <- p1 + geom_text(aes_string(label=input$label_ord), 

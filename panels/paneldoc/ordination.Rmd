@@ -43,6 +43,8 @@ See the `Transform` panel for the definition of each available option.
 
 ### Aesthetic Mapping
 
+- **X, Y** - Select the ordination axes to map to the
+`X` (horizontal) and `Y` (vertical) axes. Default is first and second ordination axes, respectively.
 - **Color** - The variable selected here is mapped to point color.
 - **Shape** - The variable selected here is mapped to point shape.
 - **Facet Row** - This is an interface to

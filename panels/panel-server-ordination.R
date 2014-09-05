@@ -86,7 +86,7 @@ make_ord_plot = reactive({
   try(p1 <- plot_ordination(physeq = physeq_ord(), 
                             ordination = get_ord(),
                             type=input$ord_plot_type,
-                            axes = c(as.integer(input$axes1_ord), as.integer(input$axes2_ord)),
+                            axes = c(as.integer(input$axis_x_ord), as.integer(input$axis_y_ord)),
                             color = av(input$color_ord),
                             shape = av(input$shape_ord)
                             ),

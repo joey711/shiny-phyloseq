@@ -42,11 +42,27 @@ if(!shiny_okay){
   devtools::install_github("shiny", "rstudio")
 }
 ################################################################################
+# Should use latest GitHub version of rmarkdown
+# https://github.com/rstudio/rmarkdown
+################################################################################
+rmarkdown_okay = FALSE
+if("rmarkdown" %in% .packages(all.available = TRUE)){
+  rmarkdown_min_version = "0.2"
+  rmarkdown_compare = compareVersion(as.character(packageVersion("rmarkdown")), rmarkdown_min_version)
+  if( rmarkdown_compare >= 0 ){
+    rmarkdown_okay <- TRUE
+  }
+}
+if(!rmarkdown_okay){
+  install.packages("devtools")
+  devtools::install_github("rstudio/rmarkdown")
+}
+################################################################################
 # phyloseq existence/version test, and installation
 ################################################################################
 phyloseq_okay = FALSE
 if("phyloseq" %in% .packages(all.available = TRUE)){
-  phyloseq_min_version = "1.9.11"
+  phyloseq_min_version = "1.9.13"
   phyloseq_compare = compareVersion(as.character(packageVersion("phyloseq")), phyloseq_min_version)
   if( phyloseq_compare >= 0 ){
     phyloseq_okay <- TRUE

@@ -215,6 +215,14 @@ component_options = function(physeq){
   return(c(component_option_list, as.list(compFuncString)))
 }
 ################################################################################
+# Supported distance methods
+################################################################################
+# List of distances
+# Make available for relevant panels.
+distlist = as.list(unlist(phyloseq::distance("list")))
+names(distlist) <- distlist
+distlist <- distlist[which(!distlist %in% c("ANY"))]
+################################################################################
 # Rescaled extension of `distance` function
 ################################################################################
 scaled_distance = function(physeq, method, type, rescaled=TRUE){

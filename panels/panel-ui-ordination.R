@@ -9,7 +9,7 @@ sbp_ord = sidebarPanel(
     width = 12,
     div(class="span4", selectInput("ord_plot_type", "Display", ordtypelist)), 
     div(class="span4", selectInput("ord_method", "Method", ordlist, selected="DCA")),
-    div(class="span4", uidist("dist_ord"))
+    div(class="span4", uiOutput("ord_uix_dist"))
   )),
   fluidRow(column(
     width = 12,

@@ -87,18 +87,12 @@ theme_ui_details = function(suffix, secTitle="Details", pal=TRUE, them=TRUE,
 ################################################################################
 # Generic distance UI stuff.
 ################################################################################
-# List of distances
-# Make available for relevant panels.
-distlist = as.list(unlist(phyloseq::distance("list")))
-names(distlist) <- distlist
 #   Function to reate ui for distance method selection
 #   NOTE: not all distance methods are supported if "taxa" selected for type. 
 #   For example, the UniFrac distance and DPCoA cannot be calculated for taxa-wise 
 #   distances, because they use a taxa-wise tree as part of their calculation 
 #   between samples, and there is no transpose-equivalent for this tree
 uidist = function(id, selected="bray"){
-  distlist = as.list(unlist(phyloseq::distance("list")))
-  names(distlist) <- distlist
   return(selectInput(id, "Distance", distlist, selected=selected))
 }
 # Whether to use proportions or counts

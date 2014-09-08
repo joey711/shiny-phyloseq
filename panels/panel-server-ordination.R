@@ -28,6 +28,12 @@ output$ord_uix_facetcol <- renderUI({
 output$ord_uix_label <- renderUI({
   selectInput("label_ord", "Label", vars(get_type_vars()), "NULL")
 })
+output$ord_uix_dist <- renderUI({
+  if(input$ord_method %in% c("DCA", "CCA", "RDA", "DPCoA")){
+    return(selectInput("dist_ord", tags$del("Distance"), "NULL"))
+  }
+  return(selectInput("dist_ord", "Distance", distlist, selected="bray"))
+})
 ################################################################################
 # Ordination Server
 ################################################################################

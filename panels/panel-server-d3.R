@@ -86,6 +86,7 @@ sps_D3_network = function(standAlone=FALSE, parentElement="#D3Network", file=NUL
     opacity = input$d3_opacity,
     parentElement = parentElement,
     standAlone = standAlone,
+    d3Script = "d3.v3.min.js",
     file=file
   )
 }

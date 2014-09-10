@@ -235,3 +235,22 @@ scaled_distance = function(physeq, method, type, rescaled=TRUE){
   return(Dist)
 }
 ################################################################################
+# Function to convert a distance matrix and threshold value
+# into an edge-table (essentially a sparse graph matrix).
+# This is used by multiple panels.
+################################################################################
+dist_to_edge_table = function(Dist, MaxDistance=NULL, vnames = c("v1", "v2")){
+  dmat <- as.matrix(Dist)
+  # Set duplicate entries and self-links to Inf
+  dmat[upper.tri(dmat, diag = TRUE)] <- Inf
+  LinksData = data.table(reshape2::melt(dmat, varnames=vnames, as.is = TRUE))
+  setnames(LinksData, old = "value", new = "Distance")
+  # Remove self-links and duplicate links
+  LinksData <- LinksData[is.finite(Distance), ]
+  # Remove entries above the threshold, MaxDistance
+  if(!is.null(MaxDistance)){
+    LinksData <- LinksData[Distance < MaxDistance, ]
+  }
+  return(LinksData)
+}
+################################################################################

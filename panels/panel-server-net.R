@@ -75,20 +75,6 @@ Distance_net <- reactive({
 })
 # 2.
 # Create edge table
-dist_to_edge_table = function(Dist, MaxDistance=NULL, vnames = c("v1", "v2")){
-  dmat <- as.matrix(Dist)
-  # Set duplicate entries and self-links to Inf
-  dmat[upper.tri(dmat, diag = TRUE)] <- Inf
-  LinksData = data.table(reshape2::melt(dmat, varnames=vnames, as.is = TRUE))
-  setnames(LinksData, old = "value", new = "Distance")
-  # Remove self-links and duplicate links
-  LinksData <- LinksData[is.finite(Distance), ]
-  # Remove entries above the threshold, MaxDistance
-  if(!is.null(MaxDistance)){
-    LinksData <- LinksData[Distance < MaxDistance, ]
-  }
-  return(LinksData)
-}
 LinksData0 = reactive({
   dist_to_edge_table(Distance_net(), MaxDistance=input$uinetdistmax)
 })

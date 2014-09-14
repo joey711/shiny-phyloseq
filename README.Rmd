@@ -20,7 +20,7 @@ in any work that benefits from this code or application.
 
 ### The App
 
-McMurdie and Holmes (2014) Shiny-phyloseq: Web Application for Interactive Microbiome Analysis with Provenance Tracking. *Submitted*.
+McMurdie and Holmes (2014) Shiny-phyloseq: Web Application for Interactive Microbiome Analysis with Provenance Tracking. Bioinformatics. *In Press*
 
 ### "Under the Hood"
 

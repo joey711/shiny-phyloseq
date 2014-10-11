@@ -17,7 +17,7 @@ download_not_installed = function(x){
   if(any(!x %in% availpacks)){
     source("http://bioconductor.org/biocLite.R")
     for(i in x[!x %in% availpacks]){
-      cat("Installing", i, "package using biocLite... \n")
+      message("Installing", i, "package using biocLite... \n")
       biocLite(i)
     }
   }
@@ -39,7 +39,7 @@ if("shiny" %in% .packages(all.available = TRUE)){
 }
 if(!shiny_okay){
   install.packages("devtools")
-  devtools::install_github("shiny", "rstudio")
+  devtools::install_github("rstudio/shiny")
 }
 ################################################################################
 # Should use latest GitHub version of rmarkdown
@@ -62,7 +62,7 @@ if(!rmarkdown_okay){
 ################################################################################
 phyloseq_okay = FALSE
 if("phyloseq" %in% .packages(all.available = TRUE)){
-  phyloseq_min_version = "1.9.13"
+  phyloseq_min_version = "1.9.15"
   phyloseq_compare = compareVersion(as.character(packageVersion("phyloseq")), phyloseq_min_version)
   if( phyloseq_compare >= 0 ){
     phyloseq_okay <- TRUE
@@ -83,6 +83,7 @@ if(!phyloseq_okay) {
 ################################################################################
 shiny_phyloseq_full_load_packages = c("shiny", "phyloseq", vanilla_install_pkgs)
 for(i in shiny_phyloseq_full_load_packages){
-  library(i, character.only = TRUE); packageVersion(i)
+  library(i, character.only = TRUE)
+  message(packageVersion(i))
 }
 ################################################################################

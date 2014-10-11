@@ -274,6 +274,6 @@ output$physeqComponentTable <- renderDataTable({
   component = do.call(what = input$available_components_filt, args = list(physeq()))
   return(tablify_phyloseq_component(component, input$component_table_colmax_filt))
 }, options = list(
-  iDisplayLength = 5 
+  pageLength = 5 
 ))
 ################################################################################

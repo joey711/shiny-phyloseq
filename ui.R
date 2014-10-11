@@ -147,7 +147,7 @@ source("panels/panel-ui-provenance.R", local = TRUE)
 transpage = fluidPage(
   headerPanel("Transform Widget Documentation"),
   fluidRow(column(width = 12, 
-                  includeMarkdown("panels/paneldoc/transform.md")
+                  includeMarkdown("panels/paneldoc/Transform.md")
   ))
 )
 ################################################################################

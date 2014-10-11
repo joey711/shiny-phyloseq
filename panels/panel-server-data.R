@@ -171,6 +171,6 @@ output$ps0ComponentTable <- renderDataTable({
   component = do.call(what = input$available_components_orig, args = list(get_phyloseq_data()))
   return(tablify_phyloseq_component(component, input$component_table_colmax))
 }, options = list(
-  iDisplayLength = 5 
+  pageLength = 5 
 ))
 ################################################################################

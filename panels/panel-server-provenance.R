@@ -74,7 +74,7 @@ event_code = reactive({
   ########################################
   # Need to grab token regarding user session.
   # See Joe Cheng branch on feature/graph-domain
-  eventlog <- shiny:::.graphEnv$log
+  eventlog <- shiny:::.graphStack$as_list()
   # Initialize list of event code, as character strings:
   eventCode = vector("list", length = length(eventlog))
   ########################################
@@ -109,7 +109,7 @@ event_code = reactive({
   ctxlogs = which(sapply(eventlog, function(x){x$action=="ctx"}))
   # Omit provenance reactive (if present)
   ProvenanceSelfLinks = which(sapply(eventlog[ctxlogs], function(x){
-    length(grep("shiny:::.graphEnv$log", x$label, fixed = TRUE)) > 0
+    length(grep("shiny:::.graphStack$as_list()", x$label, fixed = TRUE)) > 0
   }))
   ctxlogs <- ctxlogs[-ProvenanceSelfLinks]
   # Keep only renderPlot reactives

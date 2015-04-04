@@ -10,17 +10,17 @@ sbp_data = sidebarPanel(
      "File"),
   fileInput('file1', ""),
   h5("Upload", a("Tree", href="http://rgm.ogalab.net/RGM/R_rdfile?f=phyloseq/man/read_tree.Rd&d=R_BC"), "File"),
-  fileInput('treefile', "", multiple = FALSE),
-  h5("Load", a("QIIME-DB", href="http://www.microbio.me/qiime/"), "Data"),
-  fluidRow(column(width = 12,
-                  div(class="span3", 
-                      numericInputRow("qiimeDBsizeMax", "", 
-                                      value = 50L, min = 0, step = 10L, class="span12")
-                  ),
-                  actionButton("actionb_data_qiime", "Load QIIME-DB",
-                               icon("cloud-download"))
-  )),
-  uiOutput("qiimeDBopts")
+  fileInput('treefile', "", multiple = FALSE)
+  #   h5("Load", a("QIIME-DB", href="http://www.microbio.me/qiime/"), "Data"),
+  #   fluidRow(column(width = 12,
+  #                   div(class="span3", 
+  #                       numericInputRow("qiimeDBsizeMax", "", 
+  #                                       value = 50L, min = 0, step = 10L, class="span12")
+  #                   ),
+  #                   actionButton("actionb_data_qiime", "Load QIIME-DB",
+  #                                icon("cloud-download"))
+  #   )),
+  #   uiOutput("qiimeDBopts")
 )
 
 datapage = fluidPage(

@@ -39,10 +39,10 @@ dim_and_down = function(suffix, secTitle='Dimensions & Download'){
   fluidRow(column(
     width = 12,
     h4(secTitle),
-    div(class="span3", numericInputRow(paste0("width", suffix), "Width", 8, 1, 100, 1, class="span12")),
-    div(class="span3", numericInputRow(paste0("height", suffix), "Height", 8, 1, 100, 1, class="span12")),
-    div(class='span3', graphicTypeUI(paste0("downtype", suffix))),
-    div(class='span2', div(style="display:inline-block", tags$label("DL"),
+    div(class="col-md-3", numericInputRow(paste0("width", suffix), "Width", 8, 1, 100, 1, class="col-md-12")),
+    div(class="col-md-3", numericInputRow(paste0("height", suffix), "Height", 8, 1, 100, 1, class="col-md-12")),
+    div(class='col-md-3', graphicTypeUI(paste0("downtype", suffix))),
+    div(class='col-md-2', div(style="display:inline-block", tags$label("DL"),
                            downloadButton(paste0("download", suffix), '  ')))
   ))
 }
@@ -54,22 +54,22 @@ theme_ui_details = function(suffix, secTitle="Details", pal=TRUE, them=TRUE,
   elementList = list(width = 12, h4(secTitle))
   if(pal){
     elementList <- c(elementList, list(
-      div(class='span3', uipal(paste0("pal", suffix)))
+      div(class='col-md-3', uipal(paste0("pal", suffix)))
     ))    
   }
   if(them){
     elementList <- c(elementList, list(
-      div(class='span4', uitheme(paste0("theme", suffix)))
+      div(class='col-md-4', uitheme(paste0("theme", suffix)))
     ))     
   }
   if(ptsz){
     elementList <- c(elementList, list(
-      div(class="span2", uiptsz(paste0("size", suffix), class="span12"))
+      div(class="col-md-2", uiptsz(paste0("size", suffix), class="col-md-12"))
     ))
   }
   if(alpha){
     elementList <- c(elementList, list(
-      div(class="span2", uialpha(paste0("alpha", suffix), class="span12"))
+      div(class="col-md-2", uialpha(paste0("alpha", suffix), class="col-md-12"))
     ))
   }
   # Add any additional row elements, if present
@@ -79,9 +79,9 @@ theme_ui_details = function(suffix, secTitle="Details", pal=TRUE, them=TRUE,
 # # Generic fluid row-split. r is number of elements in a row (max 12). 
 # ui_row_split = function(..., r=2L){
 #   elementList = list(width = 12L)
-#   spanN = paste0("span", floor(12/r))
+#   spanN = paste0("col-md-", floor(12/r))
 #   elementList <- c(elementList,
-#                    lapply(..., function(x, spanN){div(class=spanN, x)}, spanN))
+#                    lapply(..., function(x, spanN){div(class=col-md-N, x)}, spanN))
 #   return(fluidRow(do.call("column", args = elementList)))
 # }
 ################################################################################
@@ -177,7 +177,7 @@ ui = navbarPage(
   tabPanel("Transform", transpage),
   tabPanel("Provenance", provpage),
   header = headerTagList,
-  collapsable = TRUE,
+  collapsible = TRUE,
   theme = "bootstrap.css",
   windowTitle = "Shiny-phyloseq"
 )

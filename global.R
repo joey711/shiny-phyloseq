@@ -1,5 +1,6 @@
 # load packages
 library("shiny"); packageVersion("shiny")
+library("shinythemes"); packageVersion("shinythemes")
 library("phyloseq"); packageVersion("phyloseq")
 library("ggplot2"); packageVersion("ggplot2")
 library("data.table"); packageVersion("data.table")
@@ -44,7 +45,7 @@ output_phyloseq_print_html = function(physeq){
 # http://stackoverflow.com/questions/20637248/shiny-4-small-textinput-boxes-side-by-side
 # http://getbootstrap.com/2.3.2/base-css.html#forms
 ################################################################################
-numericInputRow <- function(inputId, label, value, min = NA, max = NA, step = NA, class="input-small", ...){
+numericInputRow <- function(inputId, label, value, min = NA, max = NA, step = NA, class="form-control", ...){
   inputTag <- tags$input(id = inputId, type = "number", value = value, class=class, ...)
   if (!is.na(min)) 
     inputTag$attribs$min = min
@@ -56,7 +57,7 @@ numericInputRow <- function(inputId, label, value, min = NA, max = NA, step = NA
       tags$label(label, `for` = inputId), 
       inputTag)
 }
-textInputRow <- function(inputId, label, value = "", class="input-small", ...){
+textInputRow <- function(inputId, label, value = "", class="form-control", ...){
   div(style="display:inline-block",
       tags$label(label, `for` = inputId), 
       tags$input(id = inputId, type = "text", value = value, class=class, ...))

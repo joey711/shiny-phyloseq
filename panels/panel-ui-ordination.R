@@ -4,8 +4,6 @@
 ordtypelist = as.list(phyloseq::plot_ordination("list"))
 names(ordtypelist) <- c("Samples", "Species", "Biplot", "Split Plot", "Scree Plot")
 sbp_ord = sidebarPanel(
-  div(class="col-md-12", h4("Scree Plot", icon("bar"))),
-  div(class="col-md-4", plotOutput("scree_ord")),
   h4("Structure"),
   fluidRow(column(
     width = 12,

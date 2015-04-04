@@ -5,7 +5,7 @@ library("phyloseq"); packageVersion("phyloseq")
 library("ggplot2"); packageVersion("ggplot2")
 library("data.table"); packageVersion("data.table")
 library("d3Network"); packageVersion("d3Network")
-library("ggplot2")
+library("gridExtra"); packageVersion("gridExtra")
 # Default options for app startup
 source("core/default-parameters.R", local = TRUE)
 # For pasting times into things

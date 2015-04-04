@@ -131,7 +131,15 @@ finalize_ordination_plot = reactive({
 })
 # Render plot in panel and in downloadable file with format specified by user selection
 output$ordination <- renderPlot({
-  shiny_phyloseq_print(finalize_ordination_plot())
+  # Always add a 'supplemental' scree plot, if supported, below the ordination plot itself
+  pscree = NULL
+  try(pscree <- plot_ordination(physeq_ord(), get_ord(), type="scree", title = "Scree Plot"), silent=TRUE)
+  # Final processing of ordination plot.
+  pOrd = finalize_ordination_plot()
+  # Create the combined figure
+  arglist = list(pOrd, pscree, ncol = 1, heights = c(5, 2))
+  arglist = arglist[!sapply(arglist, is.null, simplify = TRUE, USE.NAMES = FALSE)]
+  do.call("grid.arrange", args = arglist)
 }, width=function(){72*input$width_ord}, height=function(){72*input$height_ord})
 output$download_ord <- downloadHandler(
   filename = function(){paste0("Ordination_", simpletime(), ".", input$downtype_ord)},
@@ -142,9 +150,9 @@ output$download_ord <- downloadHandler(
             width=input$width_ord, height=input$height_ord, dpi=300L, units="in")
   }
 )
-# Always add a 'supplemental' scree plot, if supported, below the ordination plot itself
-output$scree_ord <- renderPlot({
-  pscree = NULL
-  try(pscree <- plot_ordination(physeq_ord(), get_ord(), type="scree", title = "Scree Plot"), silent=TRUE)
-  return(shiny_phyloseq_print(pscree))
-}, width=400, height=250)
+# # Always add a 'supplemental' scree plot, if supported, below the ordination plot itself
+# output$scree_ord <- renderPlot({
+#   pscree = NULL
+#   try(pscree <- plot_ordination(physeq_ord(), get_ord(), type="scree", title = "Scree Plot"), silent=TRUE)
+#   return(shiny_phyloseq_print(pscree))
+# }, width=400, height=250)

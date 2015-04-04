@@ -22,7 +22,7 @@ download_not_installed = function(x){
     }
   }
 }
-vanilla_install_pkgs = c("data.table", "d3Network", "genefilter", "ggplot2",
+vanilla_install_pkgs = c("data.table", "networkD3", "genefilter", "ggplot2",
                          "grid", "gridExtra", "markdown", "png", 
                          "rmarkdown", "RColorBrewer", "scales")
 download_not_installed(vanilla_install_pkgs)
@@ -62,7 +62,7 @@ if(!rmarkdown_okay){
 ################################################################################
 phyloseq_okay = FALSE
 if("phyloseq" %in% .packages(all.available = TRUE)){
-  phyloseq_min_version = "1.9.15"
+  phyloseq_min_version = "1.10.0"
   phyloseq_compare = compareVersion(as.character(packageVersion("phyloseq")), phyloseq_min_version)
   if( phyloseq_compare >= 0 ){
     phyloseq_okay <- TRUE

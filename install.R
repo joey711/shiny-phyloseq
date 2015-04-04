@@ -24,6 +24,7 @@ download_not_installed = function(x){
 }
 vanilla_install_pkgs = c("data.table", "networkD3", "genefilter", "ggplot2",
                          "grid", "gridExtra", "markdown", "png", 
+                         "shinythemes", 
                          "rmarkdown", "RColorBrewer", "scales")
 download_not_installed(vanilla_install_pkgs)
 ################################################################################

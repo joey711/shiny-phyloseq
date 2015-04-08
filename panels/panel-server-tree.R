@@ -15,7 +15,7 @@ output$tree_uix_point_thresh <- renderUI({
               value=0.1*median(as(otu_table(physeq()), "matrix"), na.rm=TRUE),
               max=max(as(otu_table(physeq()), "matrix"), na.rm=TRUE),
               min=min(as(otu_table(physeq()), "matrix"), na.rm=TRUE),
-              class="span12"
+              class="col-md-12"
   )
 })
 ################################################################################

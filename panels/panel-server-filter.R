@@ -203,7 +203,7 @@ maxSamples = reactive({
 })
 output$filter_ui_kOverA_k <- renderUI({
   numericInputRow("filter_kOverA_sample_threshold", "k",
-               min=0, max=maxSamples(), value=kovera_k, step=1, class="span12")
+               min=0, max=maxSamples(), value=kovera_k, step=1, class="col-md-12")
 })
 output$contents <- renderUI({
   output_phyloseq_print_html(get_phyloseq_data())

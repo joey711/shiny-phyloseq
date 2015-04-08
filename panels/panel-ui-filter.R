@@ -7,29 +7,29 @@ filterpage = fluidPage(
       actionButton("actionb_filter", "Execute Filter", icon("filter")),
       h4("Subset Taxa"),
       fluidRow(column(width=12,
-                      div(class="span6", uiOutput("filter_uix_subset_taxa_ranks")),
-                      div(class="span6", uiOutput("filter_uix_subset_taxa_select"))
+                      div(class="col-md-6", uiOutput("filter_uix_subset_taxa_ranks")),
+                      div(class="col-md-6", uiOutput("filter_uix_subset_taxa_select"))
       )),
       h4("Subset Samples"),
       fluidRow(column(width=12,
-                      div(class="span6", uiOutput("filter_uix_subset_sample_vars")),
-                      div(class="span6", uiOutput("filter_uix_subset_sample_select"))
+                      div(class="col-md-6", uiOutput("filter_uix_subset_sample_vars")),
+                      div(class="col-md-6", uiOutput("filter_uix_subset_sample_select"))
       )),
       h4('Total Sums Filtering'),
       fluidRow(column(width=12,
-                      div(class="span6",
+                      div(class="col-md-6",
                           numericInputRow("filter_sample_sums_threshold", "Sample Max",
-                                          value=SampleSumDefault, min=0, step=100, class="span12")),
-                      div(class="span6",
+                                          value=SampleSumDefault, min=0, step=100, class="col-md-12")),
+                      div(class="col-md-6",
                           numericInputRow("filter_taxa_sums_threshold", "OTU Max",
-                                          value=OTUSumDefault, min=0, step=1, class="span12"))
+                                          value=OTUSumDefault, min=0, step=1, class="col-md-12"))
       )),
       h4('kOverA OTU Filtering'),
       fluidRow(column(width=12,
-                      div(class="span6",
+                      div(class="col-md-6",
                           numericInputRow("filter_kOverA_count_threshold", "A",
-                                          value=kovera_A, min=0, step=1, class="span12")), 
-                      div(class="span6", uiOutput("filter_ui_kOverA_k"))
+                                          value=kovera_A, min=0, step=1, class="col-md-12")), 
+                      div(class="col-md-6", uiOutput("filter_ui_kOverA_k"))
       ))
     ),
     # Now the Main Panel.
@@ -49,9 +49,9 @@ filterpage = fluidPage(
       )),
       h4("Component Table, Filtered Data"),
       fluidRow(column(width=12,
-          div(class="span8", uiOutput("uix_available_components_filt")),
-          div(class="span3", numericInputRow("component_table_colmax_filt", "Max. Columns",
-                                             value = 25L, min = 1L, step = 5L, class="span12"))
+          div(class="col-md-8", uiOutput("uix_available_components_filt")),
+          div(class="col-md-3", numericInputRow("component_table_colmax_filt", "Max. Columns",
+                                             value = 25L, min = 1L, step = 5L, class="col-md-12"))
       )),
       dataTableOutput('physeqComponentTable')
     )

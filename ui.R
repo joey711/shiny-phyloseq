@@ -178,7 +178,6 @@ ui = navbarPage(
   tabPanel("Provenance", provpage),
   header = headerTagList,
   collapsible = TRUE,
-  theme = "bootstrap.css",
   windowTitle = "Shiny-phyloseq"
 )
 shinyUI(ui)

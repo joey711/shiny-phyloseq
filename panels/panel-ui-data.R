@@ -13,9 +13,9 @@ sbp_data = sidebarPanel(
   fileInput('treefile', "", multiple = FALSE)
   #   h5("Load", a("QIIME-DB", href="http://www.microbio.me/qiime/"), "Data"),
   #   fluidRow(column(width = 12,
-  #                   div(class="span3", 
+  #                   div(class="col-md-3", 
   #                       numericInputRow("qiimeDBsizeMax", "", 
-  #                                       value = 50L, min = 0, step = 10L, class="span12")
+  #                                       value = 50L, min = 0, step = 10L, class="col-md-12")
   #                   ),
   #                   actionButton("actionb_data_qiime", "Load QIIME-DB",
   #                                icon("cloud-download"))
@@ -33,9 +33,9 @@ datapage = fluidPage(
     htmlOutput('contents'),
     h4("Display Component Table"),
     fluidRow(column(width = 12,
-                    div(class="span8", uiOutput("uix_available_components_orig")),
-                    div(class="span3", numericInputRow("component_table_colmax", "Max. Columns",
-                                    value = 25L, min = 1L, step = 5L, class="span12"))
+                    div(class="col-md-8", uiOutput("uix_available_components_orig")),
+                    div(class="col-md-3", numericInputRow("component_table_colmax", "Max. Columns",
+                                    value = 25L, min = 1L, step = 5L, class="col-md-12"))
     )),
     dataTableOutput('ps0ComponentTable')
   ),

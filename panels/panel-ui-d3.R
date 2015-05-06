@@ -57,16 +57,18 @@ sbp_d3 = sidebarPanel(
 # d3network page
 ################################################################################
 d3netpage = fluidPage(
-  # Load d3.js
-  tags$head(
-    tags$script(src = 'http://d3js.org/d3.v3.min.js')
-  ),
+  #   # Load d3.js
+  #   tags$head(
+  #     tags$script(src = 'http://d3js.org/d3.v3.min.js')
+  #   ),
   # Application title
   headerPanel('Distance Threshold Network - D3'),
   # Sidebar with a slider input for node opacity
   sbp_d3,
   # Show network graph
-  mainPanel(htmlOutput("D3Network")),
+  #   mainPanel(htmlOutput("D3Network")),
+  column(width = 8,
+         forceNetworkOutput("D3Network")),
   fluidRow(column(width = 12,
                   includeMarkdown("panels/paneldoc/d3Network.md")
   ))

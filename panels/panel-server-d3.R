@@ -1,6 +1,6 @@
 # d3 code section
 ################################################################################
-# d3network uix
+# networkD3 uix
 ################################################################################
 output$d3_uix_color <- renderUI({
   selectInput("color_d3", "Color",
@@ -70,36 +70,51 @@ default_Source = function(x){
     return(x)
   }
 }
-# Wrapper function for Shiny-phyloseq D3 Network definition.
-sps_D3_network = function(standAlone=FALSE, parentElement="#D3Network", file=NULL){
-  d3Network::d3ForceNetwork(
+# # Wrapper function for Shiny-phyloseq D3 Network definition.
+# sps_D3_network = function(standAlone=FALSE, parentElement="#D3Network", file=NULL){
+#   networkD3::forceNetwork(
+#     Links = calculate_links_data()$link, 
+#     Nodes = calculate_links_data()$node,
+#     Source = "Source",
+#     Target = "target",
+#     Value = "Distance",
+#     NodeID = "ShowLabels",
+#     height = input$height_d3,
+#     width = input$width_d3,
+#     Group = default_Source(input$color_d3),
+#     linkColour = input$d3_link_color,
+#     opacity = input$d3_opacity,
+#     parentElement = parentElement,
+#     standAlone = standAlone,
+#     d3Script = "d3.v3.min.js",
+#     file=file
+#   )
+# }
+# # Send to in-panel element.
+# output$D3Network <- renderPrint({
+#   sps_D3_network()
+# })
+output$D3Network <- renderForceNetwork({
+  forceNetwork(
     Links = calculate_links_data()$link, 
     Nodes = calculate_links_data()$node,
     Source = "Source",
     Target = "target",
     Value = "Distance",
     NodeID = "ShowLabels",
-    height = input$height_d3,
-    width = input$width_d3,
+    #height = input$height_d3,
+    #width = input$width_d3,
     Group = default_Source(input$color_d3),
     linkColour = input$d3_link_color,
-    opacity = input$d3_opacity,
-    parentElement = parentElement,
-    standAlone = standAlone,
-    d3Script = "d3.v3.min.js",
-    file=file
-  )
-}
-# Send to in-panel element.
-output$D3Network <- renderPrint({
-  sps_D3_network()
+    opacity = input$d3_opacity)
 })
-# Downloadable standalone HTML file.
-content_d3 = function(file){
-  return(
-    sps_D3_network(standAlone=TRUE, parentElement="body", file=file)
-  )
-}
-output$download_D3 <- downloadHandler(filename = function(){paste0("d3_", simpletime(), ".html")},
-                                     content = content_d3)
+
+# # Downloadable standalone HTML file.
+# content_d3 = function(file){
+#   return(
+#     sps_D3_network(standAlone=TRUE, parentElement="body", file=file)
+#   )
+# }
+# output$download_D3 <- downloadHandler(filename = function(){paste0("d3_", simpletime(), ".html")},
+#                                      content = content_d3)
 #zoom = as.logical(input$d3_zoom),

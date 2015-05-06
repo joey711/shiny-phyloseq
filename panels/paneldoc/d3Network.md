@@ -57,7 +57,7 @@ is always a stand-alone HTML that should be sharable as an interactive graphic.
 ### Acknowledgements
 
 Big thanks to Christopher Gandrud for
-[d3Network](http://christophergandrud.github.io/d3Network/)
+[networkD3](http://christophergandrud.github.io/networkD3/)
 and also to the team at 
 [Shiny and RStudio](http://shiny.rstudio.com).
 

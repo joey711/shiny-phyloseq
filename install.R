@@ -22,17 +22,18 @@ download_not_installed = function(x){
     }
   }
 }
-vanilla_install_pkgs = c("data.table", "networkD3", "genefilter", "ggplot2",
-                         "grid", "gridExtra", "markdown", "png", 
-                         "shinythemes", 
-                         "rmarkdown", "RColorBrewer", "scales")
+vanilla_install_pkgs = c("phyloseq", "shiny", "ggplot2",
+                         "data.table", "networkD3", "genefilter", 
+                         "grid", "gridExtra", 
+                         "markdown", "rmarkdown", "png", 
+                         "shinythemes", "RColorBrewer", "scales")
 download_not_installed(vanilla_install_pkgs)
 ################################################################################
 # Should use latest GitHub version of shiny
 ################################################################################
 shiny_okay = FALSE
 if("shiny" %in% .packages(all.available = TRUE)){
-  shiny_min_version = "0.10.1"
+  shiny_min_version = "0.11"
   shiny_compare = compareVersion(as.character(packageVersion("shiny")), shiny_min_version)
   if( shiny_compare >= 0 ){
     shiny_okay <- TRUE
@@ -48,7 +49,7 @@ if(!shiny_okay){
 ################################################################################
 rmarkdown_okay = FALSE
 if("rmarkdown" %in% .packages(all.available = TRUE)){
-  rmarkdown_min_version = "0.2"
+  rmarkdown_min_version = "0.5"
   rmarkdown_compare = compareVersion(as.character(packageVersion("rmarkdown")), rmarkdown_min_version)
   if( rmarkdown_compare >= 0 ){
     rmarkdown_okay <- TRUE
@@ -63,7 +64,7 @@ if(!rmarkdown_okay){
 ################################################################################
 phyloseq_okay = FALSE
 if("phyloseq" %in% .packages(all.available = TRUE)){
-  phyloseq_min_version = "1.10.0"
+  phyloseq_min_version = "1.12.2"
   phyloseq_compare = compareVersion(as.character(packageVersion("phyloseq")), phyloseq_min_version)
   if( phyloseq_compare >= 0 ){
     phyloseq_okay <- TRUE

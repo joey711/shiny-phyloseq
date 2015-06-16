@@ -141,6 +141,7 @@ source("panels/panel-ui-data.R", local = TRUE)
 source("panels/panel-ui-filter.R", local = TRUE)
 source("panels/panel-ui-palette.R", local = TRUE)
 source("panels/panel-ui-provenance.R", local = TRUE)
+source("panels/panel-ui-differential-abundance.R", local = TRUE)
 ################################################################################
 # Transform panel is only documentation. Define differently.
 ################################################################################
@@ -173,6 +174,7 @@ ui = navbarPage(
   tabPanel("Tree", treepage),
   tabPanel("Scatter", scatpage),
   tabPanel("Bar", barpage),
+  tabPanel("Differential Abundance", dfabundpage),
   tabPanel("Palette", palpage),
   tabPanel("Transform", transpage),
   tabPanel("Provenance", provpage),

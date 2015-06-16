@@ -88,6 +88,8 @@ shinyServer(function(input, output){
   source("panels/panel-server-d3.R", local = TRUE)
   # Scatter
   source("panels/panel-server-scatter.R", local = TRUE)
+  # Differential Abundance
+  source("panels/panel-server-diffential-abundance.R", local = TRUE)
   # Palette
   source("panels/panel-server-palette.R", local = TRUE)
   # Provenance

@@ -137,11 +137,11 @@ source("panels/panel-ui-tree.R", local = TRUE)
 source("panels/panel-ui-heatmap.R", local = TRUE)
 source("panels/panel-ui-scatter.R", local = TRUE)
 source("panels/panel-ui-d3.R", local = TRUE)
+source("panels/panel-ui-differential-abundance.R", local = TRUE)
 source("panels/panel-ui-data.R", local = TRUE)
 source("panels/panel-ui-filter.R", local = TRUE)
 source("panels/panel-ui-palette.R", local = TRUE)
 source("panels/panel-ui-provenance.R", local = TRUE)
-source("panels/panel-ui-differential-abundance.R", local = TRUE)
 ################################################################################
 # Transform panel is only documentation. Define differently.
 ################################################################################

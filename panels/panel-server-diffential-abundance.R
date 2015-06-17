@@ -36,8 +36,18 @@ get_formula_dfabund <- reactive({
 make_dfabund_plot = reactive({
   p5 = NULL
   mydata <- physeq_dfabund()
+  
+  # Correct taxonomy
   if (colnames(tax_table(mydata))[1] == "Rank1") {
-    colnames(tax_table(mydata)) = c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus")  
+    taxlength = length(colnames(tax_table(mydata)))
+    if (taxlength == 6) {
+      ranks <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus")
+    } else if (taxlength == 7) {
+      ranks <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")
+  } else if (taxlength == 11) {
+    ranks <- c("Kingdom", "Cladus", "Supergroup", "Kingdom", "Subkingdom", "Phylum", "Subphylum", "Class", "Order", "Family", "Genus")
+  }
+  colnames(tax_table(mydata)) <- ranks
   }
   try(p5 <-amp_test_species(mydata,
                            group= input$constraint_dfabund, 

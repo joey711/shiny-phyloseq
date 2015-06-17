@@ -10,7 +10,8 @@ sbp_dfabund = sidebarPanel(
                   div(class='col-md-6', uiOutput("dfabund_uix_facetrow", inline = TRUE)),
                   div(class='col-md-5', uiOutput("dfabund_uix_facetcol", inline = TRUE)),
                   div(class='col-md-6', selectInput("uicttype_dfabund", label="Data",
-                                                 choices=c("Counts", "Proportions")))
+                                                 choices=c("Counts", "Proportions"))),
+                  div(class="col-md-7", uiOutput("dfabund_uix_constraint"))
   )),
   theme_ui_details("_dfabund", addList = list(div(class="col-md-3", 
     numericInputRow("x_axis_angle_dfabund", label = "Angle",

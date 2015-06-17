@@ -6,6 +6,7 @@ library("ggplot2"); packageVersion("ggplot2")
 library("data.table"); packageVersion("data.table")
 library("networkD3"); packageVersion("networkD3")
 library("gridExtra"); packageVersion("gridExtra")
+library("ampvis"); packageVersion("ampvis")
 # Default options for app startup
 source("core/default-parameters.R", local = TRUE)
 # For pasting times into things

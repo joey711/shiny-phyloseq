@@ -22,7 +22,9 @@ download_not_installed = function(x){
     }
   }
 }
-vanilla_install_pkgs = c("phyloseq", "shiny", "ggplot2",
+vanilla_install_pkgs = c("phyloseq",
+                         "shiny", "shinythemes",
+                         "ggplot2",
                          "data.table", "networkD3", "genefilter", 
                          "grid", "gridExtra", 
                          "markdown", "rmarkdown", "png", 

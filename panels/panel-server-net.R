@@ -86,7 +86,8 @@ vertex_layout = function(LinksData, physeq=NULL, type="samples",
   # Set the random number generation seed explicitly for this process.
   # RNG is used by `laymeth` in some cases.
   set.seed(as(RNGseed, "integer"))
-  # `physeq` can be anything, only has effect when non-NULL returned by sample_data or tax_table
+  # `physeq` can be anything,
+  # only has effect when non-NULL returned by sample_data or tax_table
   g = igraph::graph.data.frame(LinksData, directed=FALSE)
   vertexDT = data.table(laymeth(g, ...),
                         vertex=igraph::get.vertex.attribute(g, "name"))

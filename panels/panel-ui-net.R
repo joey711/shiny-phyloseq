@@ -14,8 +14,11 @@ uinetdistmax = numericInputRow(
 sbp_net = sidebarPanel(
   h4('Network Structure'),
   fluidRow(column(width = 12,
-                  div(class='col-md-4', selectInput(inputId="type_net", label="Type", selected="samples",
-                                                 choices=list("Taxa"="taxa", "Samples"="samples"))),
+                  div(class='col-md-4',
+                      selectInput(inputId="type_net",
+                                  label="Type", 
+                                  selected="samples",
+                                  choices=list("Taxa"="taxa", "Samples"="samples"))),
                   div(class='col-md-8', uiOutput("net_uix_layout"))
   )),
   fluidRow(column(width = 12,

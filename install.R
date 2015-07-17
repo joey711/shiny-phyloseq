@@ -14,21 +14,24 @@ if(compareVersion(R_version, R_min_version) < 0){
 ################################################################################
 download_not_installed = function(x){
   availpacks = .packages(all.available = TRUE)
-  if(any(!x %in% availpacks)){
-    source("http://bioconductor.org/biocLite.R")
-    for(i in x[!x %in% availpacks]){
+  source("http://bioconductor.org/biocLite.R")
+  missingPackages = x[!(x %in% availpacks)]
+  message("The following packages were missing. Installation attempted...")
+  message(missingPackages)
+  if(length(missingPackages) > 0){
+    for(i in missingPackages){
       message("Installing", i, "package using biocLite... \n")
       biocLite(i)
     }
   }
 }
 vanilla_install_pkgs = c("phyloseq",
-                         "shiny", "shinythemes",
-                         "ggplot2",
+                         "shiny", "shinythemes", 
+                         "ggplot2", 
                          "data.table", "networkD3", "genefilter", 
                          "grid", "gridExtra", 
                          "markdown", "rmarkdown", "png", 
-                         "shinythemes", "RColorBrewer", "scales")
+                         "RColorBrewer", "scales")
 download_not_installed(vanilla_install_pkgs)
 ################################################################################
 # Should use latest GitHub version of shiny

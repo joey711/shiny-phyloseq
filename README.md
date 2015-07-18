@@ -9,18 +9,25 @@ For details about using the phyloseq package directly,
 see [The phyloseq Homepage](http://joey711.github.io/phyloseq/).
 
 ## Citation
+
 Shiny-phyloseq is provided under a free-of-charge, open-source license (A-GPL3).
 All we require is that you cite/attribute the following
 in any work that benefits from this code or application.
 
 ### The App
 
-McMurdie and Holmes (2014) Shiny-phyloseq: Web Application for Interactive Microbiome Analysis with Provenance Tracking. Bioinformatics. *In Press*
+McMurdie and Holmes (2014) [Shiny-phyloseq: Web Application for Interactive Microbiome Analysis with Provenance Tracking](http://bioinformatics.oxfordjournals.org/content/early/2014/10/02/bioinformatics.btu616).
+
+Bioinformatics (Oxford, England), 31(2), 282–283.
+DOI 10.1093/bioinformatics/btu616
+
+
 
 ### "Under the Hood"
 
 McMurdie and Holmes (2013)
 [phyloseq: An R package for reproducible interactive analysis and graphics of microbiome census data](http://dx.plos.org/10.1371/journal.pone.0061217). 
+
 PLoS ONE 8(4):e61217.
 
 ## Launching Shiny-phyloseq Local Session

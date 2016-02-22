@@ -21,7 +21,7 @@ download_not_installed = function(x){
   if(length(missingPackages) > 0){
     for(i in missingPackages){
       message("Installing", i, "package using biocLite... \n")
-      biocLite(i)
+      biocLite(i, suppressUpdates = TRUE)
     }
   }
 }

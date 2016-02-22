@@ -220,7 +220,7 @@ component_options = function(physeq){
 ################################################################################
 # List of distances
 # Make available for relevant panels.
-distlist = as.list(unlist(phyloseq::distance("list")))
+distlist <- as.list(unlist(phyloseq::distanceMethodList))
 names(distlist) <- distlist
 distlist <- distlist[which(!distlist %in% c("ANY"))]
 ################################################################################

@@ -65,6 +65,20 @@ if(!rmarkdown_okay){
   devtools::install_github("rstudio/rmarkdown")
 }
 ################################################################################
+# Should have at least latest big update to ggplot2 (2.0.0)
+################################################################################
+ggplot2_okay = FALSE
+if("ggplot2" %in% .packages(all.available = TRUE)){
+  ggplot2_min_version = "2.0.0"
+  ggplot2_compare = compareVersion(as.character(packageVersion("ggplot2")), ggplot2_min_version)
+  if( ggplot2_compare >= 0 ){
+    ggplot2_okay <- TRUE
+  }
+}
+if(!ggplot2_okay){
+  install.packages("ggplot2")
+}
+################################################################################
 # phyloseq existence/version test, and installation
 ################################################################################
 phyloseq_okay = FALSE

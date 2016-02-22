@@ -54,7 +54,7 @@ theme_ui_details = function(suffix, secTitle="Details", pal=TRUE, them=TRUE,
   elementList = list(width = 12, h4(secTitle))
   if(pal){
     elementList <- c(elementList, list(
-      div(class='col-md-3', uipal(paste0("pal", suffix)))
+      div(class='col-md-4', uipal(paste0("pal", suffix)))
     ))    
   }
   if(them){
@@ -64,12 +64,12 @@ theme_ui_details = function(suffix, secTitle="Details", pal=TRUE, them=TRUE,
   }
   if(ptsz){
     elementList <- c(elementList, list(
-      div(class="col-md-2", uiptsz(paste0("size", suffix), class="col-md-12"))
+      div(class="col-md-3", uiptsz(paste0("size", suffix), class="col-md-12"))
     ))
   }
   if(alpha){
     elementList <- c(elementList, list(
-      div(class="col-md-2", uialpha(paste0("alpha", suffix), class="col-md-12"))
+      div(class="col-md-3", uialpha(paste0("alpha", suffix), class="col-md-12"))
     ))
   }
   # Add any additional row elements, if present

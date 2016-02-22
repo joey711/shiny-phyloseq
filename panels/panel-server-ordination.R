@@ -103,8 +103,9 @@ make_ord_plot = reactive({
 finalize_ordination_plot = reactive({
   p1 = make_ord_plot()
   if(inherits(p1, "ggplot")){
-    p1$layers[[1]]$geom_params$size <- av(input$size_ord)
-    p1$layers[[1]]$geom_params$alpha <- av(input$alpha_ord)
+    p1$layers[[1]] <- NULL
+    p1 <- p1 + geom_point(size = av(input$size_ord),
+                          alpha = av(input$alpha_ord))
     if(!is.null(av(input$color_ord))){
       if(plyr::is.discrete(p1$data[[input$color_ord]])){
         # Discrete brewer palette mapping

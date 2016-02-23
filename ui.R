@@ -137,6 +137,7 @@ source("panels/panel-ui-tree.R", local = TRUE)
 source("panels/panel-ui-heatmap.R", local = TRUE)
 source("panels/panel-ui-scatter.R", local = TRUE)
 source("panels/panel-ui-d3.R", local = TRUE)
+source("panels/panel-ui-differential-abundance.R", local = TRUE)
 source("panels/panel-ui-data.R", local = TRUE)
 source("panels/panel-ui-filter.R", local = TRUE)
 source("panels/panel-ui-palette.R", local = TRUE)
@@ -173,6 +174,7 @@ ui = navbarPage(
   tabPanel("Tree", treepage),
   tabPanel("Scatter", scatpage),
   tabPanel("Bar", barpage),
+  tabPanel("Differential Abundance", dfabundpage),
   tabPanel("Palette", palpage),
   tabPanel("Transform", transpage),
   tabPanel("Provenance", provpage),

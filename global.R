@@ -1,11 +1,6 @@
 # load packages
-library("shiny"); packageVersion("shiny")
-library("shinythemes"); packageVersion("shinythemes")
-library("phyloseq"); packageVersion("phyloseq")
-library("ggplot2"); packageVersion("ggplot2")
-library("data.table"); packageVersion("data.table")
-library("networkD3"); packageVersion("networkD3")
-library("gridExtra"); packageVersion("gridExtra")
+# Run the auto-installer/updater code:
+source("install.R", local = TRUE)
 # Default options for app startup
 source("core/default-parameters.R", local = TRUE)
 # For pasting times into things

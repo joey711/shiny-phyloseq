@@ -8,8 +8,6 @@ options(shiny.maxRequestSize = 100*1024^2)
 options(shiny.reactlog=TRUE)
 # Default ggplot2 theme (Only relevant if panel-specific theme missing or NULL)
 theme_set(theme_bw())
-# Run the auto-installer/updater code:
-source("install.R", local = TRUE)
 ################################################################################
 # Begin Shiny Server definition.
 ################################################################################

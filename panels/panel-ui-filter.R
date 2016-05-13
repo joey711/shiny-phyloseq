@@ -18,10 +18,10 @@ filterpage = fluidPage(
       h4('Total Sums Filtering'),
       fluidRow(column(width=12,
                       div(class="col-md-6",
-                          numericInputRow("filter_sample_sums_threshold", "Sample Max",
+                          numericInputRow("filter_sample_sums_threshold", "Sample Min.",
                                           value=SampleSumDefault, min=0, step=100, class="col-md-12")),
                       div(class="col-md-6",
-                          numericInputRow("filter_taxa_sums_threshold", "OTU Max",
+                          numericInputRow("filter_taxa_sums_threshold", "Taxa Min.",
                                           value=OTUSumDefault, min=0, step=1, class="col-md-12"))
       )),
       h4('kOverA OTU Filtering'),

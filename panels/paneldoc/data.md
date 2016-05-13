@@ -340,31 +340,3 @@ Note that the other upload/load widgets in this data selection panel
 add new whole datasets for selection,
 whereas this upload will result in adding/replacing the tree,
 provided that the initial tree file processing is successful.
-
-### Load QIIME-DB Data
-
-This section has the following three components
-
-(1) **Unlabeled QIIME-DB study selection widget** - Like most other selection widgets,
-this widget supports autocompletion so that you can type part of the study ID
-to more quickly narrow from the many dozen studies in the QIIME-DB.
-The names are parsed directly from the FTP file names,
-such that the study ID, year, and compressed file size are shown.
-Larger file sizes imply a longer import/processing time.
-For many studies this is nevertheless trivial,
-and the wait time depends mostly on the time
-required for the server "back end" to download the respective file from QIIME-DB.
-(2) **Unlabeled numeric widget** - This widget next to the Load-button 
-controls the maximum size (in MB) 
-of the compressed datasets that are displayed in the list.
-If you know that your dataset of interest is on the small end,
-or if your server is slow or has a slow internet connection,
-this can be a helpful filter.
-(3) **Load QIIME-DB Button** - Clicking this button
-commands the Shiny-phyloseq server back-end
-to download the study shown in the selection widget,
-process it into native phyloseq format,
-add it to the list of available datasets,
-and select it as the new default selected dataset in the list.
-Be aware that for large datasets and/or slow servers,
-this step might take time.

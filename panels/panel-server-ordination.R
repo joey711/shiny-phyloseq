@@ -1,6 +1,6 @@
-################################################################################
-# UI ordination
-################################################################################
+########################################
+# Compute ordination UI
+########################################
 # Define the variables category that should be shown in uix
 get_type_vars = reactive({
   switch({input$ord_plot_type},
@@ -28,15 +28,38 @@ output$ord_uix_facetcol <- renderUI({
 output$ord_uix_label <- renderUI({
   selectInput("label_ord", "Label", vars(get_type_vars()), "NULL")
 })
+# Define tooltip mapping options
+tooltip_opts_ord = reactive({
+  optlist = c("x", "y")
+  if(!is.null(input$color_ord)){
+    optlist <- c(optlist, "colour")
+  }
+  if(!is.null(input$shape_ord)){
+    optlist <- c(optlist, "shape")
+  }
+  if(!is.null(input$label_ord)){
+    optlist <- c(optlist, "label")
+  }
+  return(optlist)
+})
+# Define tooltip UI
+output$ord_uix_tooltip <- renderUI({
+  # Define vector of non-NULL mapping vars
+  selectInput(inputId = "tooltip_ord",
+              label = "Tooltip",
+              choices = tooltip_opts_ord(),
+              selected = tooltip_opts_ord(),
+              multiple = TRUE)
+})
 output$ord_uix_dist <- renderUI({
   if(input$ord_method %in% c("DCA", "CCA", "RDA", "DPCoA")){
     return(selectInput("dist_ord", tags$del("Distance"), "NULL"))
   }
   return(selectInput("dist_ord", "Distance", distlist, selected="bray"))
 })
-################################################################################
-# Ordination Server
-################################################################################
+########################################
+# Compute Ordination object
+########################################
 physeq_ord = reactive({
   return(
     switch({input$transform_ord},
@@ -92,7 +115,8 @@ make_ord_plot = reactive({
   try(p1 <- plot_ordination(physeq = physeq_ord(), 
                             ordination = get_ord(),
                             type=input$ord_plot_type,
-                            axes = c(as.integer(input$axis_x_ord), as.integer(input$axis_y_ord)),
+                            axes = c(as.integer(input$axis_x_ord),
+                                     as.integer(input$axis_y_ord)),
                             color = av(input$color_ord),
                             shape = av(input$shape_ord)
                             ),
@@ -122,41 +146,55 @@ finalize_ordination_plot = reactive({
     }
     p1ord_facet_form = get_facet_grid(input$facetrow_ord, input$facetcol_ord)
     if(!is.null(p1ord_facet_form)){
-      # Add facet_grid layer if user-provided one
-      # # Maybe add a user-toggle for free_x and free_y panels.
+      # Add facet_grid layer if user-provided one.
       p1 <- p1 + facet_grid(p1ord_facet_form)
     }
     p1 <- p1 + shiny_phyloseq_ggtheme_list[[input$theme_ord]]
   }
   return(p1)
 })
-# Render plot in panel and in downloadable file with format specified by user selection
-output$ordination <- renderPlot({
-  # Always add a 'supplemental' scree plot, if supported, below the ordination plot itself
+########################################
+# Render Ordination
+########################################
+output$ordination_plotly <- renderPlotly({
+  ggplotly(p = finalize_ordination_plot(),
+           tooltip = input$tooltip_ord,
+           width = 72*input$width_ord,
+           height = 72*input$height_ord)
+})
+########################################
+# Scree plot, if supported
+########################################
+finalize_scree = reactive({
   pscree = NULL
-  try(pscree <- plot_ordination(physeq_ord(), get_ord(), type="scree", title = "Scree Plot"), silent=TRUE)
-  # Final processing of ordination plot.
-  pOrd = finalize_ordination_plot()
-  # Create the combined figure
-  arglist = list(pOrd, pscree, ncol = 1, heights = c(5, 2))
-  arglist = arglist[!sapply(arglist, is.null, simplify = TRUE, USE.NAMES = FALSE)]
-  do.call("grid.arrange", args = arglist)
-}, width=function(){72*input$width_ord}, height=function(){72*input$height_ord})
+  try({
+    pscree <- plot_scree(ordination = get_ord(),
+                         title = "Scree Plot")
+    # Truncate N discrete elements in scree plot
+    pscree$data <- pscree$data[1:10, ]
+  }, silent=TRUE)
+  return(pscree)
+})
+output$scree_plotly <- renderPlotly({
+  fcr1 = finalize_scree()
+  ggplotly(p = shiny_phyloseq_check_plotly(fcr1),
+           width = 72*input$width_ord)
+})
+########################################
+# Download Handling
+########################################
 output$download_ord <- downloadHandler(
-  filename = function(){paste0("Ordination_", simpletime(), ".", input$downtype_ord)},
+  filename = function(){paste0("Ordination_", 
+                               simpletime(), ".", 
+                               input$downtype_ord)},
   content = function(file){
     ggsave2(filename=file,
             plot=finalize_ordination_plot(),
             device=input$downtype_ord,
-            width=input$width_ord, height=input$height_ord, dpi=300L, units="in")
+            width=input$width_ord, 
+            height=input$height_ord, 
+            dpi=300L, 
+            units="in")
   }
 )
-output$ordination_ggplotly <- renderPlotly({
-  ggplotly(finalize_ordination_plot())
-})
-# # Always add a 'supplemental' scree plot, if supported, below the ordination plot itself
-# output$scree_ord <- renderPlot({
-#   pscree = NULL
-#   try(pscree <- plot_ordination(physeq_ord(), get_ord(), type="scree", title = "Scree Plot"), silent=TRUE)
-#   return(shiny_phyloseq_print(pscree))
-# }, width=400, height=250)
+########################################

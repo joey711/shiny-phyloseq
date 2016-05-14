@@ -6,7 +6,7 @@ This panel provides an interface to
 
 ## Widget Sections
 
-### Structure
+### Define Ordination
 
 This top section defines key aspects of 
 the ordination calculation.

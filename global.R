@@ -139,7 +139,25 @@ shiny_phyloseq_print = function(p, f=fail_gen()){
   } else {
     print(f)
   }
-}    
+}
+# Like shiny_phyloseq_print, but for plotly
+shiny_phyloseq_check_plotly = function(p, f=fail_gen()){
+  if(inherits(p, "ggplot")){
+    # Check that rendering will work
+    printout = NULL
+    try(printout <- print(p), silent=TRUE)
+    if(is.null(printout)){
+      # If still NULL, the print-render failed,
+      # otherwise print() would have returned a 'list'
+      # Nothing was printed. Print the fail graphic in its place.
+      return(f)
+    } else {
+      return(p)
+    }
+  } else {
+    return(f)
+  }
+}
 # Define generic function to access/clean variables
 # This especially converts "NULL" to NULL
 av = function(x){

@@ -151,6 +151,9 @@ output$download_ord <- downloadHandler(
             width=input$width_ord, height=input$height_ord, dpi=300L, units="in")
   }
 )
+output$ordination_ggplotly <- renderPlotly({
+  ggplotly(finalize_ordination_plot())
+})
 # # Always add a 'supplemental' scree plot, if supported, below the ordination plot itself
 # output$scree_ord <- renderPlot({
 #   pscree = NULL

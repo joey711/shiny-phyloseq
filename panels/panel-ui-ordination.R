@@ -43,8 +43,10 @@ ordpage = fluidPage(theme = shinytheme("cosmo"),
   fluidRow(sbp_ord,
     column(width = 8,
            div(class="col-md-12", plotOutput("ordination")),
-           div(class="col-md-12", br()),
-           div(class="col-md-12", plotlyOutput("ordination_ggplotly"))
+           div(class="col-md-12", br())
+  )),
+  fluidRow(column(width = 12,
+                  plotlyOutput("ordination_ggplotly")
   )),
   fluidRow(column(width = 12,
                   includeMarkdown("panels/paneldoc/ordination.md")

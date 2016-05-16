@@ -48,7 +48,7 @@ richpage = fluidPage(
   headerPanel("Alpha Diversity Estimates", "windowTitle"), 
   fluidRow(
     sbp_rich,
-    column(width = 8, plotOutput("richness"), offset = 0)
+    column(width = 8, plotlyOutput("richness"), offset = 0)
   ),
   fluidRow(
     column(width = 12, includeMarkdown("panels/paneldoc/richness.md"))

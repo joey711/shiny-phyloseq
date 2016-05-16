@@ -26,7 +26,9 @@ output$rich_uix_label <- renderUI({
 # Alpha Diversity plot definition
 ################################################################################
 physeq_rich = reactive({
-  return(switch(input$uicttype_rich, Original=get_phyloseq_data(), Filtered=physeq()))
+  return(switch(EXPR = input$uicttype_rich, 
+                Original = get_phyloseq_data(), 
+                Filtered = physeq()))
 })
 make_richness_plot = reactive({
   p4 = NULL
@@ -97,10 +99,18 @@ finalize_richness_plot = reactive({
     return(fail_gen())
   }
 })
-# Render plot in panel and in downloadable file with format specified by user selection
-output$richness <- renderPlot({
-  shiny_phyloseq_print(finalize_richness_plot())
-}, width=function(){72*input$width_rich}, height=function(){72*input$height_rich})
+########################################
+# Render alpha diversity plot
+########################################
+output$richness <- renderPlotly({
+  p = shiny_phyloseq_check_plotly(finalize_richness_plot())
+  ggplotly(p = p,
+           width = 72*input$width_rich,
+           height = 72*input$height_rich)
+})
+########################################
+# Download Handling
+########################################
 output$download_rich <- downloadHandler(
   filename = function(){paste0("Richness_", simpletime(), ".", input$downtype_rich)},
   content = function(file){

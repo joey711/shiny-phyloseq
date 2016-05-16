@@ -19,7 +19,7 @@ install_missing_packages = function(pkg, version = NULL, verbose = TRUE){
   if(!any(pkg %in% availpacks)){
     if(verbose){
       message("The following package is missing.\n",
-              missingPackages, "\n",
+              pkg, "\n",
               "Installation will be attempted...")
     }
     missingPackage <- TRUE
@@ -30,7 +30,8 @@ install_missing_packages = function(pkg, version = NULL, verbose = TRUE){
                        b = version) < 0 ){
       if(verbose){
         message("Current version of package\n", 
-                missingPackages, "\t", packageVersion(pkg), "\n",
+                pkg, "\t", 
+                packageVersion(pkg), "\n",
                 "is less than required.
                 Update will be attempted.")
       }

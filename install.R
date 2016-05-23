@@ -39,7 +39,7 @@ install_missing_packages = function(pkg, version = NULL, verbose = TRUE){
     }
   }
   if(missingPackage){
-    biocLite(i, suppressUpdates = TRUE)
+    biocLite(pkg, suppressUpdates = TRUE)
   }
 }
 ################################################################################
@@ -47,7 +47,7 @@ install_missing_packages = function(pkg, version = NULL, verbose = TRUE){
 ################################################################################
 deppkgs = c(phyloseq = "1.16.0",
             biomformat = "1.0.0",
-            plotly = "3.4.13",
+            plotly = "3.6.0",
             shiny = "0.13.2",
             shinythemes = "1.0.1", 
             ggplot2 = "2.1.0", 

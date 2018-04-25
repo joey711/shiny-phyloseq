@@ -39,7 +39,7 @@ install_missing_packages = function(pkg, version = NULL, verbose = TRUE){
     }
   }
   if(missingPackage){
-    biocLite(i, suppressUpdates = TRUE)
+    biocLite(pkg, suppressUpdates = TRUE)
   }
 }
 ################################################################################

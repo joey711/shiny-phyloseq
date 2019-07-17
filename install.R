@@ -2,20 +2,21 @@
 # Check that the currently-installed version of R
 # is at least the minimum required version.
 ################################################################################
-R_min_version = "3.3.0"
+R_min_version = "3.6.0"
 R_version = paste0(R.Version()$major, ".", R.Version()$minor)
 if(compareVersion(R_version, R_min_version) < 0){
   stop("You do not have the latest required version of R installed.\n", 
        "Launch should fail.\n",
        "Go to http://cran.r-project.org/ and update your version of R.")
 }
+# install or update BiocManager. Updates sometimes needed as they change in-step with BioC vers
+install.packages("BiocManager")
 ################################################################################
 # Install basic required packages if not available/installed.
 ################################################################################
 install_missing_packages = function(pkg, version = NULL, verbose = TRUE){
   availpacks = .packages(all.available = TRUE)
-  if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+  require("BiocManager")
   BiocManager::install(i,update=FALSE)
   missingPackage = FALSE
   if(!any(pkg %in% availpacks)){
@@ -41,7 +42,7 @@ install_missing_packages = function(pkg, version = NULL, verbose = TRUE){
     }
   }
   if(missingPackage){
-    biocLite(i, suppressUpdates = TRUE)
+      BiocManager::install(i,update=FALSE)
   }
 }
 ################################################################################

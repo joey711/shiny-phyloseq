@@ -14,7 +14,9 @@ if(compareVersion(R_version, R_min_version) < 0){
 ################################################################################
 install_missing_packages = function(pkg, version = NULL, verbose = TRUE){
   availpacks = .packages(all.available = TRUE)
-  source("http://bioconductor.org/biocLite.R")
+  if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+  BiocManager::install(i,update=FALSE)
   missingPackage = FALSE
   if(!any(pkg %in% availpacks)){
     if(verbose){
